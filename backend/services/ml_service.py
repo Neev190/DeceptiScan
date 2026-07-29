@@ -40,6 +40,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 _SERVICE_DIR = Path(__file__).resolve().parent
 CHECKPOINT_PATH = _SERVICE_DIR.parent / "ml_models" / "checkpoint"
+HF_MODEL_REPO = "Yakuza190/deceptiscan-distilbert-liar"
 
 
 # ---------------------------------------------------------------------------
@@ -145,11 +146,14 @@ class MLService:
         if self._model_loaded:
             return True
 
-        if not CHECKPOINT_PATH.exists():
-            raise RuntimeError(
-                f"ML model checkpoint not found at: {CHECKPOINT_PATH}\n"
-                "Run `cd backend && python ml_training/train.py` to train and save the model."
+        has_local_files = (
+            CHECKPOINT_PATH.exists()
+            and (CHECKPOINT_PATH / "config.json").exists()
+            and (
+                (CHECKPOINT_PATH / "model.safetensors").exists()
+                or (CHECKPOINT_PATH / "pytorch_model.bin").exists()
             )
+        )
 
         try:
             # Lazy import so Flask starts without requiring torch
@@ -158,6 +162,19 @@ class MLService:
                 AutoModelForSequenceClassification,
             )
             import torch
+
+            if not has_local_files:
+                logger.info(
+                    f"Local checkpoint not found at {CHECKPOINT_PATH}. "
+                    f"Auto-fetching model from Hugging Face Hub ({HF_MODEL_REPO})..."
+                )
+                from huggingface_hub import snapshot_download
+                CHECKPOINT_PATH.mkdir(parents=True, exist_ok=True)
+                snapshot_download(
+                    repo_id=HF_MODEL_REPO,
+                    local_dir=str(CHECKPOINT_PATH),
+                )
+                logger.info(f"Model auto-downloaded and saved to {CHECKPOINT_PATH}")
 
             logger.info(f"Loading tokenizer from {CHECKPOINT_PATH}")
             self._tokenizer = AutoTokenizer.from_pretrained(str(CHECKPOINT_PATH))
@@ -171,7 +188,6 @@ class MLService:
             self._model.eval()
 
             # Move to GPU if available
-            import torch
             self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             self._model = self._model.to(self._device)
 

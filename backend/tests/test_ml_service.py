@@ -195,11 +195,12 @@ class TestMLServiceLoadingBehavior:
         assert service.is_loaded is False
 
     def test_load_raises_when_checkpoint_missing(self, tmp_path, monkeypatch):
-        """load_model() must raise RuntimeError if checkpoint directory does not exist."""
+        """load_model() must raise RuntimeError if checkpoint directory and HF Hub repo do not exist."""
         import services.ml_service as ml_mod
         monkeypatch.setattr(ml_mod, "CHECKPOINT_PATH", tmp_path / "nonexistent")
+        monkeypatch.setattr(ml_mod, "HF_MODEL_REPO", "invalid-repo/nonexistent-model")
         service = MLService()
-        with pytest.raises(RuntimeError, match="checkpoint not found"):
+        with pytest.raises(RuntimeError, match="(Failed to load ML model|checkpoint not found)"):
             service.load_model()
 
 
