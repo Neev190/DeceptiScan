@@ -203,6 +203,30 @@ class TestMLServiceLoadingBehavior:
         with pytest.raises(RuntimeError, match="(Failed to load ML model|checkpoint not found)"):
             service.load_model()
 
+    def test_load_raises_when_checkpoint_and_hub_both_fail(self, tmp_path, monkeypatch):
+        """load_model() must raise RuntimeError when local files are absent AND snapshot_download fails.
+
+        This exercises the NEW code path: local check fails → snapshot_download called →
+        snapshot_download raises (e.g. network error) → RuntimeError propagated with fail-loud.
+        The existing test above covers 'invalid repo' errors; this test covers explicit
+        download failures (e.g. RepositoryNotFoundError, network timeout).
+        """
+        import services.ml_service as ml_mod
+
+        def _fail_download(**kwargs):
+            raise OSError("Simulated network failure during snapshot_download")
+
+        monkeypatch.setattr(ml_mod, "CHECKPOINT_PATH", tmp_path / "empty_checkpoint")
+        monkeypatch.setattr(
+            ml_mod,
+            "snapshot_download",
+            _fail_download,
+            raising=False,
+        )
+        service = MLService()
+        with pytest.raises(RuntimeError, match="(Failed to load ML model|checkpoint not found)"):
+            service.load_model()
+
 
 @requires_checkpoint
 class TestMLServiceInference:

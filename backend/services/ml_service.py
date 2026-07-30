@@ -33,6 +33,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
+from huggingface_hub import snapshot_download
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -168,7 +170,6 @@ class MLService:
                     f"Local checkpoint not found at {CHECKPOINT_PATH}. "
                     f"Auto-fetching model from Hugging Face Hub ({HF_MODEL_REPO})..."
                 )
-                from huggingface_hub import snapshot_download
                 CHECKPOINT_PATH.mkdir(parents=True, exist_ok=True)
                 snapshot_download(
                     repo_id=HF_MODEL_REPO,
