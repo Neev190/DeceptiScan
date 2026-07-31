@@ -141,15 +141,8 @@ def get_current_user():
         User profile information
     """
     user_id = get_jwt_identity()
-    
-    try:
-        user = User.query.get(user_id)
-    except Exception:
-        return jsonify(ValidationError(
-            code='NOT_FOUND',
-            message='User not found',
-            details={}
-        ).to_dict()), 404
+    from app.routes.helpers import find_by_id
+    user = find_by_id(User, user_id)
     
     if not user:
         return jsonify(ValidationError(

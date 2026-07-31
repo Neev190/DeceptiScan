@@ -79,6 +79,22 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
     return new Date(dateString).toLocaleString();
   };
 
+  const [feedbackSent, setFeedbackSent] = useState<string | null>(null);
+
+  const handleFeedback = async (type: 'helpful' | 'incorrect' | 'disputed') => {
+    try {
+      const { apiService } = await import('../services/api');
+      await apiService.submitFeedback({
+        analysisId: result.id,
+        userId: null,
+        feedback: { type }
+      });
+      setFeedbackSent(type);
+    } catch (e) {
+      console.error('Failed to submit feedback', e);
+    }
+  };
+
   return (
     <div className="analysis-result">
       {/* Header with Score */}
@@ -92,15 +108,36 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
             <span className="processing-time">
               Processing: {result.processingTime}ms
             </span>
+            {result.is_cached && (
+              <span className="cached-badge" style={{ color: '#2563eb', fontWeight: 600 }}>
+                (Cached Result)
+              </span>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Warning / Disclaimer Banner */}
+      {(result.warning || result.classification === 'unknown' || result.classification === 'unverified_style_estimate') && (
+        <div className="warning-banner" style={{
+          backgroundColor: '#fef3c7',
+          color: '#92400e',
+          padding: '1rem 1.25rem',
+          borderRadius: '0.5rem',
+          borderLeft: '4px solid #f59e0b',
+          marginBottom: '1.5rem',
+          fontSize: '0.95rem'
+        }}>
+          <strong>⚠️ Disclaimer: </strong>
+          {result.warning || 'Low confidence in ML prediction. Sentence highlighting may be unverified.'}
+        </div>
+      )}
+
       {/* Score Meter */}
       <ScoreMeter 
         score={result.authenticityScore} 
-        label={result.classification.charAt(0).toUpperCase() + result.classification.slice(1)}
-        confidence={result.confidenceScore}
+        label={result.classification.replace(/_/g, ' ').toUpperCase()}
+        confidence={result.confidence || result.confidenceScore}
       />
 
       {/* Overall Summary */}
@@ -108,6 +145,20 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
         <div className="summary-section">
           <h3>Summary</h3>
           <p className="summary-text">{result.overallSummary}</p>
+        </div>
+      )}
+
+      {/* Similar Claims Section */}
+      {result.similar_claims && result.similar_claims.length > 0 && (
+        <div className="summary-section" style={{ borderLeft: '4px solid #3b82f6' }}>
+          <h3>Similar Fact-Checked Claims</h3>
+          <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
+            {result.similar_claims.map((claim, i) => (
+              <li key={i} style={{ marginBottom: '0.5rem' }}>
+                "{claim.text}" (Match Score: {claim.score}%)
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
@@ -144,6 +195,20 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
         )}
 
         {renderHighlightedText()}
+      </div>
+
+      {/* Feedback Section */}
+      <div className="summary-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontWeight: 600, color: '#374151' }}>Was this analysis helpful?</span>
+        {feedbackSent ? (
+          <span style={{ color: '#166534', fontWeight: 600 }}>Thank you for your feedback! ({feedbackSent})</span>
+        ) : (
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button className="toggle-details" onClick={() => handleFeedback('helpful')}>👍 Helpful</button>
+            <button className="toggle-details" onClick={() => handleFeedback('incorrect')}>👎 Incorrect</button>
+            <button className="toggle-details" onClick={() => handleFeedback('disputed')}>⚖️ Disputed</button>
+          </div>
+        )}
       </div>
 
       {/* Sentence Details Modal */}

@@ -4,7 +4,7 @@ Feedback API endpoints for DeceptiScan.
 import uuid
 from datetime import datetime
 from flask import request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity, optional
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.routes import api_bp
 from app.validators import validate_feedback_request, ValidationError
 from app import db
@@ -13,7 +13,7 @@ from models.analysis import AnalysisRecord
 
 
 @api_bp.route('/feedback', methods=['POST'])
-@optional()
+@jwt_required(optional=True)
 def submit_feedback():
     """
     Submit feedback on an analysis.
@@ -48,14 +48,8 @@ def submit_feedback():
         pass
     
     # Verify analysis exists
-    try:
-        analysis = AnalysisRecord.query.get(analysis_id)
-    except Exception:
-        return jsonify(ValidationError(
-            code='NOT_FOUND',
-            message='Analysis not found',
-            details={'analysisId': analysis_id}
-        ).to_dict()), 404
+    from app.routes.helpers import find_by_id
+    analysis = find_by_id(AnalysisRecord, analysis_id)
     
     if not analysis:
         return jsonify(ValidationError(

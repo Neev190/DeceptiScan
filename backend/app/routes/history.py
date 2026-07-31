@@ -59,8 +59,10 @@ def get_history():
             details={'error': str(e)}
         ).to_dict()), 500
     
+    items = [record.to_dict() for record in records]
     return jsonify({
-        'items': [record.to_dict() for record in records],
+        'items': items,
+        'data': items,
         'page': page,
         'limit': limit,
         'total': pagination.total,
@@ -85,14 +87,8 @@ def get_history_item(analysis_id):
     """
     user_id = get_jwt_identity()
     
-    try:
-        record = AnalysisRecord.query.get(analysis_id)
-    except Exception:
-        return jsonify(ValidationError(
-            code='NOT_FOUND',
-            message='Analysis not found',
-            details={'analysisId': analysis_id}
-        ).to_dict()), 404
+    from app.routes.helpers import find_by_id
+    record = find_by_id(AnalysisRecord, analysis_id)
     
     if not record:
         return jsonify(ValidationError(
@@ -129,14 +125,8 @@ def delete_history_item(analysis_id):
     """
     user_id = get_jwt_identity()
     
-    try:
-        record = AnalysisRecord.query.get(analysis_id)
-    except Exception:
-        return jsonify(ValidationError(
-            code='NOT_FOUND',
-            message='Analysis not found',
-            details={'analysisId': analysis_id}
-        ).to_dict()), 404
+    from app.routes.helpers import find_by_id
+    record = find_by_id(AnalysisRecord, analysis_id)
     
     if not record:
         return jsonify(ValidationError(

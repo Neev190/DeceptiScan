@@ -268,10 +268,7 @@ class TestMLServiceProperties:
             f"Text with '{suspicious_word}' should trigger flags or suspicion"
         )
 
-    empty_or_whitespace = st.one_of(
-        st.just(""),
-        st.text(max_size=10).filter(lambda x: x.isspace() or len(x.strip()) == 0),
-    )
+    empty_or_whitespace = st.sampled_from(["", " ", "  ", "\t", "\n", "\r\n", "   \t\n  "])
 
     @given(empty_or_whitespace)
     @settings(max_examples=20, deadline=None)

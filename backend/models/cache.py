@@ -3,16 +3,19 @@ Cached Analysis Model
 """
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Text, Index
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import Column, String, DateTime, Text, Index, JSON
+from sqlalchemy.dialects.postgresql import JSONB as PG_JSONB
 from app import db
+from models.guid import GUID
+
+JSONB = JSON().with_variant(PG_JSONB, 'postgresql')
 
 
 class CachedAnalysis(db.Model):
     """Cached analysis results for quick retrieval."""
     __tablename__ = 'cached_analyses'
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(GUID, primary_key=True, default=uuid.uuid4)
     content_hash = Column(String(64), unique=True, nullable=False, index=True)  # SHA256 hash
     input_text = Column(Text, nullable=False)  # Store text for reference
     source_url = Column(String(2048), nullable=True)

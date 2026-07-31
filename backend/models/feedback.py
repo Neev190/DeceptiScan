@@ -4,18 +4,18 @@ User Feedback Model
 import uuid
 from datetime import datetime
 from sqlalchemy import Column, String, DateTime, Text, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app import db
+from models.guid import GUID
 
 
 class UserFeedback(db.Model):
     """User feedback on analysis results."""
     __tablename__ = 'user_feedbacks'
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    analysis_id = Column(UUID(as_uuid=True), ForeignKey('analysis_records.id', ondelete='CASCADE'), nullable=False, index=True)
-    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True, index=True)
+    id = Column(GUID, primary_key=True, default=uuid.uuid4)
+    analysis_id = Column(GUID, ForeignKey('analysis_records.id', ondelete='CASCADE'), nullable=False, index=True)
+    user_id = Column(GUID, ForeignKey('users.id', ondelete='SET NULL'), nullable=True, index=True)
     feedback_type = Column(String(50), nullable=False)  # helpful, incorrect, disputed
     corrected_classification = Column(String(50), nullable=True)
     comment = Column(Text, nullable=True)

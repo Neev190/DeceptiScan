@@ -11,6 +11,12 @@ from services.ml_service import (
     SentenceAnalysis,
     ClassificationResult
 )
+from services.retrieval_service import (
+    RetrievalService,
+    get_retrieval_service,
+    init_retrieval_service,
+    unload_retrieval_service,
+)
 
 __all__ = [
     'CacheService', 
@@ -22,5 +28,9 @@ __all__ = [
     'unload_ml_service',
     'AnalysisResult',
     'SentenceAnalysis',
-    'ClassificationResult'
-]
+    'ClassificationResult',
+    'RetrievalService',
+    'get_retrieval_service',
+    'init_retrieval_service',
+    'unload_retrieval_service',
+]

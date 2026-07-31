@@ -5,10 +5,12 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 import os
 
 db = SQLAlchemy()
 jwt = JWTManager()
+migrate = Migrate()
 
 
 def create_app(config_name=None):
@@ -17,20 +19,29 @@ def create_app(config_name=None):
 
     # Load configuration
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-        'DATABASE_URL',
-        'postgresql://deceptiscan:password@localhost:5432/deceptiscan'
-    )
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    # Database connection pooling configuration
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        'pool_size': 10,
-        'pool_recycle': 3600,
-        'pool_pre_ping': True,
-        'max_overflow': 20,
-        'pool_timeout': 30,
-    }
+    if config_name == 'testing':
+        app.config['TESTING'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('TEST_DATABASE_URL', 'sqlite:///:memory:')
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        from sqlalchemy.pool import StaticPool
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+            'connect_args': {'check_same_thread': False},
+            'poolclass': StaticPool,
+        }
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+            'DATABASE_URL',
+            'postgresql://deceptiscan:password@localhost:5433/deceptiscan'
+        )
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+            'pool_size': 10,
+            'pool_recycle': 3600,
+            'pool_pre_ping': True,
+            'max_overflow': 20,
+            'pool_timeout': 30,
+        }
     
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'dev-jwt-secret-key')
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES', 3600))
@@ -42,6 +53,7 @@ def create_app(config_name=None):
 
     # Initialize extensions
     db.init_app(app)
+    migrate.init_app(app, db)
     jwt.init_app(app)
     CORS(app)
 

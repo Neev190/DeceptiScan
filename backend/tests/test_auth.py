@@ -13,9 +13,7 @@ from models.user import User
 @pytest.fixture
 def app():
     """Create application for testing."""
-    app = create_app()
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    app = create_app('testing')
     app.config['JWT_SECRET_KEY'] = 'test-jwt-secret-key'
     
     with app.app_context():

@@ -12,7 +12,7 @@ export interface ArticleInput {
   contentType: 'text' | 'url';  // Input type
 }
 
-export type Classification = 'reliable' | 'mixed' | 'unreliable' | 'unknown';
+export type Classification = 'reliable' | 'mixed' | 'unreliable' | 'unknown' | 'unverified_style_estimate';
 
 export interface SentenceAnalysis {
   index: number;           // Position in original text
@@ -25,24 +25,35 @@ export interface SentenceAnalysis {
   explanation: string;    // Human-readable explanation
 }
 
+export interface SimilarClaim {
+  text: string;
+  score: number;
+  sourceUrl?: string;
+}
+
 export interface AnalysisResult {
   // Identifiers
   id: string;               // UUID
-  analysisVersion: string;  // e.g., "1.0.0"
+  analysisVersion?: string;  // e.g., "1.0.0"
   
   // Scores
   authenticityScore: number;       // 0-100 (higher = more reliable)
-  confidenceScore: number;         // 0-1 (model confidence)
+  confidence?: number;             // 0-1 (model confidence)
+  confidenceScore?: number;        // 0-1 (alias for confidence)
   classification: Classification;  // Primary classification
+  warning?: string;                // Warning for low confidence or special estimates
   
   // Detailed analysis
   sentenceAnalysis: SentenceAnalysis[];
-  overallSummary: string;          // Brief explanation
+  overallSummary?: string;         // Brief explanation
   
   // Metadata
   processingTime: number;          // milliseconds
   analyzedAt: string;              // ISO 8601 timestamp
   modelVersion: string;            // ML model version
+  is_cached?: boolean;
+  similar_claims?: SimilarClaim[] | null;
+  retrieval_status?: string;
 }
 
 export interface UserFeedback {

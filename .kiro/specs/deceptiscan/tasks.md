@@ -143,7 +143,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 1.1
 
-- [ ] 13. Implement Low Confidence Handling
+- [x] 13. Implement Low Confidence Handling
   **Description**: Add logic to handle low confidence predictions
   - Check if confidence < 0.3
   - Return "unknown" classification
@@ -151,7 +151,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 3.1
 
-- [ ] 14. Implement ML Retry Logic
+- [x] 14. Implement ML Retry Logic
   **Description**: Add retry mechanism for ML service failures
   - Implement exponential backoff (max 3 retries)
   - Return ANALYSIS_FAILED error after all retries
@@ -186,7 +186,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 4.1
 
-- [ ] 18. Implement Analysis Result Display
+- [x] 18. Implement Analysis Result Display
   **Description**: Create component to display analysis results
   - Create AnalysisResult component
   - Implement sentence highlighting (red/green)
@@ -195,7 +195,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 4.3, Task 4.2
 
-- [ ] 19. Implement Authentication UI
+- [x] 19. Implement Authentication UI
   **Description**: Create login and registration UI
   - Create Login page component
   - Create Register page component
@@ -204,7 +204,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 4.1
 
-- [ ] 20. Implement History Page
+- [x] 20. Implement History Page
   **Description**: Create page for viewing analysis history
   - Create History page component
   - Implement pagination
@@ -213,7 +213,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 4.1, Task 4.4
 
-- [ ] 21. Write Unit Tests for Backend
+- [x] 21. Write Unit Tests for Backend
   **Description**: Create unit tests for backend functionality
   - Test input validation
   - Test API response formats
@@ -223,7 +223,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 2.2, Task 2.4, Task 2.7
 
-- [ ] 22. Write Property-Based Tests
+- [x] 22. Write Property-Based Tests
   **Description**: Implement property-based tests using Hypothesis
   - Test authenticity score boundaries (0-100)
   - Test classification threshold consistency
@@ -233,7 +233,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 3.1
 
-- [ ] 23. Write Frontend Tests
+- [x] 23. Write Frontend Tests
   **Description**: Create tests for React components
   - Test ScoreMeter display accuracy
   - Test highlight rendering
@@ -243,7 +243,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 4.3, Task 4.4
 
-- [ ] 24. Integration Testing
+- [x] 24. Integration Testing
   **Description**: Create end-to-end integration tests
   - Test complete analysis flow
   - Test authentication flow
@@ -253,7 +253,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 5.1, Task 5.2, Task 5.3
 
-- [ ] 25. Configure Production Environment
+- [x] 25. Configure Production Environment
   **Description**: Set up production configuration files
   - Configure Nginx reverse proxy
   - Set up environment variables for production
@@ -262,7 +262,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 1.1
 
-- [ ] 26. Create Deployment Scripts
+- [x] 26. Create Deployment Scripts
   **Description**: Create scripts for deployment
   - Create build script for frontend
   - Create startup script for backend
@@ -271,7 +271,7 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 6.1
 
-- [ ] 27. Implement Recency-Based Verification Routing
+- [x] 27. Implement Recency-Based Verification Routing
   **Description**: Add a check in the analysis flow that determines whether content is "new" and routes through external fact-checking APIs for recent content
   - Implement heuristic to detect "new" content: no cache hit AND references recent dates/events (default 7-day window)
   - Add configurable time window for recency detection

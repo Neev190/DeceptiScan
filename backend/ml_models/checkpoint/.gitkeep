@@ -1,3 +1,0 @@
-# This file keeps the ml_models/checkpoint/ directory tracked in git.
-# The actual model checkpoint files are excluded via .gitignore.
-# Run `python ml_training/train.py` to generate the checkpoint.

@@ -80,6 +80,8 @@ class AnalysisResult:
     sentence_analysis: list[SentenceAnalysis] = field(default_factory=list)
     processing_time_ms: float = 0
     model_version: str = "distilbert-liar-v1"
+    warning: Optional[str] = None
+
 
 
 # ---------------------------------------------------------------------------
@@ -242,6 +244,7 @@ class MLService:
                 sentence_analysis=[],
                 processing_time_ms=(time.time() - start_time) * 1000,
                 model_version=self.MODEL_VERSION,
+                warning="No valid sentences found for analysis.",
             )
 
         sentence_analysis = []
@@ -256,6 +259,10 @@ class MLService:
         )
         classification = self._determine_classification(authenticity_score, avg_confidence)
 
+        warning = None
+        if classification == "unknown" or avg_confidence < self.LOW_CONFIDENCE_THRESHOLD:
+            warning = "Low confidence prediction: unable to reliably determine authenticity score."
+
         return AnalysisResult(
             authenticity_score=authenticity_score,
             confidence=round(avg_confidence, 4),
@@ -263,18 +270,19 @@ class MLService:
             sentence_analysis=sentence_analysis,
             processing_time_ms=(time.time() - start_time) * 1000,
             model_version=self.MODEL_VERSION,
+            warning=warning,
         )
 
     def preprocess(self, text: str) -> str:
         """Clean and normalize input text."""
         if not text:
             return ""
-        text = re.sub(r'\s+', ' ', text)
-        text = re.sub(r'[^\w\s.,!?;:\'""-]', '', text)
         text = text.replace('\u201c', '"').replace('\u201d', '"')
         text = text.replace('\u2018', "'").replace('\u2019', "'")
         text = re.sub(r'https?://\S+', '', text)
         text = re.sub(r'\S+@\S+', '', text)
+        text = re.sub(r'[^\w\s.,!?;:\'""-]', '', text)
+        text = re.sub(r'\s+', ' ', text)
         return text.strip()
 
     def extract_sentences(self, text: str) -> list[str]:

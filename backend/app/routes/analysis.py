@@ -12,7 +12,19 @@ from services import get_cache_service
 from app import db
 from models.analysis import AnalysisRecord
 
+from typing import Tuple, Optional
+
 logger = logging.getLogger(__name__)
+
+
+def get_ml_service():
+    from services import get_ml_service as _get_ml
+    return _get_ml()
+
+
+def get_retrieval_service():
+    from services import get_retrieval_service as _get_retrieval
+    return _get_retrieval()
 
 
 @api_bp.route('/analyze', methods=['POST'])
@@ -58,13 +70,36 @@ def analyze_text():
     
     # Start timing
     start_time = time.time()
-    
-    # Perform analysis (mock for now - will integrate ML service later)
-    # This is where the ML service would be called
-    analysis_result = _perform_analysis(content)
+
+    # Check recency routing for un-cached content
+    from services.recency_service import get_recency_service
+    recency_svc = get_recency_service()
+    is_recent, recency_result = recency_svc.process_recency_routing(content)
+
+    if is_recent and recency_result:
+        analysis_result = recency_result
+    else:
+        # Perform analysis using ML classifier with retry logic
+        analysis_result, err_resp = _perform_analysis_with_retry(content)
+        if err_resp:
+            return jsonify(err_resp), 500
     
     # Calculate processing time
     processing_time = (time.time() - start_time) * 1000  # in milliseconds
+
+    # ------------------------------------------------------------------
+    # Retrieval layer — non-fatal if unavailable
+    # ------------------------------------------------------------------
+    similar_claims = None
+    retrieval_status = "unavailable"
+    try:
+        retrieval_svc = get_retrieval_service()
+        similar_claims = retrieval_svc.find_similar_claims(content)
+        retrieval_status = "ok"
+    except Exception as retrieval_err:
+        logger.error(f"Retrieval service unavailable: {retrieval_err}")
+        similar_claims = None
+        retrieval_status = "unavailable"
     
     # Prepare response
     response = {
@@ -75,8 +110,11 @@ def analyze_text():
         'sentenceAnalysis': analysis_result['sentence_analysis'],
         'processingTime': round(processing_time, 2),
         'analyzedAt': datetime.utcnow().isoformat() + 'Z',
-        'modelVersion': '1.0.0',
-        'is_cached': False
+        'modelVersion': analysis_result.get('model_version', '1.0.0'),
+        'is_cached': False,
+        'warning': analysis_result.get('warning'),
+        'similar_claims': similar_claims,
+        'retrieval_status': retrieval_status,
     }
     
     # Cache the result
@@ -84,7 +122,20 @@ def analyze_text():
     
     # Save to database
     try:
+        from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+        user_id = None
+        try:
+            verify_jwt_in_request(optional=True)
+            identity = get_jwt_identity()
+            if identity:
+                user_id = uuid.UUID(str(identity))
+        except Exception:
+            user_id = None
+
+        record_id = uuid.uuid4()
         record = AnalysisRecord(
+            id=record_id,
+            user_id=user_id,
             input_text=content,
             source_url=source_url,
             title=title,
@@ -93,15 +144,16 @@ def analyze_text():
             classification=analysis_result['classification'],
             sentence_results=analysis_result['sentence_analysis'],
             processing_time=processing_time,
-            model_version='1.0.0'
+            model_version=analysis_result.get('model_version', '1.0.0'),
+            similar_claims=similar_claims,
         )
         db.session.add(record)
         db.session.commit()
-        response['id'] = str(record.id)
+        response['id'] = str(record_id)
     except Exception as e:
         # Log error but don't fail the request
         db.session.rollback()
-        print(f"Database error: {e}")
+        logger.exception(f"Database error saving analysis record: {e}")
     
     return jsonify(response), 200
 
@@ -117,14 +169,8 @@ def get_analysis(analysis_id):
     Response:
         Analysis result if found, error otherwise
     """
-    try:
-        record = AnalysisRecord.query.get(analysis_id)
-    except Exception:
-        return jsonify(ValidationError(
-            code='NOT_FOUND',
-            message='Analysis not found',
-            details={'analysisId': analysis_id}
-        ).to_dict()), 404
+    from app.routes.helpers import find_by_id
+    record = find_by_id(AnalysisRecord, analysis_id)
     
     if not record:
         return jsonify(ValidationError(
@@ -136,54 +182,70 @@ def get_analysis(analysis_id):
     return jsonify(record.to_dict()), 200
 
 
-def _perform_analysis(text: str) -> dict:
+from typing import Tuple
+
+def _perform_analysis_with_retry(text: str, max_retries: int = 3) -> Tuple[Optional[dict], Optional[dict]]:
     """
-    Perform ML analysis on text using the ML service.
-    
-    Uses the ML service for classification when available,
-    falls back to heuristic analysis if model fails to load.
+    Perform ML analysis with exponential backoff retries.
+    Returns (analysis_dict, error_response_dict).
     """
-    from services.ml_service import get_ml_service, MLService
-    
     ml_service = get_ml_service()
     
-    # Check if model is loaded, try to load if not
-    if not ml_service.is_loaded:
-        model_loaded = ml_service.load_model()
-        if not model_loaded:
-            # Fall back to heuristic analysis if model fails to load
-            logger.warning("ML model not available, using heuristic analysis")
-            return _heuristic_analysis(text)
-    
+    backoff = 0.1
+    last_err = None
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            if not ml_service.is_loaded:
+                ml_service.load_model()
+            result = ml_service.analyze(text)
+            return {
+                'authenticity_score': result.authenticity_score,
+                'confidence': result.confidence,
+                'classification': result.classification,
+                'warning': result.warning,
+                'sentence_analysis': [
+                    {
+                        'index': sa.index,
+                        'text': sa.text,
+                        'isSuspicious': sa.is_suspicious,
+                        'score': sa.score,
+                        'confidence': sa.confidence,
+                        'category': sa.category,
+                        'flags': sa.flags,
+                        'explanation': sa.explanation
+                    }
+                    for sa in result.sentence_analysis
+                ],
+                'model_version': result.model_version,
+                'processing_time_ms': result.processing_time_ms
+            }, None
+        except Exception as e:
+            last_err = e
+            logger.warning(f"ML analysis attempt {attempt}/{max_retries} failed: {e}")
+            if attempt < max_retries:
+                time.sleep(backoff)
+                backoff *= 2
+
+    # Fallback to heuristic analysis if possible
     try:
-        # Use ML service for analysis
-        result = ml_service.analyze(text)
-        
-        # Convert to response format
-        return {
-            'authenticity_score': result.authenticity_score,
-            'confidence': result.confidence,
-            'classification': result.classification,
-            'sentence_analysis': [
-                {
-                    'index': sa.index,
-                    'text': sa.text,
-                    'isSuspicious': sa.is_suspicious,
-                    'score': sa.score,
-                    'confidence': sa.confidence,
-                    'category': sa.category,
-                    'flags': sa.flags,
-                    'explanation': sa.explanation
-                }
-                for sa in result.sentence_analysis
-            ],
-            'model_version': result.model_version,
-            'processing_time_ms': result.processing_time_ms
+        heuristic = _heuristic_analysis(text)
+        return heuristic, None
+    except Exception as h_err:
+        logger.error(f"Heuristic analysis fallback failed: {h_err}")
+
+    # Return ANALYSIS_FAILED structured error
+    err_body = {
+        "error": {
+            "code": "ANALYSIS_FAILED",
+            "message": "Analysis service temporarily unavailable",
+            "details": {
+                "retryAfter": 30,
+                "reason": str(last_err)
+            }
         }
-    except Exception as e:
-        logger.error(f"ML service error: {e}")
-        # Fall back to heuristic analysis on error
-        return _heuristic_analysis(text)
+    }
+    return None, err_body
 
 
 def _heuristic_analysis(text: str) -> dict:

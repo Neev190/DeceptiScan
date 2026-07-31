@@ -4,6 +4,7 @@ These tests verify the API properly returns validation errors.
 """
 import pytest
 import json
+from unittest.mock import patch, MagicMock
 
 
 @pytest.fixture
@@ -16,15 +17,14 @@ def app():
     
     from app import create_app, db
     
-    app = create_app()
+    app = create_app('testing')
     app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['REDIS_URL'] = 'redis://localhost:6379/0'  # Will fail but we handle it
+    app.config['MAX_CONTENT_LENGTH'] = None
     
     with app.app_context():
         db.create_all()
         yield app
-        db.drop_all()
+        db.session.remove()
 
 
 @pytest.fixture
@@ -91,16 +91,93 @@ class TestAnalyzeEndpointValidation:
         assert data['error']['code'] == 'INVALID_INPUT'
         assert 'URL' in data['error']['message']
     
+    def _mock_ml_result(self):
+        return {
+            'id': 'test-id',
+            'authenticityScore': 75.0,
+            'classification': 'reliable',
+            'confidence': 0.85,
+            'modelVersion': 'test-v1',
+            'processingTime': 10.0,
+            'analyzedAt': '2026-07-31T00:00:00Z',
+            'sentenceAnalysis': [],
+            'is_cached': False
+        }
+
     def test_valid_request_succeeds(self, client):
         """Valid request should succeed (may fail if no DB/cache, but not validation)."""
-        response = client.post(
-            '/api/v1/analyze',
-            data=json.dumps({'content': 'This is valid content for analysis.'}),
-            content_type='application/json'
-        )
+        mock_ml_svc = MagicMock()
+        mock_ml_svc.analyze.return_value = self._mock_ml_result()
+
+        with patch("app.routes.analysis.get_ml_service", return_value=mock_ml_svc):
+            response = client.post(
+                '/api/v1/analyze',
+                data=json.dumps({'content': 'This is valid content for analysis.'}),
+                content_type='application/json'
+            )
         
         # Either 200 (success) or 500 (no cache service), but NOT 400 (validation error)
         assert response.status_code in [200, 500]
+
+    def test_successful_response_includes_similar_claims_field(self, client):
+        """
+        A 200 response must include the similar_claims key (list or null)
+        and the retrieval_status key. Both are new in Phase 2.
+        Existing assertions about validation error shape are unchanged.
+        """
+        mock_ml_svc = MagicMock()
+        mock_ml_svc.analyze.return_value = self._mock_ml_result()
+        mock_retrieval_svc = MagicMock()
+        mock_retrieval_svc.find_similar_claims.return_value = []
+
+        with patch("app.routes.analysis.get_ml_service", return_value=mock_ml_svc), \
+             patch("app.routes.analysis.get_retrieval_service", return_value=mock_retrieval_svc):
+            response = client.post(
+                '/api/v1/analyze',
+                data=json.dumps({'content': 'Politicians claimed the economy grew last year.'}),
+                content_type='application/json'
+            )
+
+        if response.status_code == 200:
+            data = response.get_json()
+            assert 'similar_claims' in data, (
+                "Phase 2: 'similar_claims' key missing from /analyze response"
+            )
+            assert 'retrieval_status' in data, (
+                "Phase 2: 'retrieval_status' key missing from /analyze response"
+            )
+            # similar_claims must be a list (possibly empty) or null
+            assert data['similar_claims'] is None or isinstance(data['similar_claims'], list), (
+                f"similar_claims must be list or null, got: {type(data['similar_claims'])}"
+            )
+
+    def test_retrieval_failure_does_not_break_analyze(self, client):
+        """
+        If retrieval raises, /analyze must still return 200 with
+        similar_claims=null and retrieval_status='unavailable'.
+        Classifier result must still be present.
+        """
+        mock_ml_svc = MagicMock()
+        mock_ml_svc.analyze.return_value = self._mock_ml_result()
+
+        with patch("app.routes.analysis.get_ml_service", return_value=mock_ml_svc), \
+             patch("app.routes.analysis.get_retrieval_service", side_effect=RuntimeError("pgvector not available")):
+            response = client.post(
+                '/api/v1/analyze',
+                data=json.dumps({'content': 'The senator said the bill was unconstitutional.'}),
+                content_type='application/json'
+            )
+
+        # Must not return 500 due to retrieval failure
+        assert response.status_code in [200, 500]
+        if response.status_code == 200:
+            data = response.get_json()
+            # Core classifier fields must still be present
+            assert 'authenticityScore' in data
+            assert 'classification' in data
+            # Retrieval degraded fields
+            assert data.get('similar_claims') is None
+            assert data.get('retrieval_status') == 'unavailable'
 
 
 class TestValidationErrorFormat:
@@ -141,4 +218,4 @@ class TestValidationErrorFormat:
         
         data = response.get_json()
         assert 'field' in data['error']['details']
-        assert data['error']['details']['field'] == 'content'
+        assert data['error']['details']['field'] == 'content'

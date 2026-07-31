@@ -950,3 +950,52 @@ class URLProcessor:
 *For any* anonymous user making more than 10 requests per minute, the System SHALL return a RATE_LIMITED error; for authenticated users exceeding 60 requests per minute, the System SHALL return a RATE_LIMITED error
 
 **Validates: Requirements 9.1, 9.2**
+
+## 6. Detective Motifs (Case File Evolution)
+
+The Inkwell Gazette identity extends naturally into detective fiction —
+Victorian print and Victorian detective fiction share an era (Holmes,
+Scotland Yard, the penny press). These motifs layer onto the existing
+token system — no new colors, no new fonts, same hatching-for-elevation
+and hand-drawn-rule language as Section [X].
+
+### Signature element 1: The Verification Stamp
+Replaces/extends plain classification labels. A circular rubber-stamp
+mark: hand-inked circular border with faint radial hatching inside,
+small-caps text following the curve or centered ("VERIFIED" / "FLAGGED"
+/ "UNVERIFIED" / "INCONCLUSIVE"), rotated 2-4deg off-axis like a real
+ink stamp landed slightly crooked. Color follows the existing
+classification mapping: moss (verified/reliable), rust (flagged/
+unreliable), ink-faint with a dashed ring (inconclusive/unknown — no
+solid stamp, since an inconclusive case doesn't get a confident mark).
+This is the primary visual anchor for the score/classification —
+build it with more care and detail than anything else on the page.
+
+### Signature element 2: Evidence Tags
+Sentence-level markup evolves from a plain underline into a small
+hand-drawn luggage-tag shape (torn/notched edge, a punched hole,
+threaded on a short line) attached at the end of a flagged sentence.
+A thin hand-drawn connecting line (slightly curved, not straight ruled
+— string, not a rule) runs from the tag to its marginal annotation
+card. Tag color follows the same classification mapping as the stamp.
+Use this ONLY for flagged/notable sentences — not every sentence, or
+the page turns into visual noise instead of a signal.
+
+### Supporting motifs (consistent line weight, not extra showpieces)
+- **Magnifying glass**: the primary icon for search/analyze actions.
+  Same hand-inked line weight as existing iconography — no flat/filled
+  glyphs. Can double as the loading-state motif (a glass passing over
+  blank text, "searching for clues") instead of a generic spinner.
+- **Case-file tabs**: primary content cards (the analysis card, history
+  entries) get a small tab at the top-left corner, like a manila folder
+  tab, with a case-number-style label in mono ("CASE NO. 0184") —
+  reuses the existing mono/data-label type role, doesn't invent a new one.
+- **Brass fastener**: a small circular accent (a filled ring, ink-colored)
+  at each folder tab's corner, standing in for a paper fastener. Decorative
+  only, used sparingly — one per card, not scattered.
+
+### Explicit restraint rule
+Do not add a fingerprint texture, red-string conspiracy-board background,
+or redaction bars unless a specific screen calls for one deliberately.
+The two signature elements above carry the theme; everything else stays
+quiet so they read as intentional rather than themed-to-death.
