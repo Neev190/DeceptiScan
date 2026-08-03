@@ -22,13 +22,15 @@ def create_app(config_name=None):
     
     if config_name == 'testing':
         app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('TEST_DATABASE_URL', 'sqlite:///:memory:')
+        db_uri = os.getenv('TEST_DATABASE_URL') or os.getenv('DATABASE_URL') or 'sqlite:///:memory:'
+        app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        from sqlalchemy.pool import StaticPool
-        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-            'connect_args': {'check_same_thread': False},
-            'poolclass': StaticPool,
-        }
+        if db_uri.startswith('sqlite'):
+            from sqlalchemy.pool import StaticPool
+            app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+                'connect_args': {'check_same_thread': False},
+                'poolclass': StaticPool,
+            }
     else:
         app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
             'DATABASE_URL',

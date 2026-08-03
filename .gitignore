@@ -20,10 +20,14 @@ wheels/
 .installed.cfg
 *.egg
 venv/
+.venv/
+.venv*/
 ENV/
 
-# Backend environment
+# Environment files & Secrets
 .env
+.env.*
+!.env.example
 *.local
 
 # Node
@@ -36,27 +40,30 @@ yarn-error.log*
 # Frontend
 dist/
 dist-ssr/
-*.local
 
-# IDE
+# IDE & OS
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
 # Database
 *.db
+*.sqlite
 *.sqlite3
 
 # Logs
 logs/
 *.log
 
-# ML model checkpoints (large binary files, ~260MB — run train.py to regenerate)
+# ML model checkpoints & weights (large binary files)
 backend/ml_models/checkpoint/*
 !backend/ml_models/checkpoint/.gitkeep
 backend/ml_training/__pycache__/
+*.bin
+*.pt
+*.pth
+*.safetensors
+*.onnx
