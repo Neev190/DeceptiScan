@@ -108,7 +108,7 @@ describe('Phase 3 UI Components & Interactions', () => {
     });
   });
 
-  it('handles feedback submission error gracefully', async () => {
+  it('handles feedback submission error gracefully with explicit retry option', async () => {
     const user = userEvent.setup();
     const { apiService } = await import('../services/api');
     vi.mocked(apiService.submitFeedback).mockRejectedValueOnce(
@@ -125,6 +125,12 @@ describe('Phase 3 UI Components & Interactions', () => {
         screen.getByText(/⚠️ Network error submitting feedback/i)
       ).toBeInTheDocument();
     });
+
+    // Test retry button clears error and allows resubmission
+    const retryBtn = screen.getByRole('button', { name: /clear & retry/i });
+    await user.click(retryBtn);
+
+    expect(screen.queryByText(/⚠️ Network error submitting feedback/i)).not.toBeInTheDocument();
   });
 
   it('opens sentence analysis modal upon click/tap interaction', async () => {

@@ -249,8 +249,15 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
           )}
         </div>
         {feedbackError && (
-          <div className="feedback-error-alert" style={{ color: '#991b1b', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-            ⚠️ {feedbackError}
+          <div className="feedback-error-alert" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#991b1b', backgroundColor: '#fee2e2', padding: '0.5rem 0.75rem', borderRadius: '0.375rem', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+            <span>⚠️ {feedbackError}</span>
+            <button 
+              className="toggle-details"
+              style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', backgroundColor: '#ffffff', color: '#991b1b', border: '1px solid #fca5a5' }}
+              onClick={() => setFeedbackError(null)}
+            >
+              Clear & Retry
+            </button>
           </div>
         )}
       </div>
