@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+﻿import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ArticleInput from './ArticleInput';
 
@@ -21,10 +21,10 @@ describe('ArticleInput Integration Tests', () => {
     const titleInput = screen.getByLabelText(/article title/i);
     const submitButton = screen.getByRole('button', { name: /analyze content/i });
 
-    // Fill out the form like a real user would
-    await user.type(titleInput, 'Breaking News: Important Discovery');
-    await user.type(urlInput, 'https://news.example.com/article');
-    await user.type(textarea, 'Scientists have made an important discovery that could change everything. The research shows promising results in early trials.');
+    // Fill out the form
+    fireEvent.change(titleInput, { target: { value: 'Breaking News: Important Discovery' } });
+    fireEvent.change(urlInput, { target: { value: 'https://news.example.com/article' } });
+    fireEvent.change(textarea, { target: { value: 'Scientists have made an important discovery that could change everything. The research shows promising results in early trials.' } });
 
     // Verify all inputs are filled
     expect(titleInput).toHaveValue('Breaking News: Important Discovery');
@@ -51,7 +51,7 @@ describe('ArticleInput Integration Tests', () => {
     const submitButton = screen.getByRole('button', { name: /analyze content/i });
 
     // Test with minimal valid content
-    await user.type(textarea, 'Test');
+    fireEvent.change(textarea, { target: { value: 'Test' } });
     await user.click(submitButton);
 
     expect(mockAnalyze).toHaveBeenCalledWith('Test');
@@ -68,13 +68,11 @@ describe('ArticleInput Integration Tests', () => {
   });
 
   it('provides good user experience with immediate feedback', async () => {
-    const user = userEvent.setup();
-    
     render(<ArticleInput onSubmit={vi.fn()} isLoading={false} />);
 
     // Test that character counter updates immediately
     const textarea = screen.getByLabelText(/article content/i);
-    await user.type(textarea, 'Hello world!');
+    fireEvent.change(textarea, { target: { value: 'Hello world!' } });
 
     const characterCounter = document.querySelector('.character-counter span');
     expect(characterCounter?.textContent).toContain('12/50,000 characters');
