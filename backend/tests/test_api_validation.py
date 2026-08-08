@@ -121,7 +121,7 @@ class TestAnalyzeEndpointValidation:
 
     def test_successful_response_includes_similar_claims_field(self, client):
         """
-        A 200 response must include the similar_claims key (list or null)
+        A 200 response must include the retrieved_claims key (list or null)
         and the retrieval_status key. Both are new in Phase 2.
         Existing assertions about validation error shape are unchanged.
         """
@@ -140,15 +140,15 @@ class TestAnalyzeEndpointValidation:
 
         if response.status_code == 200:
             data = response.get_json()
-            assert 'similar_claims' in data, (
-                "Phase 2: 'similar_claims' key missing from /analyze response"
+            assert 'retrieved_claims' in data, (
+                "Phase 2: 'retrieved_claims' key missing from /analyze response"
             )
             assert 'retrieval_status' in data, (
                 "Phase 2: 'retrieval_status' key missing from /analyze response"
             )
-            # similar_claims must be a list (possibly empty) or null
-            assert data['similar_claims'] is None or isinstance(data['similar_claims'], list), (
-                f"similar_claims must be list or null, got: {type(data['similar_claims'])}"
+            # retrieved_claims must be a list (possibly empty) or null
+            assert data['retrieved_claims'] is None or isinstance(data['retrieved_claims'], list), (
+                f"retrieved_claims must be list or null, got: {type(data['retrieved_claims'])}"
             )
 
     def test_retrieval_failure_does_not_break_analyze(self, client):
@@ -176,7 +176,7 @@ class TestAnalyzeEndpointValidation:
             assert 'authenticityScore' in data
             assert 'classification' in data
             # Retrieval degraded fields
-            assert data.get('similar_claims') is None
+            assert data.get('retrieved_claims') is None
             assert data.get('retrieval_status') == 'unavailable'
 
 

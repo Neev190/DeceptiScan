@@ -1,11 +1,13 @@
 """
 Analysis API endpoints for DeceptiScan.
 """
+import re
 import logging
+import threading
 import time
 import uuid
 from datetime import datetime
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from app.routes import api_bp
 from app.validators import validate_analyze_request, ValidationError
 from services import get_cache_service
@@ -16,6 +18,23 @@ from typing import Tuple, Optional
 
 logger = logging.getLogger(__name__)
 
+# Prompt-injection patterns to strip from retrieved claim text before feeding
+# into any model context.  Compiled once at import time for performance.
+_INJECTION_PATTERN = re.compile(
+    r'(?i)(ignore|disregard|forget|you are|system:|assistant:|user:|<\|.*?\|>)',
+    re.IGNORECASE,
+)
+_CLAIM_MAX_LEN = 300  # chars; keeps context manageable and limits injection surface
+
+
+def _sanitize_claim_text(text: str) -> str:
+    """Strip prompt-injection patterns, collapse whitespace, cap at _CLAIM_MAX_LEN chars."""
+    text = _INJECTION_PATTERN.sub(' ', text)
+    text = re.sub(r'[\r\n\t]+', ' ', text)
+    text = re.sub(r' {2,}', ' ', text).strip()
+    return text[:_CLAIM_MAX_LEN]
+
+
 
 def get_ml_service():
     from services import get_ml_service as _get_ml
@@ -25,6 +44,40 @@ def get_ml_service():
 def get_retrieval_service():
     from services import get_retrieval_service as _get_retrieval
     return _get_retrieval()
+
+
+@api_bp.route('/retrieve', methods=['GET'])
+def retrieve_claims():
+    """
+    Retrieve top-k similar claims from the LIAR corpus via pgvector cosine search.
+
+    Query parameters:
+        query (str): Text to find similar claims for (required)
+
+    Response:
+        { query, results: [{statement_text, label, similarity_score}], count }
+    """
+    query = request.args.get('query', '').strip()
+    if not query:
+        return jsonify({
+            "error": {
+                "code": "MISSING_QUERY",
+                "message": "'query' parameter is required and must not be blank"
+            }
+        }), 400
+
+    try:
+        svc = get_retrieval_service()
+        results = svc.find_similar_claims(query, k=5)
+        return jsonify({"query": query, "results": results, "count": len(results)}), 200
+    except Exception as exc:
+        logger.error(f"Retrieve endpoint error: {exc}")
+        return jsonify({
+            "error": {
+                "code": "RETRIEVAL_ERROR",
+                "message": "Retrieval service temporarily unavailable"
+            }
+        }), 503
 
 
 @api_bp.route('/analyze', methods=['POST'])
@@ -90,17 +143,61 @@ def analyze_text():
     # ------------------------------------------------------------------
     # Retrieval layer — non-fatal if unavailable
     # ------------------------------------------------------------------
-    similar_claims = None
+    retrieved_claims = None
     retrieval_status = "unavailable"
     try:
         retrieval_svc = get_retrieval_service()
-        similar_claims = retrieval_svc.find_similar_claims(content)
+        raw_claims = retrieval_svc.find_similar_claims(content)
+        if raw_claims:
+            # Sanitize claim text before it enters any downstream context
+            retrieved_claims = [
+                {
+                    **claim,
+                    "statement_text": _sanitize_claim_text(claim["statement_text"]),
+                }
+                for claim in raw_claims
+            ]
+        else:
+            retrieved_claims = []
         retrieval_status = "ok"
     except Exception as retrieval_err:
         logger.error(f"Retrieval service unavailable: {retrieval_err}")
-        similar_claims = None
+        retrieved_claims = None
         retrieval_status = "unavailable"
-    
+
+    # ------------------------------------------------------------------
+    # Delta-logging: fire a background thread — zero latency on hot path.
+    # The thread captures all values it needs by closure; it pushes its
+    # own app context so Flask/SQLAlchemy are safe to use inside it.
+    # ------------------------------------------------------------------
+    if retrieved_claims:
+        _app = current_app._get_current_object()
+        _base_score = analysis_result['authenticity_score']
+        _claim_summary = " | ".join(c["statement_text"] for c in retrieved_claims[:3])
+        _context_text = f"{content} [CONTEXT: {_claim_summary}]"
+        _content_hash_prefix = content_hash[:12]
+
+        def _delta_log_worker():
+            try:
+                with _app.app_context():
+                    ctx_result, ctx_err = _perform_analysis_with_retry(
+                        _context_text, max_retries=1
+                    )
+                    if ctx_result and not ctx_err:
+                        delta = abs(ctx_result['authenticity_score'] - _base_score)
+                        if delta > 10:
+                            logger.info(
+                                f"[RETRIEVAL_DELTA] score delta={delta:.1f}pts "
+                                f"(base={_base_score}, "
+                                f"ctx={ctx_result['authenticity_score']}) "
+                                f"content_hash={_content_hash_prefix}"
+                            )
+            except Exception as _err:
+                logger.warning(f"Delta-logging worker failed (non-fatal): {_err}")
+
+        _t = threading.Thread(target=_delta_log_worker, daemon=True)
+        _t.start()
+
     # Prepare response
     response = {
         'id': str(uuid.uuid4()),
@@ -113,7 +210,7 @@ def analyze_text():
         'modelVersion': analysis_result.get('model_version', '1.0.0'),
         'is_cached': False,
         'warning': analysis_result.get('warning'),
-        'similar_claims': similar_claims,
+        'retrieved_claims': retrieved_claims,
         'retrieval_status': retrieval_status,
     }
     
@@ -145,7 +242,7 @@ def analyze_text():
             sentence_results=analysis_result['sentence_analysis'],
             processing_time=processing_time,
             model_version=analysis_result.get('model_version', '1.0.0'),
-            similar_claims=similar_claims,
+            similar_claims=retrieved_claims,
         )
         db.session.add(record)
         db.session.commit()

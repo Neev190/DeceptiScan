@@ -43,6 +43,7 @@ def create_app(config_name=None):
             'pool_pre_ping': True,
             'max_overflow': 20,
             'pool_timeout': 30,
+            'connect_args': {'connect_timeout': 15},
         }
     
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'dev-jwt-secret-key')
@@ -50,21 +51,20 @@ def create_app(config_name=None):
     app.config['JWT_REFRESH_TOKEN_EXPIRES'] = int(os.getenv('JWT_REFRESH_TOKEN_EXPIRES', 86400))  # 24 hours
     app.config['MAX_CONTENT_LENGTH'] = int(os.getenv('MAX_CONTENT_LENGTH', 50000))
     
-    # Redis configuration
-    app.config['REDIS_URL'] = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+    # Redis init dropped — corpus-build hang was unrelated; retrieval latency
+    # to be measured before reconsidering caching. CacheService degrades silently.
+    # app.config['REDIS_URL'] = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+    # try:
+    #     from services.cache import init_cache_service
+    #     init_cache_service(app.config['REDIS_URL'])
+    # except Exception as e:
+    #     print(f"Warning: Could not initialize cache service: {e}")
 
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
     CORS(app)
-
-    # Initialize cache service (services is at backend root level)
-    try:
-        from services.cache import init_cache_service
-        init_cache_service(app.config['REDIS_URL'])
-    except Exception as e:
-        print(f"Warning: Could not initialize cache service: {e}")
 
     # Register blueprints
     try:
