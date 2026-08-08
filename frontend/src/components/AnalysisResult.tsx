@@ -80,8 +80,12 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
   };
 
   const [feedbackSent, setFeedbackSent] = useState<string | null>(null);
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
   const handleFeedback = async (type: 'helpful' | 'incorrect' | 'disputed') => {
+    setIsSubmittingFeedback(true);
+    setFeedbackError(null);
     try {
       const { apiService } = await import('../services/api');
       await apiService.submitFeedback({
@@ -90,10 +94,15 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
         feedback: { type }
       });
       setFeedbackSent(type);
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to submit feedback', e);
+      setFeedbackError(e.message || 'Failed to submit feedback. Please try again.');
+    } finally {
+      setIsSubmittingFeedback(false);
     }
   };
+
+  const claimsList = result.retrieved_claims || result.similar_claims;
 
   return (
     <div className="analysis-result">
@@ -149,15 +158,23 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
       )}
 
       {/* Similar Claims Section */}
-      {result.similar_claims && result.similar_claims.length > 0 && (
+      {claimsList && claimsList.length > 0 && (
         <div className="summary-section" style={{ borderLeft: '4px solid #3b82f6' }}>
           <h3>Similar Fact-Checked Claims</h3>
           <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
-            {result.similar_claims.map((claim, i) => (
-              <li key={i} style={{ marginBottom: '0.5rem' }}>
-                "{claim.text}" (Match Score: {claim.score}%)
-              </li>
-            ))}
+            {claimsList.map((claim, i) => {
+              const text = claim.statement_text || claim.text;
+              const scoreDisplay = claim.similarity_score !== undefined 
+                ? `${Math.round(claim.similarity_score * 100)}%`
+                : `${claim.score}%`;
+              const labelDisplay = claim.label ? ` (${claim.label.toUpperCase()})` : '';
+
+              return (
+                <li key={i} style={{ marginBottom: '0.5rem' }}>
+                  "{text}" <span style={{ fontSize: '0.875rem', color: '#4b5563', fontWeight: 500 }}>(Match Score: {scoreDisplay}{labelDisplay})</span>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
@@ -189,7 +206,7 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
               <span>Neutral content (no special highlighting)</span>
             </div>
             <p className="legend-note">
-              Click on any highlighted sentence to see detailed analysis.
+              Click or tap on any highlighted sentence to see detailed analysis.
             </p>
           </div>
         )}
@@ -198,15 +215,42 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
       </div>
 
       {/* Feedback Section */}
-      <div className="summary-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontWeight: 600, color: '#374151' }}>Was this analysis helpful?</span>
-        {feedbackSent ? (
-          <span style={{ color: '#166534', fontWeight: 600 }}>Thank you for your feedback! ({feedbackSent})</span>
-        ) : (
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button className="toggle-details" onClick={() => handleFeedback('helpful')}>👍 Helpful</button>
-            <button className="toggle-details" onClick={() => handleFeedback('incorrect')}>👎 Incorrect</button>
-            <button className="toggle-details" onClick={() => handleFeedback('disputed')}>⚖️ Disputed</button>
+      <div className="summary-section feedback-section" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <span style={{ fontWeight: 600, color: '#374151' }}>Was this analysis helpful?</span>
+          {feedbackSent ? (
+            <span className="feedback-success-toast" style={{ color: '#166534', backgroundColor: '#dcfce7', padding: '0.35rem 0.75rem', borderRadius: '0.375rem', fontWeight: 600, fontSize: '0.875rem' }}>
+              ✓ Thank you for your feedback! ({feedbackSent})
+            </span>
+          ) : (
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button 
+                className="toggle-details" 
+                onClick={() => handleFeedback('helpful')}
+                disabled={isSubmittingFeedback}
+              >
+                👍 Helpful
+              </button>
+              <button 
+                className="toggle-details" 
+                onClick={() => handleFeedback('incorrect')}
+                disabled={isSubmittingFeedback}
+              >
+                👎 Incorrect
+              </button>
+              <button 
+                className="toggle-details" 
+                onClick={() => handleFeedback('disputed')}
+                disabled={isSubmittingFeedback}
+              >
+                ⚖️ Disputed
+              </button>
+            </div>
+          )}
+        </div>
+        {feedbackError && (
+          <div className="feedback-error-alert" style={{ color: '#991b1b', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+            ⚠️ {feedbackError}
           </div>
         )}
       </div>

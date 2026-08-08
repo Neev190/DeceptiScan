@@ -26,8 +26,11 @@ export interface SentenceAnalysis {
 }
 
 export interface SimilarClaim {
-  text: string;
-  score: number;
+  text?: string;
+  statement_text?: string;
+  label?: string;
+  score?: number;
+  similarity_score?: number;
   sourceUrl?: string;
 }
 
@@ -53,6 +56,7 @@ export interface AnalysisResult {
   modelVersion: string;            // ML model version
   is_cached?: boolean;
   similar_claims?: SimilarClaim[] | null;
+  retrieved_claims?: SimilarClaim[] | null;
   retrieval_status?: string;
 }
 

@@ -125,7 +125,7 @@ function Home() {
         }
 
         .container {
-          max-width: 1000px;
+          max-width: 720px;
           margin: 0 auto;
           padding: 2rem 1rem;
         }
