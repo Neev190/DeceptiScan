@@ -1,0 +1,334 @@
+﻿/* ============================================================
+   DeceptiScan — Inkwell Gazette Design System
+   Extracted from Stitch mockup: analysis_results_inkwell_gazette
+   Dark mode via @media (prefers-color-scheme: dark)
+   ============================================================ */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+/* ── Light-mode token layer ─────────────────────────────── */
+:root {
+  --ik-bg:                 #fdf8f7;
+  --ik-surface:            #f2edeb;
+  --ik-surface-high:       #ece7e6;
+  --ik-on-surface:         #1c1b1b;
+  --ik-on-surface-var:     #4c463f;
+  --ik-primary:            #0b0704;
+  --ik-outline:            #7e766e;
+  --ik-outline-var:        #cfc5bc;
+  --ik-ink-faint:          #8A8377;
+  --ik-moss:               #5C6E4A;
+  --ik-rust:               #9C4A32;
+  --ik-brass:              #cec6b5;
+  --ik-brass-border:       #7e766e;
+  --ik-hatching-color:     rgba(138, 131, 119, 0.20);
+  --ik-noise-bg:           url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  /* Font stacks */
+  --ik-font-serif:         'Libre Caslon Text', Georgia, serif;
+  --ik-font-body:          'Source Serif 4', Georgia, serif;
+  --ik-font-mono:          'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* ── Dark-mode token overrides ──────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ik-bg:                 #1a1816;
+    --ik-surface:            #24221f;
+    --ik-surface-high:       #2e2b27;
+    --ik-on-surface:         #e3e0df;
+    --ik-on-surface-var:     #cfc5bc;
+    --ik-primary:            #cfc5bd;
+    --ik-outline:            #9c938b;
+    --ik-outline-var:        #4c463f;
+    --ik-ink-faint:          #cfc5bc;
+    --ik-moss:               #b9cda2;
+    --ik-rust:               #ffb4a4;
+    --ik-brass:              #4c463f;
+    --ik-brass-border:       #9c938b;
+    --ik-hatching-color:     rgba(227, 224, 223, 0.05);
+    --ik-noise-bg:           none;
+  }
+}
+
+/* ── Inkwell result page wrapper ─────────────────────────── */
+.ik-page {
+  background-color: var(--ik-bg);
+  background-image: var(--ik-noise-bg);
+  color: var(--ik-on-surface);
+  font-family: var(--ik-font-body);
+  min-height: 100vh;
+}
+
+/* ── Utility borders ─────────────────────────────────────── */
+.ik-border {
+  border: 1px solid var(--ik-outline);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+.ik-border-b {
+  border-bottom: 2px solid var(--ik-outline);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+/* ── Ink hatching texture overlay ───────────────────────── */
+.ik-hatching {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    var(--ik-hatching-color) 2px,
+    var(--ik-hatching-color) 3px
+  );
+}
+
+/* ── Classification stamp ───────────────────────────────── */
+/* Uses inline style vars from React for color so one class covers all variants */
+.ik-stamp {
+  display: inline-block;
+  border: 3px double var(--ik-stamp-color, var(--ik-moss));
+  color: var(--ik-stamp-color, var(--ik-moss));
+  background-color: var(--ik-stamp-bg, rgba(92, 110, 74, 0.05));
+  transform: rotate(-3deg);
+  padding: 0.5rem 1.5rem;        /* widened from 1rem to prevent text-wrap */
+  border-radius: 2px;
+  font-family: var(--ik-font-mono);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  white-space: nowrap;           /* FIX: prevents mid-word break at narrow widths */
+  font-size: clamp(0.875rem, 2.5vw, 1.5rem);
+  line-height: 1.2;
+}
+
+/* ── Brass fastener corner dots ─────────────────────────── */
+.ik-fastener {
+  width: 6px;
+  height: 6px;
+  background-color: var(--ik-brass);
+  border: 1px solid var(--ik-brass-border);
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Evidence / suspicious sentence highlight ───────────── */
+.ik-evidence {
+  position: relative;
+  display: inline;
+  background-color: color-mix(in srgb, var(--ik-rust) 15%, transparent);
+  text-decoration: underline;
+  text-decoration-color: var(--ik-rust);
+  text-decoration-style: wavy;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  border-radius: 3px;
+  padding: 0 0.2em;
+  cursor: help;
+  transition: background-color 0.15s ease;
+}
+
+.ik-evidence:hover {
+  background-color: color-mix(in srgb, var(--ik-rust) 25%, transparent);
+}
+
+/* Reliable / verified sentence highlight */
+.ik-evidence-reliable {
+  position: relative;
+  display: inline;
+  background-color: color-mix(in srgb, var(--ik-moss) 12%, transparent);
+  text-decoration: underline;
+  text-decoration-color: var(--ik-moss);
+  text-decoration-style: solid;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  border-radius: 3px;
+  padding: 0 0.2em;
+  cursor: help;
+  transition: background-color 0.15s ease;
+}
+
+.ik-evidence-reliable:hover {
+  background-color: color-mix(in srgb, var(--ik-moss) 22%, transparent);
+}
+
+/* ── Marginalia annotation card ─────────────────────────── */
+.ik-marginalia {
+  border-left: 3px solid var(--ik-rust);
+  background-color: var(--ik-surface-high);
+  position: relative;
+}
+
+/* ── Case file / retrieval card ─────────────────────────── */
+.ik-case-card {
+  background-color: var(--ik-surface);
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ik-case-card:hover {
+  background-color: var(--ik-surface-high);
+}
+
+/* ── Confidence / meta text ─────────────────────────────── */
+.ik-meta {
+  font-family: var(--ik-font-mono);
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+  color: var(--ik-moss);
+}
+
+.ik-ink-faint {
+  color: var(--ik-ink-faint);
+}
+
+.ik-on-surface-var {
+  color: var(--ik-on-surface-var);
+}
+
+.ik-primary {
+  color: var(--ik-primary);
+}
+
+/* ── Empty / unavailable state text ─────────────────────── */
+.ik-empty-state {
+  font-family: var(--ik-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--ik-ink-faint);
+  text-align: center;
+  padding: 1.5rem;
+  border: 1px dashed var(--ik-outline-var);
+  border-radius: 4px;
+}
+
+/* ── Modal overlay ──────────────────────────────────────── */
+.ik-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.ik-modal {
+  background: var(--ik-bg);
+  border: 1px solid var(--ik-outline);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 82vh;
+  overflow-y: auto;
+}
+
+/* ── Legend swatch ──────────────────────────────────────── */
+.ik-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 0.4em;
+}
+
+/* ── Warning banner ─────────────────────────────────────── */
+.ik-warning {
+  background-color: color-mix(in srgb, var(--ik-rust) 12%, transparent);
+  border-left: 4px solid var(--ik-rust);
+  color: var(--ik-rust);
+  padding: 0.75rem 1rem;
+  border-radius: 2px;
+  font-family: var(--ik-font-mono);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+/* ── Feedback buttons ───────────────────────────────────── */
+.ik-feedback-btn {
+  background: transparent;
+  border: 1px solid var(--ik-outline-var);
+  color: var(--ik-on-surface-var);
+  font-family: var(--ik-font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 0.4rem 0.85rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.ik-feedback-btn:hover:not(:disabled) {
+  background-color: var(--ik-surface-high);
+  border-color: var(--ik-outline);
+}
+
+.ik-feedback-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Toggle legend button ───────────────────────────────── */
+.ik-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--ik-outline-var);
+  color: var(--ik-ink-faint);
+  font-family: var(--ik-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ik-toggle-btn:hover {
+  background-color: var(--ik-surface-high);
+}
+
+/* ── Highlighted text block ─────────────────────────────── */
+.ik-article-body {
+  font-family: var(--ik-font-body);
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--ik-on-surface);
+}
+
+/* ── Section heading (case files) ─────────────────────────*/
+.ik-section-title {
+  font-family: var(--ik-font-serif);
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  color: var(--ik-primary);
+}
+
+/* ── Article title ──────────────────────────────────────── */
+.ik-article-title {
+  font-family: var(--ik-font-serif);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  color: var(--ik-primary);
+}
+
+/* ── Match score text ───────────────────────────────────── */
+.ik-match-moss {
+  color: var(--ik-moss);
+  font-family: var(--ik-font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ik-match-faint {
+  color: var(--ik-ink-faint);
+  font-family: var(--ik-font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
