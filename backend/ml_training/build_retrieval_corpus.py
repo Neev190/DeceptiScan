@@ -37,6 +37,9 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(1, str(BACKEND_DIR))
 
+from dotenv import load_dotenv
+load_dotenv(BACKEND_DIR / ".env")
+
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
     datefmt="%H:%M:%S",
@@ -49,8 +52,21 @@ logger = logging.getLogger("deceptiscan.build_corpus")
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 EMBEDDING_DIM = 384
 BATCH_SIZE = 64      # Efficient on CPU for 384-dim; tune down if OOM
-INSERT_CHUNK = 500   # Rows per DB transaction
-LIAR_SPLIT = "train" # Only embed the training split (not val/test)
+INSERT_CHUNK = 50   # 50 rows per chunk prevents Neon proxy SQL statement parameter limit issues
+LIAR_SPLIT = "train"  # Must match the split train.py trains on (tokenized_dataset["train"])
+
+def _save_chunk_with_retry(db, chunk, retries=3):
+    for attempt in range(1, retries + 1):
+        try:
+            db.session.bulk_save_objects(chunk)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            if attempt == retries:
+                raise e
+            logger.warning(f"  Chunk insert attempt {attempt} failed ({e}). Retrying in 2s...")
+            time.sleep(2)
 
 
 def build_corpus():
@@ -121,13 +137,28 @@ def build_corpus():
     app = create_app()
 
     with app.app_context():
-        # Ensure connection uses utf8
+        # Session-level connection init: encoding + fail-fast timeout.
+        # statement_timeout causes any locked/hung query (TRUNCATE, INSERT, etc.)
+        # to raise "ERROR: canceling statement due to statement timeout" after
+        # 30 s instead of blocking silently until the process is killed manually.
         db.session.execute(db.text("SET client_encoding = 'UTF8';"))
-        
-        # Truncate first (idempotent re-runs)
+        db.session.execute(db.text("SET statement_timeout = '30s';"))
+        logger.info("Session GUCs set: client_encoding=UTF8, statement_timeout=30s")
+
+        # Truncate first (idempotent re-runs).
         logger.info("Truncating existing claim_embeddings rows...")
+        db.session.execute(db.text("SET statement_timeout = '20s';"))
+        t0 = time.time()
         db.session.execute(db.text("TRUNCATE TABLE claim_embeddings;"))
         db.session.commit()
+        logger.info(f"TRUNCATE completed in {time.time() - t0:.2f}s")
+
+        # Drop IVFFlat index before bulk load to prevent per-batch index update overhead
+        logger.info("Dropping vector index prior to bulk insert...")
+        db.session.execute(db.text("DROP INDEX IF EXISTS idx_claim_embeddings_embedding;"))
+        db.session.commit()
+
+        db.session.execute(db.text("SET statement_timeout = '30s';"))
 
         rows_inserted = 0
         chunk = []
@@ -146,17 +177,30 @@ def build_corpus():
             )
 
             if len(chunk) >= INSERT_CHUNK:
-                db.session.bulk_save_objects(chunk)
-                db.session.commit()
+                _save_chunk_with_retry(db, chunk)
                 rows_inserted += len(chunk)
-                logger.info(f"  Inserted {rows_inserted}/{total} rows...")
+                if rows_inserted % 500 == 0 or rows_inserted == total:
+                    logger.info(f"  Inserted {rows_inserted}/{total} rows...")
                 chunk = []
 
         # Flush remainder
         if chunk:
-            db.session.bulk_save_objects(chunk)
-            db.session.commit()
+            _save_chunk_with_retry(db, chunk)
             rows_inserted += len(chunk)
+            logger.info(f"  Inserted {rows_inserted}/{total} rows...")
+
+        # Recreate IVFFlat vector index over complete dataset
+        logger.info("Rebuilding IVFFlat vector index over inserted corpus...")
+        db.session.execute(db.text("SET statement_timeout = '120s';"))
+        t_idx = time.time()
+        db.session.execute(db.text("""
+            CREATE INDEX idx_claim_embeddings_embedding
+            ON claim_embeddings
+            USING ivfflat (embedding vector_cosine_ops)
+            WITH (lists = 100);
+        """))
+        db.session.commit()
+        logger.info(f"IVFFlat index rebuilt in {time.time() - t_idx:.2f}s")
 
     logger.info("=" * 60)
     logger.info(f"Corpus build complete. Total rows inserted: {rows_inserted}")
