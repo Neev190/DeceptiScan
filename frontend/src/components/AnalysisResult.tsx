@@ -1,10 +1,9 @@
-// AnalysisResult component — Inkwell Gazette visual redesign
+// AnalysisResult component — Stitch analysis_findings design
 // Logic (useState, handleFeedback, renderHighlightedText) is UNCHANGED from Phase 3.
-// Only JSX markup is rewrapped to match the Stitch mockup design system.
+// Only JSX markup is rewrapped to match the Stitch design system.
 
 import React, { useState } from 'react';
 import { AnalysisResult as AnalysisResultType, SentenceAnalysis } from '../types';
-import ScoreMeter from './ScoreMeter';
 import { classificationToStatus, STAMP_CONFIGS } from '../theme';
 import '../styles/inkwell.css';
 
@@ -30,57 +29,47 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
     if (sentence.isSuspicious) {
       return {
         ...baseStyle,
-        backgroundColor: '#fee2e2',
-        color: '#991b1b',
-        borderLeft: '3px solid #ef4444',
+        backgroundColor: 'rgba(143, 48, 42, 0.2)',
+        borderBottom: '2px solid #8F302A',
       };
     } else if (sentence.score >= 75) {
       return {
         ...baseStyle,
-        backgroundColor: '#dcfce7',
-        color: '#166534',
-        borderLeft: '3px solid #22c55e',
+        backgroundColor: 'rgba(85, 120, 90, 0.2)',
+        borderBottom: '2px solid #55785A',
       };
     } else {
       return {
         ...baseStyle,
-        backgroundColor: '#f8fafc',
-        color: '#1e293b',
+        backgroundColor: 'transparent',
       };
     }
   };
 
   const renderHighlightedText = () => {
     if (!result.sentenceAnalysis || result.sentenceAnalysis.length === 0) {
-      return <p className="no-analysis">Detailed sentence analysis not available.</p>;
+      return <p className="font-body-md text-body-md text-typewriter-ribbon/60 italic">Detailed sentence analysis not available.</p>;
     }
 
     return (
-      <div className="ik-article-body">
+      <div className="font-body-md text-body-md leading-relaxed" style={{ counterReset: 'linenumber' }}>
         {result.sentenceAnalysis.map((sentence, index) => {
           const isFlagged = sentence.isSuspicious || sentence.flags.length > 0;
           const isReliable = !isFlagged && sentence.score >= 75;
-          const spanClass = isFlagged
-            ? 'ik-evidence'
-            : isReliable
-              ? 'ik-evidence-reliable'
-              : undefined;
 
           return (
             <span
               key={index}
-              className={spanClass}
               onClick={() => setSelectedSentence(sentence)}
-              onMouseEnter={isFlagged || isReliable ? undefined : (e) => {
-                (e.currentTarget as HTMLElement).style.transform = 'scale(1.02)';
-              }}
-              onMouseLeave={isFlagged || isReliable ? undefined : (e) => {
-                (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
-              }}
-              style={(!isFlagged && !isReliable) ? getSentenceStyle(sentence) : undefined}
+              style={getSentenceStyle(sentence)}
               title={`${sentence.isSuspicious ? '⚠ Suspicious' : '✓ Reliable'} — ${Math.round(sentence.confidence * 100)}% confidence. Click for details.`}
+              className="cursor-pointer relative group"
             >
               {sentence.text}{' '}
+              {/* Tooltip on hover */}
+              <span className="absolute hidden group-hover:block bottom-full left-0 mb-2 w-48 bg-surface-container p-2 text-on-surface font-technical-sm text-technical-sm rounded shadow-lg border border-outline-variant z-50 text-left" style={{ fontStyle: 'normal' }}>
+                {isFlagged ? `⚠ Suspicious` : isReliable ? `✓ Reliable` : `Neutral`} — {Math.round(sentence.confidence * 100)}% confidence
+              </span>
             </span>
           );
         })}
@@ -120,374 +109,272 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
 
   // ─── STAMP CONFIG ─────────────────────────────────────────────────────────────
   const stampStatus = classificationToStatus(result.classification, result.authenticityScore);
-  const stamp = STAMP_CONFIGS[stampStatus];
+  void STAMP_CONFIGS[stampStatus]; // kept for future use
   const confidencePct = Math.round((result.confidence ?? result.confidenceScore ?? 0) * 100);
 
+  // Determine stamp class based on classification
+  const getStampColorClass = () => {
+    if (result.authenticityScore >= 75) return 'text-verification-green';
+    if (result.authenticityScore >= 40) return 'text-[#ca8a04]';
+    return 'text-ink-red';
+  };
+
+  const getStampLabel = () => {
+    if (result.classification === 'unknown') return 'UNKNOWN';
+    if (result.authenticityScore >= 75) return 'RELIABLE';
+    if (result.authenticityScore >= 40) return 'MIXED';
+    return 'UNRELIABLE';
+  };
+
   return (
-    <div className="ik-page" style={{ padding: '0 0 6rem 0' }}>
+    <>
+      {/* Accessible heading — visible to tests and screen readers */}
+      <h2 className="sr-only">Analysis Complete</h2>
 
       {/* ── Warning / Disclaimer Banner ── */}
       {(result.warning || result.classification === 'unknown' || result.classification === 'unverified_style_estimate') && (
-        <div className="ik-warning" style={{ marginBottom: '1.5rem' }}>
-          <strong>⚠️ Disclaimer: </strong>
-          {result.warning || 'Low confidence in ML prediction. Sentence highlighting may be unverified.'}
+        <div className="bg-carbon-gray border border-[#ca8a04] p-4 mb-6 flex items-start gap-3">
+          <span className="material-symbols-outlined text-[#ca8a04] text-[20px] mt-0.5">warning</span>
+          <div>
+            <span className="font-label-caps text-label-caps text-[#ca8a04] uppercase">⚠️ Disclaimer: </span>
+            <span className="font-body-md text-body-md text-on-surface-variant">
+              {result.warning || 'Low confidence in ML prediction. Sentence highlighting may be unverified.'}
+            </span>
+          </div>
         </div>
       )}
 
-      {/* Hidden accessible heading — required by existing tests */}
-      <h2 style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>Analysis Complete</h2>
-
-      {/* ── Verification Stamp Header ── */}
-      <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', padding: '1.5rem 0 1rem' }}>
-        <div
-          className="ik-stamp"
-          style={{
-            // CSS custom properties picked up by .ik-stamp via var()
-            '--ik-stamp-color': stamp.lightColor,
-            '--ik-stamp-bg': stamp.lightBg,
-          } as React.CSSProperties}
-        >
-          {stamp.label}
+      {/* ── Case Header ── */}
+      <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b border-outline-variant pb-6">
+        <div>
+          <p className="font-metadata-xs text-metadata-xs text-outline uppercase mb-2">Reference ID</p>
+          <h1 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">
+            CASE {result.id.slice(0, 4).toUpperCase()} / ANALYSIS FINDINGS
+          </h1>
         </div>
-        <p className="ik-meta">
-          CONFIDENCE SCORE: {confidencePct > 0 ? `${confidencePct}%` : 'N/A'}
-        </p>
-        <div className="ik-border-b" style={{ width: '4rem', height: '1px', backgroundColor: 'var(--ik-outline)', marginTop: '0.5rem' }} />
-      </section>
-
-      {/* ── Score Meter (existing component) ── */}
-      <div style={{ marginBottom: '1.5rem' }}>
-        <ScoreMeter
-          score={result.authenticityScore}
-          label={result.classification.replace(/_/g, ' ').toUpperCase()}
-          confidence={result.confidence ?? result.confidenceScore}
-        />
+        <div className="flex items-center gap-6 mt-4 md:mt-0">
+          <div className="flex flex-col items-end">
+            <span className="font-metadata-xs text-metadata-xs text-outline uppercase">Reliability Score</span>
+            <span className="font-display-lg text-display-lg text-primary leading-none">
+              {result.authenticityScore}/100
+            </span>
+          </div>
+          <div className={`stamp-border px-4 py-2 font-stamp-lg text-stamp-lg uppercase inline-block ${getStampColorClass()}`}>
+            {getStampLabel()}
+          </div>
+        </div>
       </div>
 
-      {/* ── Result Meta ── */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1.25rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-        <span className="ik-ink-faint" style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '12px', letterSpacing: '0.04em' }}>
-          ANALYZED: {formatDate(result.analyzedAt)}
-        </span>
-        <span className="ik-ink-faint" style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '12px', letterSpacing: '0.04em' }}>
-          {result.processingTime}ms
-        </span>
-        {result.is_cached && (
-          <span style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '11px', color: 'var(--ik-moss)', fontWeight: 700, letterSpacing: '0.06em' }}>
-            [CACHED]
-          </span>
-        )}
-      </div>
-
-      {/* ── Article Analysis Card ── */}
-      <article
-        className="ik-border ik-hatching"
-        style={{
-          backgroundColor: 'var(--ik-surface)',
-          padding: '1.5rem',
-          position: 'relative',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-          marginBottom: '2rem',
-        }}
-      >
-        <div className="ik-fastener" style={{ top: '0.5rem', right: '0.5rem' }} />
-        <div className="ik-fastener" style={{ top: '0.5rem', left: '0.5rem' }} />
-
-        {/* Card header */}
-        <header className="ik-border-b" style={{ marginBottom: '1.5rem', paddingBottom: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <div>
-              <h2 className="ik-article-title" style={{ marginBottom: '0.25rem' }}>
-                Sentence-Level Analysis
-              </h2>
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                {result.analyzedAt && (
-                  <span className="ik-ink-faint" style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    DATE: {new Date(result.analyzedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}
-                  </span>
-                )}
-                <span className="ik-ink-faint" style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                  MODEL: {result.modelVersion}
-                </span>
-              </div>
-            </div>
-            {/* Legend toggle */}
-            <button
-              className="ik-toggle-btn"
-              onClick={() => setShowDetails(!showDetails)}
-            >
-              {showDetails ? '▲ HIDE LEGEND' : '▼ SHOW LEGEND'}
-            </button>
-          </div>
-        </header>
-
-        {/* Legend */}
-        {showDetails && (
-          <div style={{ marginBottom: '1.25rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', fontFamily: 'var(--ik-font-mono)', fontSize: '11px', color: 'var(--ik-ink-faint)' }}>
-            <span>
-              <span className="ik-swatch" style={{ backgroundColor: 'rgba(92,110,74,0.25)', border: '1px solid var(--ik-moss)' }} />
-              RELIABLE
-            </span>
-            <span>
-              <span className="ik-swatch" style={{ backgroundColor: 'rgba(156,74,50,0.25)', border: '1px solid var(--ik-rust)' }} />
-              SUSPICIOUS / FLAGGED
-            </span>
-            <span>
-              <span className="ik-swatch" style={{ backgroundColor: 'transparent', border: '1px solid var(--ik-outline-var)' }} />
-              NEUTRAL
-            </span>
-            <p style={{ width: '100%', margin: 0, fontStyle: 'italic', opacity: 0.8 }}>
-              Tap any sentence to examine the evidence.
-            </p>
-          </div>
-        )}
-
-        {/* Highlighted article text */}
-        {renderHighlightedText()}
-
-        {/* Marginalia annotation for suspicious sentences (first suspicious only) */}
-        {(() => {
-          const firstSuspicious = result.sentenceAnalysis?.find(s => s.isSuspicious && s.flags.length > 0);
-          if (!firstSuspicious) return null;
-          return (
-            <div
-              className="ik-border ik-marginalia"
-              style={{
-                marginTop: '1.5rem',
-                marginLeft: '1.5rem',
-                padding: '0.75rem 1rem',
-                width: 'calc(100% - 1.5rem)',
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '-0.6rem',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '1rem',
-                  height: '1rem',
-                  borderRadius: '50%',
-                  backgroundColor: 'var(--ik-surface)',
-                  border: '1px solid var(--ik-outline)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+      {/* ── Investigation Grid ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:-mt-16 relative z-20">
+        {/* Document Review Canvas (Left) */}
+        <div className="col-span-1 lg:col-span-8 paper-texture text-typewriter-ribbon p-6 md:p-12 shadow-[0_24px_60px_rgba(0,0,0,0.5)] rounded-sm relative overflow-hidden">
+          <div className="scanline"></div>
+          <div className="flex justify-between items-center border-b border-outline-variant/30 pb-4 mb-8">
+            <span className="font-technical-sm text-technical-sm text-inverse-primary uppercase tracking-widest">Source Document — Sentence Analysis</span>
+            <div className="flex items-center gap-4">
+              <span className="font-metadata-xs text-metadata-xs text-inverse-primary bg-inverse-primary/10 px-2 py-1 rounded">
+                {result.modelVersion}
+              </span>
+              {result.is_cached && (
+                <span className="font-metadata-xs text-metadata-xs bg-verification-green/20 text-verification-green px-2 py-1 rounded">[CACHED]</span>
+              )}
+              <button
+                className="font-label-caps text-label-caps text-inverse-primary hover:text-ink-red transition-colors uppercase text-[10px]"
+                onClick={() => setShowDetails(!showDetails)}
               >
-                <div style={{ width: '0.4rem', height: '0.4rem', borderRadius: '50%', backgroundColor: 'var(--ik-rust)' }} />
-              </div>
-              <h4 style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ik-rust)', marginBottom: '0.25rem' }}>
-                {firstSuspicious.flags[0]?.replace(/_/g, ' ') || 'Flag Detected'}
-              </h4>
-              <p style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '11px', color: 'var(--ik-ink-faint)', margin: 0, letterSpacing: '0.04em' }}>
-                Click sentence for full analysis →
-              </p>
+                {showDetails ? '▲ HIDE LEGEND' : '▼ SHOW LEGEND'}
+              </button>
             </div>
-          );
-        })()}
-      </article>
-
-      {/* ── Overall Summary ── */}
-      {result.overallSummary && (
-        <section className="ik-border" style={{ backgroundColor: 'var(--ik-surface)', padding: '1.25rem 1.5rem', marginBottom: '2rem', position: 'relative' }}>
-          <div className="ik-fastener" style={{ top: '0.5rem', right: '0.5rem' }} />
-          <h3 style={{ fontFamily: 'var(--ik-font-serif)', fontSize: '18px', fontWeight: 600, color: 'var(--ik-primary)', marginBottom: '0.75rem' }}>
-            Summary
-          </h3>
-          <p style={{ fontFamily: 'var(--ik-font-body)', fontSize: '16px', lineHeight: '24px', color: 'var(--ik-on-surface)', margin: 0 }}>
-            {result.overallSummary}
-          </p>
-        </section>
-      )}
-
-      {/* ── Related Case Files (pgvector retrieved claims) ── */}
-      <section style={{ marginBottom: '2rem' }}>
-        <h3 className="ik-section-title" style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '24px' }}>
-          <span style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '20px', color: 'var(--ik-ink-faint)' }}>▦</span>
-          Similar Fact-Checked Claims
-        </h3>
-
-        {/* State 1: retrieval unavailable / errored */}
-        {result.retrieval_status === 'unavailable' ? (
-          <div className="ik-empty-state">
-            ── ARCHIVE UNREACHABLE ──<br />
-            <span style={{ opacity: 0.7, marginTop: '0.35rem', display: 'block' }}>Retrieval service is currently offline. Case file cross-reference is unavailable.</span>
           </div>
 
-        ) : /* State 2: available but empty */ claimsList == null || claimsList.length === 0 ? (
-          <div className="ik-empty-state">
-            ── NO RELATED CASES ON FILE ──<br />
-            <span style={{ opacity: 0.7, marginTop: '0.35rem', display: 'block' }}>No similar fact-checked claims were found in the archive for this content.</span>
-          </div>
-
-        ) : (
-          /* State 3: claims present */
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
-            {claimsList.map((claim, i) => {
-              const text = claim.statement_text || claim.text;
-              const similarityRaw = claim.similarity_score ?? (claim.score !== undefined ? claim.score / 100 : undefined);
-              const matchPct = similarityRaw !== undefined ? Math.round(similarityRaw * 100) : null;
-              const labelDisplay = claim.label ? ` (${claim.label.toUpperCase()})` : '';
-              const scoreDisplay = matchPct !== null ? `${matchPct}%` : '';
-              const isHighMatch = matchPct !== null && matchPct >= 70;
-
-              return (
-                <li
-                  key={i}
-                  className="ik-border ik-hatching ik-case-card"
-                  style={{ padding: '1rem', position: 'relative' }}
-                >
-                  <div className="ik-fastener" style={{ top: '0.5rem', right: '0.5rem' }} />
-
-                  {/* Case number tab */}
-                  <div style={{
-                    display: 'inline-block',
-                    backgroundColor: 'var(--ik-bg)',
-                    border: '1px solid var(--ik-outline)',
-                    borderRadius: '2px 2px 0 0',
-                    padding: '0.1rem 0.5rem',
-                    marginTop: '-1.25rem',
-                    marginLeft: '0.5rem',
-                    marginBottom: '0.75rem',
-                    fontFamily: 'var(--ik-font-mono)',
-                    fontSize: '11px',
-                    color: 'var(--ik-ink-faint)',
-                    letterSpacing: '0.06em',
-                  }}>
-                    CASE #{String(i + 1).padStart(4, '0')}
-                  </div>
-
-                  {/* Exact text format required by tests: "text" (Match Score: X% (LABEL)) */}
-                  <p style={{
-                    fontFamily: 'var(--ik-font-body)',
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    color: 'var(--ik-on-surface)',
-                    margin: '0 0 0.5rem 0',
-                  }}>
-                    "{text}"
-                  </p>
-                  {scoreDisplay && (
-                    <p style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '12px', margin: 0 }}>
-                      <span className={isHighMatch ? 'ik-match-moss' : 'ik-match-faint'}>
-                        (Match Score: {scoreDisplay}{labelDisplay})
-                      </span>
-                    </p>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
-
-      {/* ── Feedback Section ── */}
-      <section className="ik-border" style={{ backgroundColor: 'var(--ik-surface)', padding: '1rem 1.5rem', marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <span style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '12px', letterSpacing: '0.06em', color: 'var(--ik-on-surface-var)', fontWeight: 600 }}>
-            WAS THIS ANALYSIS HELPFUL?
-          </span>
-          {feedbackSent ? (
-            <span style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '11px', letterSpacing: '0.06em', color: 'var(--ik-moss)', backgroundColor: 'rgba(92,110,74,0.12)', padding: '0.3rem 0.75rem', borderRadius: '2px', fontWeight: 700 }}>
-              ✓ Thank you for your feedback! ({feedbackSent})
-            </span>
-          ) : (
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <button className="ik-feedback-btn" onClick={() => handleFeedback('helpful')} disabled={isSubmittingFeedback}>
-                👍 Helpful
-              </button>
-              <button className="ik-feedback-btn" onClick={() => handleFeedback('incorrect')} disabled={isSubmittingFeedback}>
-                👎 Incorrect
-              </button>
-              <button className="ik-feedback-btn" onClick={() => handleFeedback('disputed')} disabled={isSubmittingFeedback}>
-                ⚖️ Disputed
-              </button>
+          {/* Legend */}
+          {showDetails && (
+            <div className="mb-6 flex gap-4 flex-wrap font-metadata-xs text-metadata-xs text-typewriter-ribbon/60">
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 inline-block" style={{ backgroundColor: 'rgba(85, 120, 90, 0.2)', borderBottom: '2px solid #55785A' }}></span>
+                RELIABLE
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 inline-block" style={{ backgroundColor: 'rgba(143, 48, 42, 0.2)', borderBottom: '2px solid #8F302A' }}></span>
+                SUSPICIOUS / FLAGGED
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 inline-block border border-typewriter-ribbon/20"></span>
+                NEUTRAL
+              </span>
+              <p className="w-full m-0 italic opacity-80">Tap any sentence to examine the evidence.</p>
             </div>
           )}
+
+          {/* Highlighted article text */}
+          {renderHighlightedText()}
+
+          {/* Meta footer */}
+          <div className="mt-8 pt-4 border-t border-outline-variant/30 flex flex-wrap gap-4 font-metadata-xs text-metadata-xs text-typewriter-ribbon/50">
+            <span>ANALYZED: {formatDate(result.analyzedAt)}</span>
+            <span>{result.processingTime}ms</span>
+          </div>
         </div>
 
-        {feedbackError && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.75rem', backgroundColor: 'rgba(156,74,50,0.1)', border: '1px solid var(--ik-rust)', borderRadius: '2px', padding: '0.5rem 0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <span style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '12px', color: 'var(--ik-rust)' }}>
-              ⚠️ {feedbackError}
-            </span>
-            <button
-              className="ik-feedback-btn"
-              style={{ borderColor: 'var(--ik-rust)', color: 'var(--ik-rust)' }}
-              onClick={() => setFeedbackError(null)}
-            >
-              Clear & Retry
-            </button>
+        {/* Evidence Sidebar (Right) — Verdict Summary (matches Stitch code.html lines 196-238) */}
+        <div className="col-span-1 lg:col-span-4 bg-carbon-gray border border-outline-variant rounded-sm flex flex-col p-6 h-fit lg:sticky lg:top-24 mt-8 lg:mt-16">
+          <div className="border-b border-outline-variant pb-4 mb-6">
+            <h2 className="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-2">
+              <span className="material-symbols-outlined text-[16px]">analytics</span> Verdict Summary
+            </h2>
+            <div className="flex justify-between items-end border-b border-outline-variant/50 pb-2">
+              <span className="font-label-caps text-label-caps text-outline uppercase">ML Confidence</span>
+              <span className={`font-headline-lg-mobile text-headline-lg-mobile ${confidencePct >= 70 ? 'text-verification-green' : confidencePct >= 40 ? 'text-[#ca8a04]' : 'text-ink-red'}`}>
+                {confidencePct > 0 ? `${confidencePct}%` : 'N/A'}
+              </span>
+            </div>
           </div>
-        )}
-      </section>
+
+              {/* Overall Summary */}
+              {result.overallSummary && (
+                <div className="mb-6">
+                  <h3 className="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase mb-2">Summary</h3>
+                  <p className="font-technical-sm text-technical-sm text-on-surface-variant leading-relaxed">{result.overallSummary}</p>
+                </div>
+              )}
+
+              {/* Cross-References / Claims */}
+              <div className="space-y-4 flex-grow">
+                <span className="font-metadata-xs text-metadata-xs text-outline uppercase tracking-widest">
+                  Similar Fact-Checked Claims
+                </span>
+
+                {result.retrieval_status === 'unavailable' ? (
+                  <div className="border border-outline-variant p-3 font-technical-sm text-technical-sm text-on-surface-variant opacity-60">
+                    ── ARCHIVE UNREACHABLE ──<br />
+                    <span className="text-[11px]">Retrieval service offline.</span>
+                  </div>
+                ) : claimsList == null || claimsList.length === 0 ? (
+                  <div className="border border-outline-variant p-3 font-technical-sm text-technical-sm text-on-surface-variant opacity-60">
+                    ── NO RELATED CASES ON FILE ──<br />
+                    <span className="text-[11px]">No similar claims found.</span>
+                  </div>
+                ) : (
+                  claimsList.slice(0, 3).map((claim, i) => {
+                    const text = claim.statement_text || claim.text || '';
+                    const similarityRaw = claim.similarity_score ?? (claim.score !== undefined ? claim.score / 100 : undefined);
+                    const matchPct = similarityRaw !== undefined ? Math.round(similarityRaw * 100) : null;
+                    const label = claim.label ? claim.label.toUpperCase() : 'CLAIM';
+                    return (
+                      <a key={i} className="group block border border-outline-variant p-3 hover:bg-surface-variant/20 transition-colors no-underline" href="#">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="font-technical-sm text-technical-sm text-primary group-hover:text-ink-red transition-colors">
+                            "{text}"
+                          </span>
+                          <span className="material-symbols-outlined text-[14px] text-outline flex-shrink-0 ml-2">open_in_new</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="font-metadata-xs text-metadata-xs text-outline">
+                            ({label})
+                          </span>
+                          {matchPct !== null && (
+                            <span className={`font-metadata-xs text-metadata-xs ${matchPct >= 70 ? 'text-verification-green' : 'text-outline'}`}>
+                              Match Score: {matchPct}%
+                            </span>
+                          )}
+                        </div>
+                      </a>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Feedback Section */}
+              <div className="mt-8 pt-6 border-t border-outline-variant">
+                <div className="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase mb-3">Was this analysis helpful?</div>
+                {feedbackSent ? (
+                  <span className="font-technical-sm text-technical-sm text-verification-green">✓ Thank you for your feedback! ({feedbackSent})</span>
+                ) : (
+                  <div className="flex gap-2 flex-wrap">
+                    <button className="font-label-caps text-label-caps text-on-surface-variant border border-outline-variant px-3 py-2 hover:bg-surface-variant/20 transition-colors rounded-sm text-[10px]" onClick={() => handleFeedback('helpful')} disabled={isSubmittingFeedback}>👍 Helpful</button>
+                    <button className="font-label-caps text-label-caps text-on-surface-variant border border-outline-variant px-3 py-2 hover:bg-surface-variant/20 transition-colors rounded-sm text-[10px]" onClick={() => handleFeedback('incorrect')} disabled={isSubmittingFeedback}>👎 Incorrect</button>
+                    <button className="font-label-caps text-label-caps text-on-surface-variant border border-outline-variant px-3 py-2 hover:bg-surface-variant/20 transition-colors rounded-sm text-[10px]" onClick={() => handleFeedback('disputed')} disabled={isSubmittingFeedback}>⚖️ Disputed</button>
+                  </div>
+                )}
+                {feedbackError && (
+                  <div className="mt-2 text-ink-red font-technical-sm text-technical-sm flex items-center gap-2">
+                    <span>⚠️ {feedbackError}</span>
+                    <button className="underline" onClick={() => setFeedbackError(null)}>Clear {'&'} Retry</button>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-outline-variant">
+                <button className="w-full bg-ink-red text-primary font-label-caps text-label-caps uppercase py-4 px-6 hover:bg-secondary-container transition-colors flex items-center justify-center gap-2 rounded-sm shadow-md">
+                  <span className="material-symbols-outlined text-[18px]">policy</span>
+                  Inspect Evidence
+                </button>
+              </div>
+        </div>
+      </div>
 
       {/* ── Sentence Detail Modal ── */}
       {selectedSentence && (
-        <div className="ik-modal-overlay" onClick={() => setSelectedSentence(null)}>
-          <div className="ik-modal ik-hatching" onClick={(e) => e.stopPropagation()} style={{ backgroundColor: 'var(--ik-bg)' }}>
-            {/* Modal header */}
-            <div className="ik-border-b" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 1.5rem 1rem' }}>
-              <h3 style={{ fontFamily: 'var(--ik-font-serif)', fontSize: '18px', fontWeight: 600, color: 'var(--ik-primary)', margin: 0 }}>
-                Sentence Analysis
-              </h3>
+        <div
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Sentence Analysis"
+          onClick={() => setSelectedSentence(null)}
+        >
+          <div
+            className="bg-background border border-outline-variant max-w-lg w-full rounded-sm shadow-[0_24px_60px_rgba(0,0,0,0.7)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="border-b border-outline-variant flex justify-between items-center p-6 pb-4">
+              <h3 role="heading" className="font-headline-lg-mobile text-[20px] text-primary">Sentence Analysis</h3>
               <button
                 onClick={() => setSelectedSentence(null)}
-                style={{ background: 'none', border: 'none', fontSize: '1.25rem', cursor: 'pointer', color: 'var(--ik-ink-faint)', padding: '0.25rem', lineHeight: 1 }}
+                className="text-on-surface-variant hover:text-primary transition-colors bg-transparent border-none cursor-pointer text-xl"
                 aria-label="×"
               >
                 ×
               </button>
             </div>
-
-            <div style={{ padding: '1.25rem 1.5rem' }}>
-              {/* Sentence text */}
-              <div style={{ borderLeft: '3px solid var(--ik-outline)', backgroundColor: 'var(--ik-surface)', padding: '0.75rem 1rem', marginBottom: '1.25rem', fontFamily: 'var(--ik-font-body)', fontSize: '15px', lineHeight: 1.6, fontStyle: 'italic', color: 'var(--ik-on-surface)' }}>
+            <div className="p-6">
+              <div className="border-l-4 border-outline bg-surface-container p-4 mb-6 font-body-md text-body-md italic text-on-surface">
                 "{selectedSentence.text}"
               </div>
-
-              {/* Stats grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.25rem' }}>
+              <div className="grid grid-cols-2 gap-3 mb-6">
                 {[
                   ['SCORE', `${selectedSentence.score}/100`],
                   ['CONFIDENCE', `${Math.round(selectedSentence.confidence * 100)}%`],
                   ['CATEGORY', selectedSentence.category],
                   ['STATUS', selectedSentence.isSuspicious ? '⚠ SUSPICIOUS' : '✓ RELIABLE'],
                 ].map(([label, value]) => (
-                  <div key={label} style={{ backgroundColor: 'var(--ik-surface)', border: '1px solid var(--ik-outline-var)', borderRadius: '2px', padding: '0.6rem 0.75rem' }}>
-                    <div style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '10px', letterSpacing: '0.08em', color: 'var(--ik-ink-faint)', marginBottom: '0.2rem' }}>{label}</div>
-                    <div style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '13px', fontWeight: 700, color: label === 'STATUS' ? (selectedSentence.isSuspicious ? 'var(--ik-rust)' : 'var(--ik-moss)') : 'var(--ik-on-surface)' }}>{value}</div>
+                  <div key={label} className="bg-surface-container border border-outline-variant rounded-sm p-3">
+                    <div className="font-metadata-xs text-metadata-xs text-on-surface-variant mb-1">{label}</div>
+                    <div className={`font-technical-sm text-technical-sm font-bold ${label === 'STATUS' ? (selectedSentence.isSuspicious ? 'text-ink-red' : 'text-verification-green') : 'text-on-surface'}`}>{value}</div>
                   </div>
                 ))}
               </div>
-
-              {/* Flags */}
               {selectedSentence.flags.length > 0 && (
-                <div style={{ marginBottom: '1rem' }}>
-                  <h4 style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ik-rust)', marginBottom: '0.4rem' }}>Flags Raised</h4>
-                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                <div className="mb-4">
+                  <h4 className="font-metadata-xs text-metadata-xs text-ink-red uppercase mb-2">Flags Raised</h4>
+                  <div className="flex flex-wrap gap-2">
                     {selectedSentence.flags.map((flag, index) => (
-                      <li key={index} style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', backgroundColor: 'rgba(156,74,50,0.1)', border: '1px solid var(--ik-rust)', borderRadius: '2px', padding: '0.15rem 0.5rem', color: 'var(--ik-rust)' }}>
+                      <span key={index} className="font-metadata-xs text-metadata-xs bg-ink-red/10 border border-ink-red/30 text-ink-red px-2 py-0.5 rounded-sm">
                         {flag}
-                      </li>
+                      </span>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
-
-              {/* Explanation */}
               <div>
-                <h4 style={{ fontFamily: 'var(--ik-font-mono)', fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ik-ink-faint)', marginBottom: '0.4rem' }}>Analyst's Note</h4>
-                <p style={{ fontFamily: 'var(--ik-font-body)', fontSize: '14px', lineHeight: 1.6, color: 'var(--ik-on-surface-var)', margin: 0 }}>
-                  {selectedSentence.explanation}
-                </p>
+                <h4 className="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase mb-1">Analyst&apos;s Note</h4>
+                <p className="font-body-md text-[14px] text-on-surface-variant leading-relaxed">{selectedSentence.explanation}</p>
               </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

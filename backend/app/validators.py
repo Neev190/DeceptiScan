@@ -293,12 +293,21 @@ def validate_auth_request(data: dict) -> Tuple[bool, Optional[ValidationError]]:
             details={'field': 'password'}
         )
     
-    # Password length check (minimum 8 characters)
+    # Password length check (minimum 8, maximum 128 characters)
+    # Upper bound prevents bcrypt 72-byte silent truncation: two passwords sharing
+    # the same first 72 bytes would otherwise both authenticate successfully.
+    MAX_PASSWORD_LENGTH = 128
     if len(password) < 8:
         return False, ValidationError(
             code='INVALID_INPUT',
             message='Password must be at least 8 characters',
             details={'field': 'password', 'minLength': 8}
+        )
+    if len(password) > MAX_PASSWORD_LENGTH:
+        return False, ValidationError(
+            code='INVALID_INPUT',
+            message=f'Password must not exceed {MAX_PASSWORD_LENGTH} characters',
+            details={'field': 'password', 'maxLength': MAX_PASSWORD_LENGTH}
         )
     
     # Password security requirements check

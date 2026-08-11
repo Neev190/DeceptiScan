@@ -19,13 +19,6 @@ Prerequisites:
 This script is idempotent: it truncates claim_embeddings before inserting,
 so re-running after any corpus change is safe.
 """
-# Bootstrap: ensure D:\\pylibs (short-path ML install) takes priority.
-import sys as _sys
-_PYLIBS = r"D:\pylibs"
-if _PYLIBS in _sys.path:
-    _sys.path.remove(_PYLIBS)
-_sys.path.insert(0, _PYLIBS)
-
 import logging
 import os
 import sys

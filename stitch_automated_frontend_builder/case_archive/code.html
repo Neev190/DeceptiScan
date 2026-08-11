@@ -1,0 +1,334 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DECEPTISCAN | Case Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&amp;family=Inter:wght@100..900&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-primary-fixed": "#1d1c14",
+                "surface-dim": "#131313",
+                "on-secondary-fixed": "#410002",
+                "surface-container-low": "#1c1b1b",
+                "verification-green": "#55785A",
+                "surface": "#131313",
+                "on-tertiary-fixed-variant": "#4a454b",
+                "error": "#ffb4ab",
+                "surface-variant": "#353534",
+                "on-surface-variant": "#cac6bc",
+                "lead-charcoal": "#101010",
+                "paper-aged": "#E9E4D8",
+                "on-primary-container": "#67645b",
+                "on-secondary-fixed-variant": "#822621",
+                "on-error": "#690005",
+                "surface-tint": "#cbc6bb",
+                "secondary-fixed-dim": "#ffb4ab",
+                "surface-bright": "#3a3939",
+                "on-primary-fixed-variant": "#49473e",
+                "typewriter-ribbon": "#34332F",
+                "on-primary": "#323028",
+                "outline": "#949087",
+                "surface-container-highest": "#353534",
+                "on-secondary-container": "#ff998f",
+                "primary": "#ffffff",
+                "on-tertiary-container": "#686369",
+                "primary-container": "#e7e2d6",
+                "on-secondary": "#630f0e",
+                "secondary": "#ffb4ab",
+                "outline-variant": "#49473f",
+                "tertiary-fixed": "#e8e0e7",
+                "on-tertiary": "#332f34",
+                "secondary-fixed": "#ffdad6",
+                "secondary-container": "#822621",
+                "primary-fixed": "#e7e2d6",
+                "primary-fixed-dim": "#cbc6bb",
+                "surface-container": "#201f1f",
+                "background": "#131313",
+                "on-tertiary-fixed": "#1e1a1f",
+                "on-background": "#e5e2e1",
+                "tertiary-container": "#e8e0e7",
+                "inverse-surface": "#e5e2e1",
+                "error-container": "#93000a",
+                "inverse-on-surface": "#313030",
+                "ink-red": "#8F302A",
+                "surface-container-high": "#2a2a2a",
+                "carbon-gray": "#171717",
+                "on-surface": "#e5e2e1",
+                "tertiary": "#ffffff",
+                "tertiary-fixed-dim": "#ccc4cb",
+                "on-error-container": "#ffdad6",
+                "inverse-primary": "#615e55",
+                "surface-container-lowest": "#0e0e0e"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "container-max": "1200px",
+                "margin-mobile": "20px",
+                "gutter": "16px",
+                "margin-desktop": "48px",
+                "unit": "4px"
+        },
+        "fontFamily": {
+                "label-caps": [
+                        "DM Mono"
+                ],
+                "display-lg": [
+                        "Special Elite"
+                ],
+                "metadata-xs": [
+                        "DM Mono"
+                ],
+                "technical-sm": [
+                        "DM Mono"
+                ],
+                "headline-lg-mobile": [
+                        "Special Elite"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "stamp-lg": [
+                        "Special Elite"
+                ],
+                "headline-lg": [
+                        "Special Elite"
+                ]
+        },
+        "fontSize": {
+                "label-caps": [
+                        "11px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "0.15em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "display-lg": [
+                        "84px",
+                        {
+                                "lineHeight": "1.0",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "400"
+                        }
+                ],
+                "metadata-xs": [
+                        "10px",
+                        {
+                                "lineHeight": "1.0",
+                                "letterSpacing": "0.1em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "technical-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "1.4",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "32px",
+                        {
+                                "lineHeight": "1.1",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "stamp-lg": [
+                        "24px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "40px",
+                        {
+                                "lineHeight": "1.1",
+                                "fontWeight": "400"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        body {
+            background-color: theme('colors.lead-charcoal');
+            color: theme('colors.on-background');
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+        
+        .evidence-shadow {
+            box-shadow: 0px 24px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .scanline-overlay::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.05) 51%, transparent 100%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .status-stamp {
+            border: 3px solid theme('colors.ink-red');
+            color: theme('colors.ink-red');
+            transform: rotate(-5deg);
+            display: inline-block;
+            padding: 4px 8px;
+            text-transform: uppercase;
+            font-family: 'Special Elite', monospace;
+            opacity: 0.8;
+            mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md relative bg-lead-charcoal">
+<!-- TopNavBar -->
+<nav class="bg-surface-container-lowest text-ink-red docked full-width top-0 border-b border-outline-variant flat no shadows sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto md:justify-between">
+<!-- Brand -->
+<div class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tighter uppercase flex items-center gap-2">
+                DECEPTISCAN
+            </div>
+<!-- Navigation Links (Desktop) -->
+<ul class="hidden md:flex items-center gap-8 mx-auto"><li class=""><a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors hover:bg-surface-variant/30 px-3 py-2 rounded cursor-text bg-surface-variant/30" data-stitch-added-classes="cursor-text" href="#" spellcheck="false">Investigate</a></li><li class=""><a class="text-on-secondary-container border-b-2 border-ink-red pb-1 font-label-caps text-label-caps px-3 py-2 rounded" href="#">Case Archive</a></li><li class=""><a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors hover:bg-surface-variant/30 px-3 py-2 rounded bg-surface-variant/30" href="#">About</a></li></ul>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4"><span class="font-technical-sm text-technical-sm tracking-widest uppercase text-secondary">SYSTEM ONLINE</span><span class="material-symbols-outlined text-secondary" style="font-size: 24px;">fingerprint</span></div>
+</div>
+</nav>
+<!-- Main Workspace -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 relative z-10 flex flex-col">
+<!-- Header -->
+<header class="flex flex-col md:flex-row md:justify-between md:items-end mb-10 pb-6 border-b-2 border-outline-variant gap-6">
+<div>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant mb-2">FILE SYSTEM / ARCHIVE / INDEX</p>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight">CASE ARCHIVE</h1>
+</div>
+<button class="text-primary px-6 py-3 font-label-caps text-label-caps uppercase tracking-widest hover:bg-secondary-container transition-colors rounded-none flex items-center gap-2 w-fit bg-ink-red">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                NEW INVESTIGATION
+            </button>
+</header>
+<!-- Archive List Container (Evidence File Style) -->
+<div class="bg-carbon-gray evidence-shadow p-6 md:p-8 flex-grow relative overflow-hidden">
+<!-- Subtle Texture/Overlay -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" data-alt="Subtle, dark, distressed grunge texture, resembling a heavily handled old file folder, low contrast, forensic noir aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDl2kFO6S9vyQ0FF2ztp0X9dpcxm1gnaQ9cndrgJ-tnqVoEiVuCfHUe0PCkqlM6lYZCJnqQmmctqR75VJvtQ7cT57p0u3zwaC50Gx-Zf82dgycuaWjQvLTFwvPA-_WA7nkjNgT5FgcEnzP9ZPeIZtdEHSbC42fzX65uqUlM6O6UJQffWk5RkxdRb6L16XNRr1i7VhOuzLTtc7QeljlEDDzccanBY34c_UG7LxsUefhQw38a1YXOw5hzyg')"></div>
+<!-- Table Header -->
+<div class="grid grid-cols-12 gap-4 pb-4 border-b border-outline-variant font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest mb-4 sticky top-0 bg-carbon-gray z-20 pt-2">
+<div class="col-span-2 md:col-span-2 pl-2">Case ID</div>
+<div class="col-span-6 md:col-span-5">Subject</div>
+<div class="hidden md:block md:col-span-2 text-center">Status</div>
+<div class="hidden md:block md:col-span-1 text-right">Score</div>
+<div class="col-span-4 md:col-span-2 text-right pr-2">Date</div>
+</div>
+<!-- List Items -->
+<div class="flex flex-col gap-2 relative z-10">
+<!-- Row 1 -->
+<a class="grid grid-cols-12 gap-4 items-center py-4 px-2 hover:bg-surface-variant/30 transition-colors border-b border-surface-container-high group" href="#">
+<div class="col-span-2 md:col-span-2 font-technical-sm text-technical-sm text-on-surface">CASE 0248</div>
+<div class="col-span-6 md:col-span-5 font-headline-lg-mobile text-lg md:text-xl text-primary group-hover:text-secondary transition-colors truncate">Global Market Manipulation</div>
+<div class="hidden md:flex md:col-span-2 justify-center">
+<span class="font-label-caps text-label-caps px-2 py-1 bg-verification-green/20 text-verification-green border border-verification-green/30">RELIABLE</span>
+</div>
+<div class="hidden md:block md:col-span-1 font-technical-sm text-technical-sm text-right text-verification-green">94/100</div>
+<div class="col-span-4 md:col-span-2 font-technical-sm text-technical-sm text-right text-on-surface-variant">2023-11-14</div>
+</a>
+<!-- Row 2 -->
+<a class="grid grid-cols-12 gap-4 items-center py-4 px-2 hover:bg-surface-variant/30 transition-colors border-b border-surface-container-high group" href="#">
+<div class="col-span-2 md:col-span-2 font-technical-sm text-technical-sm text-on-surface">CASE 0247</div>
+<div class="col-span-6 md:col-span-5 font-headline-lg-mobile text-lg md:text-xl text-primary group-hover:text-secondary transition-colors truncate">Political Debate Fact-Check</div>
+<div class="hidden md:flex md:col-span-2 justify-center">
+<span class="font-label-caps text-label-caps px-2 py-1 bg-secondary-container/20 text-secondary border border-secondary-container/30">UNRELIABLE</span>
+</div>
+<div class="hidden md:block md:col-span-1 font-technical-sm text-technical-sm text-right text-secondary">21/100</div>
+<div class="col-span-4 md:col-span-2 font-technical-sm text-technical-sm text-right text-on-surface-variant">2023-11-12</div>
+</a>
+<!-- Row 3 -->
+<a class="grid grid-cols-12 gap-4 items-center py-4 px-2 hover:bg-surface-variant/30 transition-colors border-b border-surface-container-high group" href="#">
+<div class="col-span-2 md:col-span-2 font-technical-sm text-technical-sm text-on-surface">CASE 0246</div>
+<div class="col-span-6 md:col-span-5 font-headline-lg-mobile text-lg md:text-xl text-primary group-hover:text-secondary transition-colors truncate">Corporate Merger Statement</div>
+<div class="hidden md:flex md:col-span-2 justify-center">
+<span class="font-label-caps text-label-caps px-2 py-1 bg-outline-variant/30 text-surface-tint border border-outline-variant">MIXED</span>
+</div>
+<div class="hidden md:block md:col-span-1 font-technical-sm text-technical-sm text-right text-surface-tint">58/100</div>
+<div class="col-span-4 md:col-span-2 font-technical-sm text-technical-sm text-right text-on-surface-variant">2023-11-10</div>
+</a>
+<!-- Row 4 -->
+<a class="grid grid-cols-12 gap-4 items-center py-4 px-2 hover:bg-surface-variant/30 transition-colors border-b border-surface-container-high group" href="#">
+<div class="col-span-2 md:col-span-2 font-technical-sm text-technical-sm text-on-surface">CASE 0245</div>
+<div class="col-span-6 md:col-span-5 font-headline-lg-mobile text-lg md:text-xl text-primary group-hover:text-secondary transition-colors truncate">Tech CEO Earnings Call</div>
+<div class="hidden md:flex md:col-span-2 justify-center">
+<span class="font-label-caps text-label-caps px-2 py-1 bg-verification-green/20 text-verification-green border border-verification-green/30">RELIABLE</span>
+</div>
+<div class="hidden md:block md:col-span-1 font-technical-sm text-technical-sm text-right text-verification-green">88/100</div>
+<div class="col-span-4 md:col-span-2 font-technical-sm text-technical-sm text-right text-on-surface-variant">2023-11-08</div>
+</a>
+<!-- Row 5 -->
+<a class="grid grid-cols-12 gap-4 items-center py-4 px-2 hover:bg-surface-variant/30 transition-colors border-b border-surface-container-high group relative" href="#">
+<div class="col-span-2 md:col-span-2 font-technical-sm text-technical-sm text-on-surface">CASE 0244</div>
+<div class="col-span-6 md:col-span-5 font-headline-lg-mobile text-lg md:text-xl text-primary group-hover:text-secondary transition-colors truncate">Classified Incident Report</div>
+<div class="hidden md:flex md:col-span-2 justify-center">
+<div class="status-stamp font-stamp-lg text-stamp-lg transform -rotate-12 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-30 pointer-events-none">REDACTED</div>
+<span class="font-label-caps text-label-caps px-2 py-1 bg-surface-container-lowest text-on-surface-variant border border-outline-variant">RESTRICTED</span>
+</div>
+<div class="hidden md:block md:col-span-1 font-technical-sm text-technical-sm text-right text-on-surface-variant">--/100</div>
+<div class="col-span-4 md:col-span-2 font-technical-sm text-technical-sm text-right text-on-surface-variant">2023-11-01</div>
+</a>
+</div>
+<!-- Pagination/Footer -->
+<div class="mt-8 pt-4 border-t border-outline-variant flex justify-between items-center text-on-surface-variant font-technical-sm text-technical-sm">
+<span class="">SHOWING 1-5 OF 248 RECORDS</span>
+<div class="flex gap-4">
+<button class="hover:text-primary transition-colors disabled:opacity-50 flex items-center" disabled="">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span> PREV
+                    </button>
+<button class="hover:text-primary transition-colors flex items-center">
+                        NEXT <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest text-on-surface-variant border-t border-outline-variant mt-12 full-width bottom-0 flat no shadows flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-8 max-w-container-max mx-auto z-10 relative">
+<div class="font-stamp-lg text-stamp-lg opacity-50 mb-4 md:mb-0 text-ink-red">
+            DECEPTISCAN
+        </div>
+<div class="font-technical-sm text-technical-sm uppercase tracking-widest text-center md:text-left mb-4 md:mb-0">
+            © 2024 DECEPTISCAN FORENSICS. ALL RIGHTS RESERVED.
+        </div>
+<ul class="flex flex-wrap justify-center gap-6 font-technical-sm text-technical-sm uppercase tracking-widest">
+<li class=""><a class="text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">EVIDENCE-FIRST</a></li>
+<li class=""><a class="text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">LEGAL</a></li>
+<li class=""><a class="text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">PROTOCOL</a></li>
+</ul>
+</footer>
+</body></html>

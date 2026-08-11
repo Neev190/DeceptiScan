@@ -1,0 +1,431 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DeceptiScan - Investigation Desk</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts: Special Elite (Typewriter), DM Mono (Technical), Inter (Body) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&amp;family=Inter:wght@400;500;600&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Guidelines -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#615e55",
+                      "typewriter-ribbon": "#34332F",
+                      "outline-variant": "#49473f",
+                      "surface-tint": "#cbc6bb",
+                      "secondary-container": "#822621",
+                      "on-primary-fixed": "#1d1c14",
+                      "lead-charcoal": "#101010",
+                      "surface-container-high": "#2a2a2a",
+                      "on-tertiary-fixed-variant": "#4a454b",
+                      "error": "#ffb4ab",
+                      "on-primary-fixed-variant": "#49473e",
+                      "carbon-gray": "#171717",
+                      "on-surface-variant": "#cac6bc",
+                      "on-error": "#690005",
+                      "on-secondary": "#630f0e",
+                      "verification-green": "#55785A",
+                      "primary-fixed": "#e7e2d6",
+                      "secondary": "#ffb4ab",
+                      "on-primary": "#323028",
+                      "surface-container": "#201f1f",
+                      "on-secondary-fixed-variant": "#822621",
+                      "on-background": "#e5e2e1",
+                      "outline": "#949087",
+                      "tertiary-fixed": "#e8e0e7",
+                      "inverse-surface": "#e5e2e1",
+                      "paper-aged": "#E9E4D8",
+                      "on-tertiary": "#332f34",
+                      "primary-fixed-dim": "#cbc6bb",
+                      "secondary-fixed": "#ffdad6",
+                      "inverse-on-surface": "#313030",
+                      "surface-container-lowest": "#0e0e0e",
+                      "on-tertiary-container": "#686369",
+                      "on-secondary-fixed": "#410002",
+                      "tertiary-container": "#e8e0e7",
+                      "primary": "#ffffff",
+                      "on-secondary-container": "#ff998f",
+                      "surface-container-low": "#1c1b1b",
+                      "secondary-fixed-dim": "#ffb4ab",
+                      "surface-variant": "#353534",
+                      "primary-container": "#e7e2d6",
+                      "on-tertiary-fixed": "#1e1a1f",
+                      "surface-container-highest": "#353534",
+                      "tertiary-fixed-dim": "#ccc4cb",
+                      "background": "#131313",
+                      "on-primary-container": "#67645b",
+                      "on-surface": "#e5e2e1",
+                      "surface": "#131313",
+                      "error-container": "#93000a",
+                      "ink-red": "#8F302A",
+                      "on-error-container": "#ffdad6",
+                      "tertiary": "#ffffff",
+                      "surface-bright": "#3a3939",
+                      "surface-dim": "#131313"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "margin-mobile": "20px",
+                      "gutter": "16px",
+                      "container-max": "1200px",
+                      "margin-desktop": "48px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Special Elite"
+                      ],
+                      "metadata-xs": [
+                              "DM Mono"
+                      ],
+                      "label-caps": [
+                              "DM Mono"
+                      ],
+                      "stamp-lg": [
+                              "Special Elite"
+                      ],
+                      "headline-lg": [
+                              "Special Elite"
+                      ],
+                      "display-lg": [
+                              "Special Elite"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "technical-sm": [
+                              "DM Mono"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "metadata-xs": [
+                              "10px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.15em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "stamp-lg": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "84px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "technical-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .grid-overlay {
+            background-size: 48px 48px;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        .paper-texture {
+            background-color: #E9E4D8;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+        .stamp-texture {
+            mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.8'/%3E%3C/svg%3E");
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.8'/%3E%3C/svg%3E");
+        }
+        .lined-paper {
+            background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(148, 144, 135, 0.2) 31px, rgba(148, 144, 135, 0.2) 32px);
+            background-attachment: local;
+        }
+        
+        .scanline-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, transparent, rgba(143, 48, 42, 0.8), transparent);
+            box-shadow: 0 0 10px rgba(143, 48, 42, 0.5);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .analyzing .scanline-overlay {
+            animation: scan 2s linear infinite;
+            opacity: 1;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar (JSON) -->
+<header class="bg-background dark:bg-background flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto border-b border-outline-variant bg-surface-container-lowest docked full-width top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg text-headline-lg text-primary tracking-tighter uppercase">DECEPTISCAN</span>
+</div>
+<!-- Web Nav -->
+<nav class="hidden md:flex gap-8">
+<a class="text-ink-red dark:text-on-secondary-container border-b-2 border-ink-red pb-1 font-label-caps text-label-caps uppercase" href="#">Investigate</a>
+<a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors uppercase" href="#">Case Archive</a>
+<a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors uppercase" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4"><div class="flex items-center gap-4">
+  <span class="font-technical-sm text-technical-sm text-[#FF8C42] tracking-widest uppercase">SYSTEM ONLINE</span>
+  <span class="material-symbols-outlined text-[#FF8C42]" style="font-variation-settings: 'FILL' 0;">fingerprint</span>
+</div></div>
+</header>
+<main class="flex-grow flex flex-col items-center w-full">
+<!-- Archival Hero -->
+<section class="w-full bg-lead-charcoal relative py-20 px-margin-mobile md:px-margin-desktop border-b border-outline-variant overflow-hidden flex justify-center">
+<div class="absolute inset-0 grid-overlay"></div>
+<div class="max-w-container-max w-full relative z-10 flex flex-col items-center text-center">
+<div class="inline-flex items-center gap-2 mb-6 border border-outline-variant px-3 py-1 bg-surface-container-high/50">
+<span class="w-2 h-2 rounded-full bg-ink-red animate-pulse"></span>
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase">Investigation Protocol Active</span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-display-lg text-headline-lg-mobile md:text-display-lg text-primary mb-4 tracking-tighter uppercase max-w-4xl">
+                    Don't trust the story.<br>Investigate it.
+                </h1>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant max-w-2xl opacity-80 uppercase">
+                    Enter subject testimony or archival evidence below for deep structural analysis. Irregularities will be flagged.
+                </p>
+</div>
+</section>
+<!-- Case Intake Workspace (Negative Margin Pull-up) -->
+<section class="w-full max-w-container-max px-margin-mobile md:px-margin-desktop -mt-12 relative z-20 mb-24">
+<!-- The "Physical" Investigation Paper -->
+<div class="paper-texture text-typewriter-ribbon rounded-sm overflow-hidden flex flex-col" style="box-shadow: 0px 24px 60px rgba(0,0,0,0.5);">
+<!-- Document Header -->
+<div class="flex justify-between items-start p-6 border-b border-typewriter-ribbon/20 bg-paper-aged/50">
+<div>
+<span class="block font-metadata-xs text-metadata-xs text-typewriter-ribbon/70 mb-1">FILE REFERENCE</span>
+<div class="font-technical-sm text-technical-sm">DSCN-INTAKE-001</div>
+</div>
+<div class="text-right">
+<span class="block font-metadata-xs text-metadata-xs text-typewriter-ribbon/70 mb-1">DATE OPENED</span>
+<div class="font-technical-sm text-technical-sm" id="current-date">AWAITING INPUT</div>
+</div>
+</div>
+<!-- Text Area / Intake Form -->
+<div class="relative flex-grow flex min-h-[400px]" id="investigation-area">
+<div class="scanline-overlay"></div>
+<!-- Line Numbers Gutter -->
+<div class="w-12 border-r border-typewriter-ribbon/20 bg-paper-aged/30 flex flex-col items-center py-6 select-none opacity-50 pt-[28px]">
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">01</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">02</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">03</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">04</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">05</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">06</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">07</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">08</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">09</span>
+<span class="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">10</span>
+</div>
+<!-- Input Area -->
+<div class="flex-grow relative p-6">
+<!-- Status Stamp (Absolute) -->
+<div class="absolute top-4 right-8 -rotate-6 pointer-events-none opacity-80 mix-blend-multiply z-10 hidden" id="status-stamp">
+<div class="border-4 border-ink-red p-2 stamp-texture inline-block">
+<span class="font-stamp-lg text-stamp-lg text-ink-red block text-center uppercase leading-none">UNVERIFIED<br>UNTIL ANALYZED</span>
+</div>
+</div>
+<textarea class="w-full h-full bg-transparent border-none resize-none focus:ring-0 font-body-md text-body-md text-typewriter-ribbon lined-paper leading-[32px] placeholder:text-typewriter-ribbon/30" id="case-input" placeholder="Enter subject testimony, paste forensic logs, or describe the evidence..." spellcheck="false"></textarea>
+</div>
+</div>
+<!-- Workspace Footer Actions -->
+<div class="bg-carbon-gray border-t border-typewriter-ribbon p-4 flex justify-between items-center text-on-surface">
+<div class="flex gap-4">
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" onclick="document.getElementById('case-input').value = ''">
+<span class="material-symbols-outlined text-[16px]">backspace</span> CLEAR
+                        </button>
+</div>
+<button class="bg-ink-red hover:bg-secondary-container text-white font-label-caps text-label-caps px-6 py-3 rounded-none transition-colors flex items-center gap-2 border border-ink-red" id="btn-investigate">
+                        BEGIN INVESTIGATION <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Reference Section: Recent Archives -->
+<section class="w-full max-w-container-max px-margin-mobile md:px-margin-desktop mb-24">
+<div class="border-b border-outline-variant pb-2 mb-6 flex justify-between items-end">
+<h2 class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest">Recent Archival Pulls</h2>
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant opacity-50">TOP SECRET // NOFORN</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Archive Card 1 -->
+<div class="bg-carbon-gray border border-outline-variant flex flex-col hover:border-surface-tint transition-colors group cursor-pointer">
+<!-- Evidence Folder Tab -->
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-lowest border-b border-outline-variant w-fit">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">folder_open</span>
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase">FILE_042</span>
+</div>
+<div class="p-4">
+<div class="h-32 mb-4 overflow-hidden border border-outline-variant/50 relative">
+<div class="absolute inset-0 bg-ink-red mix-blend-overlay opacity-0 group-hover:opacity-20 transition-opacity z-10"></div>
+<div class="bg-cover bg-center w-full h-full grayscale filter" data-alt="A grainy, high-contrast black and white forensic photograph of a messy office desk covered in scattered papers, an overturned coffee mug, and a vintage rotary phone off the hook. Harsh overhead lighting casts deep shadows, establishing a stark, mid-century bureaucratic noir aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDnzISTckjE0eRDDb8EVMRx8BHQ3YwGJsBl7LFyYwMQY6BPW54TEDtZbTPwTlUeizdaI8TymHwPEpGrpxYmpw7xoVlakqXNa9JPdzlISrlDnMMNFfL0ulw7XYFGI-KSX1xjm4E03tN3-_nGhtRYP-kI5Sknzwmwe56g79s-KgNbXyaMU5_iCuT5OPvLALHZjIKgblF8kzD2zy__1449zDk3CLmrxEHlZdUtJ6SFJC-RwE5ukPT3QATBrw')"></div>
+</div>
+<h3 class="font-headline-lg-mobile text-[18px] text-primary mb-1 uppercase">The Vesper Incident</h3>
+<div class="flex justify-between items-center mt-4 pt-4 border-t border-outline-variant/50">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant opacity-70">STATUS: CLOSED</span>
+<span class="font-label-caps text-label-caps text-ink-red group-hover:text-secondary transition-colors">OPEN CASE</span>
+</div>
+</div>
+</div>
+<!-- Archive Card 2 -->
+<div class="bg-carbon-gray border border-outline-variant flex flex-col hover:border-surface-tint transition-colors group cursor-pointer">
+<!-- Evidence Folder Tab -->
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-lowest border-b border-outline-variant w-fit">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">folder_open</span>
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase">FILE_089</span>
+</div>
+<div class="p-4">
+<div class="h-32 mb-4 overflow-hidden border border-outline-variant/50 relative">
+<div class="absolute inset-0 bg-ink-red mix-blend-overlay opacity-0 group-hover:opacity-20 transition-opacity z-10"></div>
+<div class="bg-cover bg-center w-full h-full grayscale filter" data-alt="A clinical, close-up shot of a shattered pair of reading glasses resting on a concrete floor next to a partially burnt file folder. Shot in high-contrast black and white with a subtle film grain. The lighting is cold and industrial, evoking a stark investigative mood." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCdzvRHHYdwZcf_9N_9UUtURHBU60lt5JNxrHG4ruaVMPAPrZ6hTDXu_pc2HvPDBb0vjIiprKjKnAqtDflvQ7CaCmCUBrYMYOZhbwYTRxSUUujzWlO-YXAFQPKg4fJgLQU7kP8HUKrMyzyAMKl-RQRxBztgnQhvKhgYRVSDyXaEWDiwURXbVz1An6HNU6vG8GiSSdMc14OSdV_rzy8bs3YTcT0zEi_oc5CZiKD70ccVILFAjCRiHyi16Q')"></div>
+</div>
+<h3 class="font-headline-lg-mobile text-[18px] text-primary mb-1 uppercase">Project Mnemonic</h3>
+<div class="flex justify-between items-center mt-4 pt-4 border-t border-outline-variant/50">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant opacity-70">STATUS: PENDING</span>
+<span class="font-label-caps text-label-caps text-ink-red group-hover:text-secondary transition-colors">OPEN CASE</span>
+</div>
+</div>
+</div>
+<!-- Archive Card 3 -->
+<div class="bg-carbon-gray border border-outline-variant flex flex-col hover:border-surface-tint transition-colors group cursor-pointer">
+<!-- Evidence Folder Tab -->
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-lowest border-b border-outline-variant w-fit">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">folder_open</span>
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase">FILE_112</span>
+</div>
+<div class="p-4">
+<div class="h-32 mb-4 overflow-hidden border border-outline-variant/50 relative">
+<div class="absolute inset-0 bg-ink-red mix-blend-overlay opacity-0 group-hover:opacity-20 transition-opacity z-10"></div>
+<div class="bg-cover bg-center w-full h-full grayscale filter" data-alt="A surveillance-style, wide-angle photograph of an empty underground parking garage bathed in flickering, cold fluorescent light. The image is desaturated, grainy, and features a timecode stamp in the corner, enhancing the authoritative, bureaucratic archival feel." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBVFJ33jSrLeqa77By-ifUBtGNv8OJqQGZM_v1pQRD_BTu2xY-UxsR2adwGMlcRaQRjOT8apRE-fY09kau5_xrTeOnXr2IPRrXLpMr-w0tWvZk82h6phhTR3_hnUXFEYJRWkIYmrtSjC4cTUxTgpNxl40Qx-5Wyo4ByVwjut2CRetCpyViotoYv1lmLKGSV9KMpMdOAeoBi6R05bosIJmjZiEG3jmcLNXnpg1v2aXFopaX7WBWh2pQtFQ')"></div>
+</div>
+<h3 class="font-headline-lg-mobile text-[18px] text-primary mb-1 uppercase">Operation Silence</h3>
+<div class="flex justify-between items-center mt-4 pt-4 border-t border-outline-variant/50">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant opacity-70">STATUS: REDACTED</span>
+<span class="font-label-caps text-label-caps text-ink-red group-hover:text-secondary transition-colors">OPEN CASE</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (JSON) -->
+<footer class="bg-carbon-gray dark:bg-surface-container-lowest flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop py-8 max-w-container-max mx-auto border-t border-outline-variant mt-12 full-width bottom-0">
+<div class="mb-6 md:mb-0">
+<span class="font-stamp-lg text-stamp-lg text-ink-red opacity-50">DECEPTISCAN</span>
+<p class="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant mt-2">© 2024 DECEPTISCAN FORENSICS. ALL RIGHTS RESERVED.</p>
+</div>
+<nav class="flex gap-6">
+<a class="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">EVIDENCE-FIRST</a>
+<a class="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">LEGAL</a>
+<a class="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">PROTOCOL</a>
+</nav>
+</footer>
+<script>
+        // Micro-interactions
+        const input = document.getElementById('case-input');
+        const stamp = document.getElementById('status-stamp');
+        const btn = document.getElementById('btn-investigate');
+        const area = document.getElementById('investigation-area');
+
+        // Show stamp when user starts typing
+        input.addEventListener('input', function() {
+            if (this.value.length > 5) {
+                stamp.classList.remove('hidden');
+            } else {
+                stamp.classList.add('hidden');
+            }
+        });
+
+        // Simulate analysis
+        btn.addEventListener('click', function() {
+            if(input.value.trim() === '') return;
+            
+            const originalText = this.innerHTML;
+            this.innerHTML = 'ANALYZING... <span class="material-symbols-outlined text-[18px] animate-spin">sync</span>';
+            this.classList.add('opacity-80', 'pointer-events-none');
+            area.classList.add('analyzing');
+
+            setTimeout(() => {
+                this.innerHTML = 'ANALYSIS COMPLETE <span class="material-symbols-outlined text-[18px]">check_circle</span>';
+                area.classList.remove('analyzing');
+                this.classList.remove('opacity-80', 'pointer-events-none');
+                
+                // Reset after a moment
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 3000);
+            }, 2500);
+        });
+
+        // Set date
+        document.getElementById('current-date').textContent = new Date().toISOString().split('T')[0];
+    </script>
+</body></html>

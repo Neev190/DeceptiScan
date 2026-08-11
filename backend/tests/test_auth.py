@@ -19,7 +19,11 @@ def app():
     with app.app_context():
         db.create_all()
         yield app
-        db.drop_all()
+        db.session.remove()
+        for table in reversed(db.metadata.sorted_tables):
+            if table.name != 'claim_embeddings':
+                db.session.execute(table.delete())
+        db.session.commit()
 
 
 @pytest.fixture
@@ -275,6 +279,63 @@ class TestMeEndpoint:
             data = response.get_json()
             assert data['email'] == 'me@example.com'
             assert 'id' in data
+            assert 'isAdmin' in data
+
+    def test_patch_me_success(self, client, app):
+        """Test updating username via PATCH /api/v1/auth/me."""
+        with app.app_context():
+            user = User(
+                id=uuid.uuid4(),
+                email='patchme@example.com',
+                is_active=True
+            )
+            user.set_password('SecurePass123')
+            db.session.add(user)
+            db.session.commit()
+
+            access_token = create_access_token(identity=str(user.id))
+
+            response = client.patch(
+                '/api/v1/auth/me',
+                headers={'Authorization': f'Bearer {access_token}'},
+                json={'username': 'AgentVesper'}
+            )
+
+            assert response.status_code == 200
+            data = response.get_json()
+            assert data['username'] == 'AgentVesper'
+
+    def test_patch_me_username_collision(self, client, app):
+        """Test updating username to an already existing username returns 400 error."""
+        with app.app_context():
+            user1 = User(
+                id=uuid.uuid4(),
+                email='user1@example.com',
+                username='CipherZero',
+                is_active=True
+            )
+            user1.set_password('SecurePass123')
+
+            user2 = User(
+                id=uuid.uuid4(),
+                email='user2@example.com',
+                is_active=True
+            )
+            user2.set_password('SecurePass123')
+            db.session.add_all([user1, user2])
+            db.session.commit()
+
+            access_token = create_access_token(identity=str(user2.id))
+
+            response = client.patch(
+                '/api/v1/auth/me',
+                headers={'Authorization': f'Bearer {access_token}'},
+                json={'username': 'CipherZero'}
+            )
+
+            assert response.status_code == 400
+            data = response.get_json()
+            assert data['error']['code'] == 'INVALID_INPUT'
 
 
 class TestRefreshEndpoint:

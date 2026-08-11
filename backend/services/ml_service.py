@@ -18,14 +18,6 @@ Classification thresholds (per spec requirements.md §3.4-3.6):
     unreliable : authenticity_score < 40
     unknown    : overall confidence < 0.3
 """
-# Bootstrap: ensure D:\pylibs (short-path ML install) takes priority.
-# Windows MAX_PATH prevents pip from installing transformers at the default site-packages.
-import sys as _sys
-_PYLIBS = r"D:\pylibs"
-if _PYLIBS in _sys.path:
-    _sys.path.remove(_PYLIBS)
-_sys.path.insert(0, _PYLIBS)
-
 import re
 import time
 import logging

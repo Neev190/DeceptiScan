@@ -1,0 +1,333 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Protocol &amp; Mission - DeceptiScan</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&amp;family=Inter:wght@400;500;600&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#131313",
+                        "on-secondary-container": "#ff998f",
+                        "outline": "#949087",
+                        "on-primary": "#323028",
+                        "ink-red": "#8F302A",
+                        "on-secondary-fixed-variant": "#822621",
+                        "primary": "#ffffff",
+                        "carbon-gray": "#171717",
+                        "on-tertiary": "#332f34",
+                        "secondary-fixed-dim": "#ffb4ab",
+                        "typewriter-ribbon": "#34332F",
+                        "error": "#ffb4ab",
+                        "on-primary-container": "#67645b",
+                        "verification-green": "#55785A",
+                        "secondary-container": "#822621",
+                        "surface-tint": "#cbc6bb",
+                        "surface-container-low": "#1c1b1b",
+                        "primary-fixed-dim": "#cbc6bb",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#ffb4ab",
+                        "secondary-fixed": "#ffdad6",
+                        "paper-aged": "#E9E4D8",
+                        "on-tertiary-fixed": "#1e1a1f",
+                        "tertiary": "#ffffff",
+                        "outline-variant": "#49473f",
+                        "on-secondary-fixed": "#410002",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#3a3939",
+                        "on-tertiary-container": "#686369",
+                        "inverse-on-surface": "#313030",
+                        "on-background": "#e5e2e1",
+                        "surface-variant": "#353534",
+                        "on-primary-fixed": "#1d1c14",
+                        "tertiary-fixed-dim": "#ccc4cb",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#49473e",
+                        "on-tertiary-fixed-variant": "#4a454b",
+                        "primary-fixed": "#e7e2d6",
+                        "error-container": "#93000a",
+                        "surface-container": "#201f1f",
+                        "tertiary-fixed": "#e8e0e7",
+                        "lead-charcoal": "#101010",
+                        "on-secondary": "#630f0e",
+                        "primary-container": "#e7e2d6",
+                        "tertiary-container": "#e8e0e7",
+                        "on-surface-variant": "#cac6bc",
+                        "surface-container-lowest": "#0e0e0e",
+                        "background": "#131313",
+                        "inverse-primary": "#615e55",
+                        "surface-dim": "#131313",
+                        "on-error": "#690005",
+                        "surface-container-high": "#2a2a2a",
+                        "inverse-surface": "#e5e2e1"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-desktop": "48px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "gutter": "16px",
+                        "container-max": "1200px"
+                    },
+                    fontFamily: {
+                        "stamp-lg": ["Special Elite"],
+                        "label-caps": ["DM Mono"],
+                        "headline-lg-mobile": ["Special Elite"],
+                        "display-lg": ["Special Elite"],
+                        "body-md": ["Inter"],
+                        "metadata-xs": ["DM Mono"],
+                        "technical-sm": ["DM Mono"],
+                        "headline-lg": ["Special Elite"]
+                    },
+                    fontSize: {
+                        "stamp-lg": ["24px", { lineHeight: "1.2", fontWeight: "400" }],
+                        "label-caps": ["11px", { lineHeight: "1.2", letterSpacing: "0.15em", fontWeight: "700" }],
+                        "headline-lg-mobile": ["32px", { lineHeight: "1.1", fontWeight: "400" }],
+                        "display-lg": ["84px", { lineHeight: "1.0", letterSpacing: "-0.02em", fontWeight: "400" }],
+                        "body-md": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "metadata-xs": ["10px", { lineHeight: "1.0", letterSpacing: "0.1em", fontWeight: "500" }],
+                        "technical-sm": ["12px", { lineHeight: "1.4", letterSpacing: "0.05em", fontWeight: "400" }],
+                        "headline-lg": ["40px", { lineHeight: "1.1", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(143, 48, 42, 0.1) 50%, transparent 100%);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        /* Custom scrollbar for bureaucratic feel */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #101010; }
+        ::-webkit-scrollbar-thumb { background: #49473f; }
+        ::-webkit-scrollbar-thumb:hover { background: #8F302A; }
+    </style>
+</head>
+<body class="bg-lead-charcoal text-on-surface min-h-screen flex flex-col font-body-md antialiased selection:bg-ink-red selection:text-white">
+<!-- TOP NAV BAR -->
+<header class="bg-background dark:bg-background border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<!-- Brand -->
+<div class="font-headline-lg text-headline-lg text-primary tracking-tighter uppercase flex items-center gap-2">
+                DECEPTISCAN
+            </div>
+<!-- Navigation Links (Web) -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors hover:bg-surface-variant/20 dark:hover:bg-surface-variant/30 px-2 py-1" href="#">
+                    Investigate
+                </a>
+<a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors hover:bg-surface-variant/20 dark:hover:bg-surface-variant/30 px-2 py-1" href="#">
+                    Case Archive
+                </a>
+<a class="text-ink-red dark:text-on-secondary-container border-b-2 border-ink-red pb-1 font-label-caps text-label-caps hover:bg-surface-variant/20 dark:hover:bg-surface-variant/30 px-2 transition-all opacity-80 duration-100" href="#">
+                    About
+                </a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<span class="font-technical-sm text-technical-sm text-verification-green uppercase tracking-widest hidden lg:block border border-verification-green/30 px-2 py-0.5 rounded-sm bg-verification-green/10">
+                    SYSTEM ONLINE
+                </span>
+<button class="text-ink-red dark:text-secondary hover:bg-surface-variant/20 dark:hover:bg-surface-variant/30 p-2 rounded transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">fingerprint</span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN CONTENT CANVAS -->
+<main class="flex-grow relative">
+<!-- Hero Section with Grid -->
+<section class="relative pt-24 pb-32 px-margin-mobile md:px-margin-desktop grid-bg border-b border-outline-variant/30 overflow-hidden">
+<div class="scanline"></div>
+<div class="max-w-container-max mx-auto relative z-10">
+<div class="flex flex-col gap-4 max-w-3xl">
+<span class="font-metadata-xs text-metadata-xs text-ink-red uppercase tracking-widest border border-ink-red/30 self-start px-2 py-1 bg-ink-red/5">
+                        DOC. REF: ABT-001
+                    </span>
+<h1 class="font-display-lg text-display-lg text-primary uppercase leading-none">
+                        PROTOCOL &amp;<br>MISSION
+                    </h1>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant max-w-xl mt-6 border-l-2 border-ink-red pl-4">
+                        INITIATING BRIEFING... Establishing the foundational directives and operational parameters of the DeceptiScan information forensics apparatus.
+                    </p>
+</div>
+</div>
+</section>
+<!-- The "Investigation Desk" overlapping section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop -mt-16 relative z-20 pb-24">
+<!-- Philosophy Block -->
+<div class="bg-carbon-gray border border-outline-variant shadow-[0_24px_60px_rgba(0,0,0,0.5)] flex flex-col md:flex-row mb-16">
+<!-- Left: Text Area -->
+<div class="p-8 md:p-12 flex-1 relative flex flex-col justify-center">
+<!-- Faux line numbers for brutalist feel -->
+<div class="absolute left-0 top-0 bottom-0 w-8 bg-surface-container-low border-r border-outline-variant/50 flex flex-col pt-12 items-center text-outline-variant font-technical-sm text-technical-sm opacity-50 space-y-2 select-none hidden sm:flex">
+<span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span>
+</div>
+<div class="sm:pl-8">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-ink-red">gavel</span>
+                            EVIDENCE OVER VIBES.
+                        </h2>
+<div class="space-y-4 text-on-surface-variant font-body-md text-body-md">
+<p>
+                                In an era saturated with synthetic narratives and weaponized ambiguity, intuition is obsolete. DeceptiScan was engineered to dismantle the noise and isolate the empirical facts. We do not deal in sentiment; we process data.
+                            </p>
+<p>
+                                Our architecture is designed for deep investigation. We treat every claim as a suspect, subjecting it to rigorous cross-referencing, metadata extraction, and logical consistency checks. The result is a cold, calculated assessment of truth.
+                            </p>
+</div>
+</div>
+</div>
+<!-- Right: Image -->
+<div class="w-full md:w-1/3 min-h-[300px] border-l border-outline-variant relative overflow-hidden bg-surface-container-highest">
+<div class="absolute inset-0 bg-cover bg-center grayscale opacity-80 mix-blend-luminosity" data-alt="A moody, high-contrast photograph of a messy investigator's desk lit by a single harsh desk lamp. Scattered across the dark wood surface are redacted documents, forensic photographs with red circles, and a vintage magnifying glass. The scene is enveloped in deep shadows with a strict dark mode aesthetic, punctuated only by stark white highlights and subtle hints of technical crimson red. The atmosphere is tense, clinical, and bureaucratic noir." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCd0x9DjY9gY5pLQLJVcIR7BfYOK4_eN8FcplLS8yh6cMXwxCOdlEmymKe3FpC5rLKzkz7jphQY40Rf8Wh_0S-DbWf7qoOHaEILabLGmW84oRLJ1aRIbyblaFWjtJY008EfVyogfG00dd-K8zd5cnNUfAVv2saS5Zb_kDGxYyIRIJQ3Ae-Jmu_H-8JjWhCM0ZhnocmemWd_4hHpyQ1Qho6hIN2ANV-xVmYP30Mz07eqK-lIC-DIYjIvmA')"></div>
+<!-- Grain overlay -->
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJ0cmFuc3BhcmVudCIvPgo8Y2lyY2xlIGN4PSIxIiBjeT0iMSIgcj0iMSIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIvPgo8L3N2Zz4=')] mix-blend-overlay pointer-events-none"></div>
+</div>
+</div>
+<!-- Methodology Grid -->
+<div class="mb-16">
+<div class="flex items-center gap-4 mb-8">
+<h3 class="font-label-caps text-label-caps text-primary border border-outline-variant px-3 py-1 bg-surface-container-low uppercase">
+                        OPERATIONAL METHODOLOGY
+                    </h3>
+<div class="h-px bg-outline-variant flex-grow"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Step 1 -->
+<div class="bg-surface-container-low border border-outline-variant p-6 hover:border-ink-red transition-colors group relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-surface-variant text-on-surface-variant font-metadata-xs text-metadata-xs px-2 py-1 border-b border-l border-outline-variant group-hover:bg-ink-red group-hover:text-white transition-colors">
+                            PHASE 01
+                        </div>
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-4 group-hover:text-primary transition-colors">manage_search</span>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">EXTRACTION</h4>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">
+                            Target inputs are parsed to isolate declarative statements, discarding rhetorical noise. Entities, timestamps, and contextual anchors are categorized into an immutable evidence schema.
+                        </p>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-low border border-outline-variant p-6 hover:border-ink-red transition-colors group relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-surface-variant text-on-surface-variant font-metadata-xs text-metadata-xs px-2 py-1 border-b border-l border-outline-variant group-hover:bg-ink-red group-hover:text-white transition-colors">
+                            PHASE 02
+                        </div>
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-4 group-hover:text-primary transition-colors">account_tree</span>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">CORRELATION</h4>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">
+                            Extracted claims are mapped against primary sources, vetted archives, and authoritative indices. Discrepancies are flagged; corroborations are logged with cryptographic verification.
+                        </p>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-low border border-outline-variant p-6 hover:border-ink-red transition-colors group relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-surface-variant text-on-surface-variant font-metadata-xs text-metadata-xs px-2 py-1 border-b border-l border-outline-variant group-hover:bg-ink-red group-hover:text-white transition-colors">
+                            PHASE 03
+                        </div>
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-4 group-hover:text-primary transition-colors">fact_check</span>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">ADJUDICATION</h4>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">
+                            A final Confidence Score is synthesized based on source reliability, contradiction frequency, and metadata integrity. The resulting Investigator File is sealed for review.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Transparency / Data Privacy -->
+<div class="border border-outline-variant bg-surface relative">
+<!-- Top Tab like a physical folder -->
+<div class="absolute -top-8 left-0 border-t border-l border-r border-outline-variant bg-surface px-4 py-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-outline-variant">folder_open</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">FILE: SECURITY_PROTOCOL</span>
+</div>
+<div class="p-8 flex flex-col lg:flex-row gap-8 items-start">
+<div class="flex-1">
+<h3 class="font-stamp-lg text-stamp-lg text-ink-red mb-4 uppercase opacity-80 border-b border-outline-variant/30 pb-2 inline-block">
+                            TRANSPARENCY DIRECTIVE
+                        </h3>
+<div class="font-technical-sm text-technical-sm text-on-surface-variant space-y-4 max-w-2xl">
+<p>
+                                Investigations require secrecy; systemic trust requires transparency. The <span class="text-primary font-bold">Investigator File</span> protocol ensures that every determination made by DeceptiScan leaves a transparent audit trail.
+                            </p>
+<p>
+<strong>DATA PRIVACY:</strong> User queries are treated as classified. Queries are ephemeral, processed in isolated secure enclaves, and purged upon completion of the case file unless archived by user command. We monitor the data, not the investigator.
+                            </p>
+</div>
+</div>
+<!-- Faux terminal / stats block -->
+<div class="bg-carbon-gray border border-outline-variant p-4 w-full lg:w-72 font-metadata-xs text-metadata-xs text-verification-green">
+<div class="flex justify-between border-b border-outline-variant/50 pb-2 mb-2">
+<span>SYSTEM INTEGRITY</span>
+<span>100%</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/50 pb-2 mb-2">
+<span>ENCRYPTION</span>
+<span>AES-256</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/50 pb-2 mb-2">
+<span>LOG RETENTION</span>
+<span>ZERO</span>
+</div>
+<div class="mt-4 text-outline-variant animate-pulse">
+                            &gt; AWAITING FURTHER INSTRUCTION_
+                        </div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FOOTER -->
+<footer class="bg-carbon-gray dark:bg-surface-container-lowest border-t border-outline-variant mt-12 w-full">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop py-8 max-w-container-max mx-auto">
+<!-- Brand Logo / Stamp -->
+<div class="font-stamp-lg text-stamp-lg text-ink-red opacity-50 mb-6 md:mb-0">
+                DECEPTISCAN
+            </div>
+<!-- Links -->
+<div class="flex gap-6 mb-6 md:mb-0">
+<a class="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">
+                    EVIDENCE-FIRST
+                </a>
+<a class="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">
+                    LEGAL
+                </a>
+<a class="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant hover:text-ink-red transition-colors duration-300" href="#">
+                    PROTOCOL
+                </a>
+</div>
+<!-- Copyright -->
+<div class="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant">
+                © 2024 DECEPTISCAN FORENSICS. ALL RIGHTS RESERVED.
+            </div>
+</div>
+</footer>
+</body></html>

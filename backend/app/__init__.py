@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 import os
+from dotenv import load_dotenv
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -15,6 +16,7 @@ migrate = Migrate()
 
 def create_app(config_name=None):
     """Application factory for creating Flask app instance."""
+    load_dotenv()
     app = Flask(__name__)
 
     # Load configuration

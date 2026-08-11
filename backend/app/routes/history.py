@@ -10,6 +10,46 @@ from models.analysis import AnalysisRecord
 import uuid
 
 
+@api_bp.route('/analyses/recent', methods=['GET'])
+@jwt_required()
+def get_recent_analyses():
+    """
+    Get user's N most recent analysis records.
+    
+    Query Parameters:
+        limit (int): Max items to return (default: 5, max: 20)
+    
+    Headers:
+        Authorization: Bearer token
+    
+    Response:
+        List of recent analysis objects
+    """
+    user_id = get_jwt_identity()
+    try:
+        limit = int(request.args.get('limit', 5))
+    except ValueError:
+        limit = 5
+    limit = min(max(1, limit), 20)
+    
+    try:
+        records = AnalysisRecord.query.filter_by(
+            user_id=uuid.UUID(user_id)
+        ).order_by(AnalysisRecord.created_at.desc()).limit(limit).all()
+    except Exception as e:
+        return jsonify(ValidationError(
+            code='INTERNAL_ERROR',
+            message='Failed to retrieve recent analyses',
+            details={'error': str(e)}
+        ).to_dict()), 500
+    
+    items = [record.to_dict() for record in records]
+    return jsonify({
+        'items': items,
+        'count': len(items)
+    }), 200
+
+
 @api_bp.route('/history', methods=['GET'])
 @jwt_required()
 def get_history():

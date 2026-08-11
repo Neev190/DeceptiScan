@@ -100,7 +100,10 @@ export interface HighlightedSegment {
 export interface User {
   id: string;
   email: string;
+  username?: string;
+  isAdmin?: boolean;
   createdAt: string;
+  analysesCount?: number;
 }
 
 export interface AuthResponse {
@@ -134,10 +137,15 @@ export interface ApiResponse<T> {
 export interface AnalysisHistoryItem {
   id: string;
   authenticityScore: number;
+  authenticity_score?: number;
   classification: Classification;
   createdAt: string;
+  created_at?: string;
+  analyzedAt?: string;
   title?: string;
   sourceUrl?: string;
+  source_url?: string;
+  input_text?: string;
 }
 
 export interface PaginatedResponse<T> {

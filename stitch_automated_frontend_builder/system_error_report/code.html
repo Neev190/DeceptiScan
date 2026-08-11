@@ -1,0 +1,279 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SYS_ERR // DECEPTISCAN</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&amp;family=Inter:wght@100..900&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#cbc6bb",
+                    "inverse-surface": "#e5e2e1",
+                    "primary": "#ffffff",
+                    "error": "#ffb4ab",
+                    "paper-aged": "#E9E4D8",
+                    "secondary-container": "#822621",
+                    "outline-variant": "#49473f",
+                    "surface": "#131313",
+                    "inverse-primary": "#615e55",
+                    "background": "#131313",
+                    "on-primary-fixed-variant": "#49473e",
+                    "primary-fixed": "#e7e2d6",
+                    "verification-green": "#55785A",
+                    "secondary-fixed": "#ffdad6",
+                    "on-primary-fixed": "#1d1c14",
+                    "inverse-on-surface": "#313030",
+                    "typewriter-ribbon": "#34332F",
+                    "carbon-gray": "#171717",
+                    "on-primary": "#323028",
+                    "tertiary-fixed-dim": "#ccc4cb",
+                    "on-secondary-container": "#ff998f",
+                    "on-tertiary-fixed": "#1e1a1f",
+                    "on-primary-container": "#67645b",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "error-container": "#93000a",
+                    "on-secondary": "#630f0e",
+                    "surface-bright": "#3a3939",
+                    "on-secondary-fixed-variant": "#822621",
+                    "on-secondary-fixed": "#410002",
+                    "on-tertiary-container": "#686369",
+                    "on-background": "#e5e2e1",
+                    "tertiary-fixed": "#e8e0e7",
+                    "tertiary": "#ffffff",
+                    "surface-container-high": "#2a2a2a",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-error-container": "#ffdad6",
+                    "lead-charcoal": "#101010",
+                    "surface-container-low": "#1c1b1b",
+                    "on-surface-variant": "#cac6bc",
+                    "on-surface": "#e5e2e1",
+                    "tertiary-container": "#e8e0e7",
+                    "primary-container": "#e7e2d6",
+                    "outline": "#949087",
+                    "on-tertiary": "#332f34",
+                    "surface-variant": "#353534",
+                    "secondary": "#ffb4ab",
+                    "surface-container-highest": "#353534",
+                    "ink-red": "#8F302A",
+                    "surface-container": "#201f1f",
+                    "on-tertiary-fixed-variant": "#4a454b",
+                    "surface-dim": "#131313",
+                    "surface-tint": "#cbc6bb",
+                    "on-error": "#690005"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "margin-mobile": "20px",
+                    "margin-desktop": "48px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "headline-lg-mobile": [
+                            "Special Elite"
+                    ],
+                    "display-lg": [
+                            "Special Elite"
+                    ],
+                    "headline-lg": [
+                            "Special Elite"
+                    ],
+                    "stamp-lg": [
+                            "Special Elite"
+                    ],
+                    "metadata-xs": [
+                            "DM Mono"
+                    ],
+                    "label-caps": [
+                            "DM Mono"
+                    ],
+                    "technical-sm": [
+                            "DM Mono"
+                    ]
+            },
+            "fontSize": {
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "84px",
+                            {
+                                    "lineHeight": "1.0",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "40px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "stamp-lg": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "metadata-xs": [
+                            "10px",
+                            {
+                                    "lineHeight": "1.0",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "label-caps": [
+                            "11px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "0.15em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "technical-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 50;
+            position: absolute;
+            pointer-events: none;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(143,48,42,0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { top: -100px; }
+            100% { top: 100%; }
+        }
+        .cracked-overlay {
+            background-image: radial-gradient(circle, transparent 20%, #101010 120%);
+        }
+    </style>
+</head>
+<body class="bg-lead-charcoal text-on-background min-h-screen flex flex-col font-body-md overflow-hidden relative">
+<div class="scanline"></div>
+<div class="absolute inset-0 cracked-overlay pointer-events-none z-0"></div>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgb3BhY2l0eT0iMC4wMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEiPjxwYXRoIGQ9Ik0wIDYwaDYwTTAgMGg2MCIvPjwvZz48L3N2Zz4=')] opacity-20 pointer-events-none z-0"></div>
+<!-- TopAppBar -->
+<header class="bg-background dark:bg-background text-on-background dark:text-on-background docked full-width top-0 border-b border-outline-variant flex justify-between items-center w-full px-margin-desktop h-16 z-10 relative">
+<div class="font-headline-lg text-headline-lg text-primary tracking-tighter">DECEPTISCAN&nbsp;</div>
+<nav class="hidden md:flex gap-6">
+<a class="text-on-surface-variant font-label-caps hover:text-primary transition-colors duration-150 flex items-center gap-2" href="#"></a><a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors hover:bg-surface-variant/20 dark:hover:bg-surface-variant/30 px-3 py-2 rounded" href="https://app-companion-430619.appspot.com/projects/16465018933688368178?usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.9vdPKhB0RUg.O%2Fd%3D1%2Frs%3DAHpOoo97anj7zZ432JcN58tqJJp_A6WeOw%2Fm%3D__features__#" style="--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ; color: rgb(255, 255, 255); --tw-text-opacity: 1; animation-duration: 1.5s; animation-timing-function: ease-out; animation-iteration-count: 1; animation-direction: normal; animation-fill-mode: forwards; animation-play-state: running; animation-name: stitch-scan-flash; animation-timeline: auto; animation-range: normal; background-color: rgba(53, 53, 52, 0.3); outline: none !important; box-shadow: none !important;">Investigate</a>
+<a class="text-on-surface-variant font-label-caps hover:text-primary transition-colors duration-150 flex items-center gap-2" href="#"></a><a class="text-ink-red dark:text-on-secondary-container border-b-2 border-ink-red pb-1 font-label-caps text-label-caps px-3 py-2 rounded" href="https://app-companion-430619.appspot.com/projects/16465018933688368178?usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.9vdPKhB0RUg.O%2Fd%3D1%2Frs%3DAHpOoo97anj7zZ432JcN58tqJJp_A6WeOw%2Fm%3D__features__#" style="--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ; border-width: 0px 0px 2px; border-color: rgb(143, 48, 42); color: rgb(255, 153, 143); --tw-border-opacity: 1; padding: 0.5rem 0.75rem 0.25rem; --tw-text-opacity: 1; outline: none !important; box-shadow: none !important;">Case Archive</a>
+<a class="text-on-surface-variant font-label-caps hover:text-primary transition-colors duration-150 flex items-center gap-2" href="#"></a><a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors hover:bg-surface-variant/20 dark:hover:bg-surface-variant/30 px-3 py-2 rounded" href="https://app-companion-430619.appspot.com/projects/16465018933688368178?usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.9vdPKhB0RUg.O%2Fd%3D1%2Frs%3DAHpOoo97anj7zZ432JcN58tqJJp_A6WeOw%2Fm%3D__features__#" style="--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ; color: rgb(255, 255, 255); padding: 0.5rem 0.75rem; --tw-text-opacity: 1; background-color: rgba(53, 53, 52, 0.3); outline: none !important; box-shadow: none !important;">About</a>
+</nav>
+<div class="flex items-center gap-3">
+  <span class="font-technical-sm text-technical-sm uppercase tracking-wider" style="color: #ff8c42;">System Online</span>
+  <span class="material-symbols-outlined" style="color: #ff8c42; font-size: 24px;">fingerprint</span>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop z-10 relative">
+<!-- Error Card -->
+<div class="max-w-3xl w-full bg-carbon-gray border border-outline-variant rounded shadow-[0px_24px_60px_rgba(0,0,0,0.5)] relative overflow-hidden">
+<!-- Red Warning Header -->
+<div class="bg-error-container text-on-error-container p-4 border-b border-error border-opacity-30 flex items-center gap-3">
+<span class="material-symbols-outlined text-error">warning</span>
+<h1 class="font-headline-lg text-headline-lg text-error uppercase m-0 leading-none">ERRor!!!&nbsp;</h1>
+</div>
+<div class="p-8 md:p-12">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Metadata Column -->
+<div class="md:col-span-1 border-r border-outline-variant pr-8 space-y-6">
+<div>
+<div class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase mb-1">Status</div>
+<div class="font-technical-sm text-technical-sm text-error">INVESTIGATION INTERRUPTED</div>
+</div>
+<div>
+<div class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase mb-1">Timestamp</div>
+<div class="font-technical-sm text-technical-sm text-on-surface">1974-10-24 14:32:11</div>
+</div>
+<div>
+<div class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase mb-1">Ref ID</div>
+<div class="font-technical-sm text-technical-sm text-on-surface">DS-0248</div>
+</div>
+</div>
+<!-- Details Column -->
+<div class="md:col-span-2 space-y-8">
+<div>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-2">Fault Diagnosis</h2>
+<p class="font-technical-sm text-technical-sm text-on-surface mt-4">FILE COULD NOT BE PROCESSED.</p>
+<div class="mt-4 bg-surface-container-low p-4 border border-outline-variant font-technical-sm text-technical-sm text-on-surface-variant">
+                                &gt; REASON: SOURCE DOCUMENT IS EMPTY.<br>
+                                &gt; EXPECTED: DATA PAYLOAD.<br>
+                                &gt; RECEIVED: NULL.<br>
+                                &gt; ACTION: ABORT SEQUENCE.
+                            </div>
+</div>
+<div class="pt-4">
+<button class="bg-ink-red hover:bg-secondary-container text-primary font-label-caps text-label-caps py-3 px-6 rounded-none flex items-center gap-2 transition-colors duration-200">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                                RETURN TO INVESTIGATION
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- "Tape" accents -->
+<div class="absolute top-0 right-0 w-16 h-16 bg-surface-container-low border-b border-l border-outline-variant transform translate-x-8 -translate-y-8 rotate-45 opacity-50"></div>
+<div class="absolute bottom-0 left-0 w-16 h-16 bg-surface-container-low border-t border-r border-outline-variant transform -translate-x-8 translate-y-8 rotate-45 opacity-50"></div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-lead-charcoal dark:bg-lead-charcoal text-on-surface-variant dark:text-on-surface-variant docked full-width bottom-0 border-t border-outline-variant flex justify-between items-center px-margin-desktop py-4 w-full z-10 relative">
+<div class="font-technical-sm text-technical-sm text-on-surface">©1974 DEPARTMENT OF FAMILY SYSTEMS - CLASSIFIED ARCHIVE</div>
+<div class="flex gap-4">
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-ink-red transition-colors duration-150" href="#">PROTOCOL_01</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-ink-red transition-colors duration-150" href="#">LIABILITY_WVR</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-ink-red transition-colors duration-150" href="#">CONTACT_HQ</a>
+</div>
+</footer>
+
+
+
+
+
+
+
+
+</body></html>

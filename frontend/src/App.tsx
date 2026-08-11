@@ -3,11 +3,16 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import History from './pages/History';
+import About from './pages/About';
+import SystemErrorReport from './pages/SystemErrorReport';
+import InvestigatorProfile from './pages/InvestigatorProfile';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const Navbar = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  // Determine active route for nav highlighting
+  const path = window.location.pathname;
 
   const handleLogout = async () => {
     await logout();
@@ -15,53 +20,98 @@ const Navbar = () => {
   };
 
   return (
-    <nav style={{ background: '#1e293b', color: 'white', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-      <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '1.25rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        🔍 DeceptiScan
-      </Link>
-      <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-        <Link to="/" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 500 }}>Analyze</Link>
-        {isAuthenticated ? (
-          <>
-            <Link to="/history" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 500 }}>History</Link>
-            <span style={{ fontSize: '0.875rem', color: '#94a3b8' }}>{user?.email}</span>
+    <header className="bg-background dark:bg-background flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-50">
+      <div className="flex items-center gap-4">
+        <Link to="/" className="font-headline-lg text-headline-lg text-primary tracking-tighter uppercase no-underline">
+          DECEPTISCAN
+        </Link>
+      </div>
+      {/* Web Nav */}
+      <nav className="hidden md:flex gap-8">
+        <Link
+          to="/"
+          className={`font-label-caps text-label-caps uppercase no-underline transition-colors ${path === '/' ? 'text-ink-red dark:text-on-secondary-container border-b-2 border-ink-red pb-1' : 'text-on-surface-variant hover:text-primary'}`}
+        >
+          Investigate
+        </Link>
+        <Link
+          to="/history"
+          className={`font-label-caps text-label-caps uppercase no-underline transition-colors ${path === '/history' ? 'text-ink-red dark:text-on-secondary-container border-b-2 border-ink-red pb-1' : 'text-on-surface-variant hover:text-primary'}`}
+        >
+          Case Archive
+        </Link>
+        <Link
+          to="/about"
+          className="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors uppercase no-underline"
+        >
+          About
+        </Link>
+      </nav>
+      <div className="flex items-center gap-4">
+        <span className="font-technical-sm text-technical-sm text-[#FF8C42] tracking-widest uppercase">SYSTEM ONLINE</span>
+        <span className="material-symbols-outlined text-[#FF8C42]" style={{ fontVariationSettings: "'FILL' 0" }}>fingerprint</span>
+        {isAuthenticated && (
+          <div className="flex items-center gap-4 ml-4">
+            <Link
+              to="/profile"
+              className={`font-label-caps text-label-caps uppercase no-underline transition-colors ${path === '/profile' ? 'text-ink-red dark:text-on-secondary-container border-b-2 border-ink-red pb-1' : 'text-on-surface-variant hover:text-primary'}`}
+            >
+              PROFILE
+            </Link>
             <button
               onClick={handleLogout}
-              style={{ background: '#334155', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '0.375rem', cursor: 'pointer', fontWeight: 500 }}
+              className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors uppercase bg-transparent border-none cursor-pointer"
             >
-              Logout
+              LOGOUT
             </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 500 }}>Login</Link>
-            <Link
-              to="/register"
-              style={{ background: '#2563eb', color: 'white', textDecoration: 'none', padding: '0.4rem 0.8rem', borderRadius: '0.375rem', fontWeight: 500 }}
-            >
-              Register
-            </Link>
-          </>
+          </div>
+        )}
+        {!isAuthenticated && (
+          <Link
+            to="/login"
+            className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors uppercase no-underline ml-4"
+          >
+            LOGIN
+          </Link>
         )}
       </div>
-    </nav>
+    </header>
   );
 };
+
+const Footer = () => (
+  <footer className="bg-carbon-gray dark:bg-surface-container-lowest flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop py-8 max-w-container-max mx-auto border-t border-outline-variant mt-12">
+    <div className="mb-6 md:mb-0">
+      <span className="font-stamp-lg text-stamp-lg text-ink-red opacity-50">DECEPTISCAN</span>
+      <p className="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant mt-2">© 2024 DECEPTISCAN FORENSICS. ALL RIGHTS RESERVED.</p>
+    </div>
+    <nav className="flex gap-6">
+      <span className="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant/70">EVIDENCE-FIRST</span>
+      <span className="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant/70">LEGAL</span>
+      <Link to="/about" className="font-technical-sm text-technical-sm uppercase tracking-widest text-on-surface-variant hover:text-ink-red transition-colors duration-300 no-underline">PROTOCOL</Link>
+    </nav>
+  </footer>
+);
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+        <div className="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col">
           <Navbar />
-          <main style={{ paddingBottom: '3rem' }}>
+          <main className="flex-grow flex flex-col items-center w-full">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/history" element={<History />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/profile" element={<InvestigatorProfile />} />
+              <Route path="/system-error" element={<SystemErrorReport />} />
+              <Route path="*" element={<SystemErrorReport />} />
             </Routes>
           </main>
+          <Footer />
         </div>
       </AuthProvider>
     </BrowserRouter>

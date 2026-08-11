@@ -11,7 +11,10 @@ def app():
         db.create_all()
         yield app
         db.session.remove()
-        db.drop_all()
+        for table in reversed(db.metadata.sorted_tables):
+            if table.name != 'claim_embeddings':
+                db.session.execute(table.delete())
+        db.session.commit()
 
 
 @pytest.fixture
@@ -58,3 +61,37 @@ def test_get_analysis_not_found(client):
     assert res.status_code == 404
     data = res.get_json()
     assert data['error']['code'] == 'NOT_FOUND'
+
+
+def test_recent_analyses_endpoint_unauthenticated(client):
+    res = client.get('/api/v1/analyses/recent')
+    assert res.status_code == 401
+
+
+def test_recent_analyses_endpoint_authenticated(client, app):
+    from models.user import User
+    from flask_jwt_extended import create_access_token
+    import uuid
+
+    with app.app_context():
+        user = User(
+            id=uuid.uuid4(),
+            email='recent@example.com',
+            is_active=True
+        )
+        user.set_password('SecurePass123')
+        db.session.add(user)
+        db.session.commit()
+
+        token = create_access_token(identity=str(user.id))
+        headers = {'Authorization': f'Bearer {token}'}
+
+        client.post('/api/v1/analyze', json={'content': 'Test document one for recent test.'}, headers=headers)
+        client.post('/api/v1/analyze', json={'content': 'Test document two for recent test.'}, headers=headers)
+
+        res = client.get('/api/v1/analyses/recent?limit=5', headers=headers)
+        assert res.status_code == 200
+        data = res.get_json()
+        assert 'items' in data
+        assert len(data['items']) == 2
+        assert data['count'] == 2

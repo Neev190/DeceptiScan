@@ -59,4 +59,92 @@ describe('AnalysisResult Component', () => {
     expect(screen.getByText('Sentence Analysis')).toBeInTheDocument();
     expect(screen.getByText('Established scientific fact.')).toBeInTheDocument();
   });
+
+  describe('retrieved_claims rendering', () => {
+    it('renders without crashing when retrieved_claims is null', () => {
+      const resultWithNullClaims: AnalysisResultType = {
+        ...mockResultReliable,
+        retrieved_claims: null,
+      };
+      render(<AnalysisResult result={resultWithNullClaims} />);
+      expect(screen.getByText('85/100')).toBeInTheDocument();
+    });
+
+    it('hides similar claims section when retrieved_claims is null', () => {
+      const resultWithNullClaims: AnalysisResultType = {
+        ...mockResultReliable,
+        retrieved_claims: null,
+      };
+      render(<AnalysisResult result={resultWithNullClaims} />);
+      expect(screen.getByText(/NO RELATED CASES ON FILE/i)).toBeInTheDocument();
+    });
+
+    it('renders without crashing when retrieved_claims is empty array', () => {
+      const resultWithEmptyClaims: AnalysisResultType = {
+        ...mockResultReliable,
+        retrieved_claims: [],
+      };
+      render(<AnalysisResult result={resultWithEmptyClaims} />);
+      expect(screen.getByText('85/100')).toBeInTheDocument();
+    });
+
+    it('hides similar claims section when retrieved_claims is empty array', () => {
+      const resultWithEmptyClaims: AnalysisResultType = {
+        ...mockResultReliable,
+        retrieved_claims: [],
+      };
+      render(<AnalysisResult result={resultWithEmptyClaims} />);
+      expect(screen.getByText(/NO RELATED CASES ON FILE/i)).toBeInTheDocument();
+    });
+
+    it('renders without crashing when retrieved_claims is populated', () => {
+      const resultWithClaims: AnalysisResultType = {
+        ...mockResultReliable,
+        retrieved_claims: [
+          {
+            statement_text: 'The moon landing happened in 1969.',
+            label: 'true',
+            similarity_score: 0.85,
+          },
+          {
+            statement_text: 'Water boils at 100 degrees Celsius.',
+            label: 'true',
+            similarity_score: 0.72,
+          },
+        ],
+      };
+      render(<AnalysisResult result={resultWithClaims} />);
+      expect(screen.getByText('85/100')).toBeInTheDocument();
+    });
+
+    it('shows similar claims section when retrieved_claims is populated', () => {
+      const resultWithClaims: AnalysisResultType = {
+        ...mockResultReliable,
+        retrieved_claims: [
+          {
+            statement_text: 'The moon landing happened in 1969.',
+            label: 'true',
+            similarity_score: 0.85,
+          },
+          {
+            statement_text: 'Water boils at 100 degrees Celsius.',
+            label: 'true',
+            similarity_score: 0.72,
+          },
+        ],
+      };
+      render(<AnalysisResult result={resultWithClaims} />);
+      
+      // Verify claims are rendered
+      expect(screen.getByText(/The moon landing happened in 1969/i)).toBeInTheDocument();
+      expect(screen.getByText(/Water boils at 100 degrees Celsius/i)).toBeInTheDocument();
+      
+      // Verify labels are rendered
+      expect(screen.getByText(/\(TRUE\)/i)).toBeInTheDocument();
+      
+      // Verify similarity scores are rendered
+      expect(screen.getByText(/Match Score: 85%/i)).toBeInTheDocument();
+      expect(screen.getByText(/Match Score: 72%/i)).toBeInTheDocument();
+    });
+  });
 });

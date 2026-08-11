@@ -9,7 +9,10 @@ def app():
         db.create_all()
         yield app
         db.session.remove()
-        db.drop_all()
+        for table in reversed(db.metadata.sorted_tables):
+            if table.name != 'claim_embeddings':
+                db.session.execute(table.delete())
+        db.session.commit()
 
 
 @pytest.fixture

@@ -4,7 +4,7 @@ Feedback API endpoints for DeceptiScan.
 import uuid
 from datetime import datetime
 from flask import request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 from app.routes import api_bp
 from app.validators import validate_feedback_request, ValidationError
 from app import db
@@ -13,10 +13,13 @@ from models.analysis import AnalysisRecord
 
 
 @api_bp.route('/feedback', methods=['POST'])
-@jwt_required(optional=True)
 def submit_feedback():
     """
     Submit feedback on an analysis.
+    
+    Note: This route uses manual JWT handling (no @jwt_required decorator) to ensure
+    consistent behavior with /analyze route. Both optional-auth routes should handle
+    malformed/expired tokens gracefully by treating them as anonymous requests.
     
     Request Body:
         analysisId (str): ID of the analysis (required)
@@ -39,13 +42,29 @@ def submit_feedback():
         return jsonify(error.to_dict()), 400
     
     analysis_id = data.get('analysisId') or data.get('analysis_id')
+
+    # Validate analysis_id is a well-formed UUID before any DB lookup.
+    # A non-UUID string (e.g. path traversal or garbage) must return 404,
+    # not a 500 from an unhandled UUID parse error elsewhere in the stack.
+    import uuid as _uuid
+    try:
+        _uuid.UUID(str(analysis_id))
+    except (ValueError, AttributeError):
+        return jsonify(ValidationError(
+            code='NOT_FOUND',
+            message='Analysis not found',
+            details={'analysisId': analysis_id}
+        ).to_dict()), 404
     
     # Get user ID if authenticated
     user_id = None
     try:
-        user_id = get_jwt_identity()
+        verify_jwt_in_request(optional=True)
+        identity = get_jwt_identity()
+        if identity:
+            user_id = identity
     except Exception:
-        pass
+        user_id = None
     
     # Verify analysis exists
     from app.routes.helpers import find_by_id

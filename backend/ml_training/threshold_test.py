@@ -12,12 +12,6 @@ Usage:
 
 Output is printed to stdout and can be piped to a file for documentation.
 """
-import sys as _sys
-_PYLIBS = r"D:\pylibs"
-if _PYLIBS in _sys.path:
-    _sys.path.remove(_PYLIBS)
-_sys.path.insert(0, _PYLIBS)
-
 import os
 import sys
 import logging

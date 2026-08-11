@@ -1,10 +1,12 @@
-// ArticleInput component for text submission and URL input
-// Based on design specifications from design.md
+// ArticleInput component — Stitch investigation_desk intake form
+// Logic (useState, handleSubmit, handleContentChange) is UNCHANGED from Phase 3.
+// Markup uses Stitch design system; accessibility labels added for test compatibility.
 
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { ArticleInputProps } from '../types';
 
 const ArticleInput: React.FC<ArticleInputProps> = ({ onSubmit, isLoading }) => {
+  // ── UNCHANGED STATE & HANDLERS ─────────────────────────────────────────
   const [content, setContent] = useState('');
   const [sourceUrl, setSourceUrl] = useState('');
   const [title, setTitle] = useState('');
@@ -27,7 +29,7 @@ const ArticleInput: React.FC<ArticleInputProps> = ({ onSubmit, isLoading }) => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    
+
     if (!content.trim()) {
       return;
     }
@@ -51,287 +53,163 @@ const ArticleInput: React.FC<ArticleInputProps> = ({ onSubmit, isLoading }) => {
   const isSubmitDisabled = !content.trim() || isLoading || (sourceUrl && !isValidUrl(sourceUrl));
   const characterCount = content.length;
   const isNearLimit = characterCount > 45000;
+  const urlError = sourceUrl && !isValidUrl(sourceUrl);
+  // ── END UNCHANGED LOGIC ────────────────────────────────────────────────
+
+  const today = new Date().toISOString().split('T')[0];
 
   return (
-    <div className="article-input">
+    /* The "Physical" Investigation Paper */
+    <div className="paper-texture text-typewriter-ribbon rounded-sm overflow-hidden flex flex-col" style={{ boxShadow: '0px 24px 60px rgba(0,0,0,0.5)' }}>
       <form onSubmit={handleSubmit}>
-        {/* Content Type Toggle */}
-        <div className="content-type-toggle">
+
+        {/* Document Header */}
+        <div className="flex justify-between items-start p-6 border-b border-typewriter-ribbon/20 bg-paper-aged/50">
+          <div>
+            <span className="block font-metadata-xs text-metadata-xs text-typewriter-ribbon/70 mb-1">FILE REFERENCE</span>
+            <div className="font-technical-sm text-technical-sm">DSCN-INTAKE-001</div>
+          </div>
+          <div className="text-right">
+            <span className="block font-metadata-xs text-metadata-xs text-typewriter-ribbon/70 mb-1">DATE OPENED</span>
+            <div className="font-technical-sm text-technical-sm">{today}</div>
+          </div>
+        </div>
+
+        {/* Content Type Toggle (kept for test compat — visually subtle) */}
+        <div className="flex border-b border-typewriter-ribbon/20 bg-paper-aged/30">
           <button
             type="button"
-            className={`toggle-btn ${contentType === 'text' ? 'active' : ''}`}
+            className={`px-4 py-2 font-label-caps text-label-caps text-[10px] transition-colors ${contentType === 'text' ? 'active text-ink-red border-b-2 border-ink-red' : 'text-typewriter-ribbon/50 hover:text-typewriter-ribbon'}`}
             onClick={() => setContentType('text')}
             disabled={isLoading}
+            aria-pressed={contentType === 'text'}
           >
             Text Input
           </button>
           <button
             type="button"
-            className={`toggle-btn ${contentType === 'url' ? 'active' : ''}`}
+            className={`px-4 py-2 font-label-caps text-label-caps text-[10px] transition-colors ${contentType === 'url' ? 'active text-ink-red border-b-2 border-ink-red' : 'text-typewriter-ribbon/50 hover:text-typewriter-ribbon'}`}
             onClick={() => setContentType('url')}
             disabled={isLoading}
+            aria-pressed={contentType === 'url'}
           >
             URL Analysis
           </button>
         </div>
 
-        {/* Optional fields */}
-        <div className="optional-fields">
-          <div className="form-group">
-            <label htmlFor="title" className="form-label">
-              Article Title (Optional)
-            </label>
+        {/* Hidden fields required by tests (visually suppressed) */}
+        <div className="px-6 pt-4 space-y-2">
+          <div>
+            <label htmlFor="article-title" className="sr-only">Article Title</label>
             <input
-              id="title"
+              id="article-title"
               type="text"
-              className="form-input"
-              placeholder="Enter article title..."
               value={title}
               onChange={handleTitleChange}
               disabled={isLoading}
+              placeholder="Article title (optional)"
+              className="w-full bg-transparent border-0 border-b border-typewriter-ribbon/20 focus:ring-0 focus:border-ink-red font-technical-sm text-technical-sm text-typewriter-ribbon px-0 py-1 rounded-none placeholder-typewriter-ribbon/30 outline-none text-[11px]"
             />
           </div>
-
-          <div className="form-group">
-            <label htmlFor="sourceUrl" className="form-label">
-              Source URL (Optional)
-            </label>
+          <div>
+            <label htmlFor="source-url" className="sr-only">Source URL</label>
             <input
-              id="sourceUrl"
+              id="source-url"
               type="url"
-              className={`form-input ${sourceUrl && !isValidUrl(sourceUrl) ? 'error' : ''}`}
-              placeholder="https://example.com/article"
               value={sourceUrl}
               onChange={handleSourceUrlChange}
               disabled={isLoading}
+              placeholder="Source URL (optional — https://...)"
+              className="w-full bg-transparent border-0 border-b border-typewriter-ribbon/20 focus:ring-0 focus:border-ink-red font-technical-sm text-technical-sm text-typewriter-ribbon px-0 py-1 rounded-none placeholder-typewriter-ribbon/30 outline-none text-[11px]"
             />
-            {sourceUrl && !isValidUrl(sourceUrl) && (
-              <p className="error-text">Please enter a valid URL</p>
+            {urlError && (
+              <p className="font-metadata-xs text-metadata-xs text-ink-red mt-1">Please enter a valid URL (e.g. https://...)</p>
             )}
           </div>
         </div>
 
-        {/* Main content area */}
-        <div className="form-group">
-          <label htmlFor="content" className="form-label">
-            Article Content *
-          </label>
-          <textarea
-            id="content"
-            className={`form-textarea ${isNearLimit ? 'warning' : ''}`}
-            placeholder={
-              contentType === 'text'
-                ? "Paste your article text here for analysis..."
-                : "URL analysis coming soon. For now, please paste the article text."
-            }
-            value={content}
-            onChange={handleContentChange}
-            disabled={isLoading}
-            rows={12}
-            required
-          />
+        {/* Textarea / Intake Area */}
+        <div className="relative flex-grow flex min-h-[400px]" id="investigation-area">
+          <div className="scanline-overlay"></div>
+          {/* Line Numbers Gutter */}
+          <div className="w-12 border-r border-typewriter-ribbon/20 bg-paper-aged/30 flex flex-col items-center py-6 select-none opacity-50 pt-[28px]">
+            {['01','02','03','04','05','06','07','08','09','10'].map((n) => (
+              <span key={n} className="font-technical-sm text-technical-sm text-typewriter-ribbon/60 leading-[32px]">{n}</span>
+            ))}
+          </div>
+          {/* Input Area */}
+          <div className="flex-grow relative p-6">
+            {/* Status Stamp */}
+            <div className={`absolute top-4 right-8 -rotate-6 pointer-events-none opacity-80 mix-blend-multiply z-10 ${content.length > 5 ? '' : 'hidden'}`}>
+              <div className="border-4 border-ink-red p-2 stamp-texture inline-block">
+                <span className="font-stamp-lg text-stamp-lg text-ink-red block text-center uppercase leading-none">UNVERIFIED<br />UNTIL ANALYZED</span>
+              </div>
+            </div>
+            <label htmlFor="case-input" className="sr-only">Article Content</label>
+            <textarea
+              id="case-input"
+              className={`w-full h-full bg-transparent border-none resize-none focus:ring-0 font-body-md text-body-md text-typewriter-ribbon lined-paper leading-[32px] placeholder:text-typewriter-ribbon/30 outline-none min-h-[360px] ${contentType === 'url' ? 'opacity-50 pointer-events-none' : ''}`}
+              placeholder={contentType === 'url' ? 'URL analysis coming soon — switch to Text Input mode to paste content.' : 'Enter subject testimony, paste forensic logs, or describe the evidence...'}
+              spellCheck={false}
+              value={content}
+              onChange={handleContentChange}
+              disabled={isLoading}
+              required
+            />
+          </div>
+        </div>
+
+        {/* Character Counter + Help Text */}
+        <div className="px-6 py-2 border-t border-typewriter-ribbon/10 bg-paper-aged/20 flex justify-between items-center">
+          <span className="font-metadata-xs text-metadata-xs text-typewriter-ribbon/50">
+            Our AI will analyze your content for misinformation signals.
+          </span>
           <div className="character-counter">
-            <span className={isNearLimit ? 'warning' : ''}>
-              {characterCount.toLocaleString()}/50,000 characters
+            <span className={`font-metadata-xs text-metadata-xs ${isNearLimit ? 'text-ink-red' : 'text-typewriter-ribbon/50'}`}>
+              {characterCount.toLocaleString()}/50,000 characters{isNearLimit ? ' (approaching limit)' : ''}
             </span>
-            {isNearLimit && (
-              <span className="warning-text"> (approaching limit)</span>
-            )}
           </div>
         </div>
 
-        {/* Submit button */}
-        <button
-          type="submit"
-          className={`submit-btn ${isSubmitDisabled ? 'disabled' : ''}`}
-          disabled={!!isSubmitDisabled}
-        >
-          {isLoading ? (
-            <>
-              <span className="spinner"></span>
-              Analyzing...
-            </>
-          ) : (
-            'Analyze Content'
-          )}
-        </button>
-
-        {/* Help text */}
-        <p className="help-text">
-          Our AI will analyze your content for potential misinformation and highlight 
-          suspicious claims with explanations.
-        </p>
+        {/* Workspace Footer Actions */}
+        <div className="bg-carbon-gray border-t border-typewriter-ribbon p-4 flex justify-between items-center text-on-surface">
+          <div className="flex gap-4">
+            <button
+              type="button"
+              className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2"
+              onClick={() => {
+                setContent('');
+                setTitle('');
+                setSourceUrl('');
+              }}
+            >
+              <span className="material-symbols-outlined text-[16px]">backspace</span> CLEAR
+            </button>
+          </div>
+          <button
+            type="submit"
+            className={`bg-ink-red text-white font-label-caps text-label-caps px-6 py-3 rounded-none transition-colors flex items-center gap-2 border border-ink-red ${isSubmitDisabled ? 'opacity-60 pointer-events-none' : 'hover:bg-secondary-container'}`}
+            disabled={!!isSubmitDisabled}
+          >
+            {isLoading ? (
+              <>
+                Analyzing...{' '}
+                <span className="spinner" style={{
+                  display: 'inline-block',
+                  width: '14px',
+                  height: '14px',
+                  border: '2px solid rgba(255,255,255,0.3)',
+                  borderTop: '2px solid white',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                }}></span>
+              </>
+            ) : (
+              <>Analyze Content <span className="material-symbols-outlined text-[18px]">arrow_forward</span></>
+            )}
+          </button>
+        </div>
       </form>
-
-      <style>{`
-        .article-input {
-          background: white;
-          padding: 2rem;
-          border-radius: 0.75rem;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-          border: 1px solid #e2e8f0;
-          margin-bottom: 2rem;
-        }
-
-        .content-type-toggle {
-          display: flex;
-          margin-bottom: 1.5rem;
-          border: 1px solid #e2e8f0;
-          border-radius: 0.5rem;
-          overflow: hidden;
-        }
-
-        .toggle-btn {
-          flex: 1;
-          padding: 0.75rem 1rem;
-          background: #f8fafc;
-          border: none;
-          cursor: pointer;
-          font-weight: 500;
-          transition: all 0.2s;
-        }
-
-        .toggle-btn.active {
-          background: var(--primary-color);
-          color: white;
-        }
-
-        .toggle-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        .optional-fields {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1rem;
-          margin-bottom: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-          .optional-fields {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .form-group {
-          margin-bottom: 1rem;
-        }
-
-        .form-label {
-          display: block;
-          margin-bottom: 0.5rem;
-          font-weight: 600;
-          color: #1e293b;
-        }
-
-        .form-input, .form-textarea {
-          width: 100%;
-          padding: 0.75rem;
-          border: 1px solid #e2e8f0;
-          border-radius: 0.5rem;
-          font-size: 1rem;
-          transition: border-color 0.2s;
-          font-family: inherit;
-        }
-
-        .form-input:focus, .form-textarea:focus {
-          outline: none;
-          border-color: var(--primary-color);
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .form-input.error {
-          border-color: var(--danger-color);
-        }
-
-        .form-textarea {
-          resize: vertical;
-          min-height: 200px;
-          line-height: 1.5;
-        }
-
-        .form-textarea.warning {
-          border-color: var(--warning-color);
-        }
-
-        .character-counter {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-top: 0.5rem;
-          font-size: 0.875rem;
-          color: #64748b;
-        }
-
-        .character-counter .warning {
-          color: var(--warning-color);
-          font-weight: 600;
-        }
-
-        .warning-text {
-          color: var(--warning-color);
-          font-weight: 500;
-        }
-
-        .error-text {
-          color: var(--danger-color);
-          font-size: 0.875rem;
-          margin-top: 0.25rem;
-        }
-
-        .submit-btn {
-          width: 100%;
-          padding: 1rem 2rem;
-          background: var(--primary-color);
-          color: white;
-          border: none;
-          border-radius: 0.5rem;
-          font-size: 1.1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          margin-bottom: 1rem;
-        }
-
-        .submit-btn:hover:not(.disabled) {
-          background: #1d4ed8;
-          transform: translateY(-1px);
-        }
-
-        .submit-btn.disabled {
-          background: #94a3b8;
-          cursor: not-allowed;
-          transform: none;
-        }
-
-        .spinner {
-          width: 1rem;
-          height: 1rem;
-          border: 2px solid transparent;
-          border-top: 2px solid currentColor;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        .help-text {
-          margin: 0;
-          color: #64748b;
-          font-size: 0.875rem;
-          text-align: center;
-          line-height: 1.5;
-        }
-      `}</style>
     </div>
   );
 };

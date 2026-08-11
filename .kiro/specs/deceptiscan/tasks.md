@@ -253,8 +253,8 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 5.1, Task 5.2, Task 5.3
 
-- [x] 25. Configure Production Environment
-  **Description**: Set up production configuration files
+- [ ] 25. Configure Production Environment (DEFERRED — Track A)
+  **Description**: Set up production configuration files (deferred out of scope per Phase 4 planning; Track A deployment task)
   - Configure Nginx reverse proxy
   - Set up environment variables for production
   - Configure HTTPS (placeholder for actual certs)
@@ -262,8 +262,8 @@ Task 1.1 ──┬──► Task 1.2
 
   **Dependencies**: Task 1.1
 
-- [x] 26. Create Deployment Scripts
-  **Description**: Create scripts for deployment
+- [ ] 26. Create Deployment Scripts (DEFERRED — Track A)
+  **Description**: Create scripts for deployment (deferred out of scope per Phase 4 planning; Track A deployment task)
   - Create build script for frontend
   - Create startup script for backend
   - Create Docker image build scripts

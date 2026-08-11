@@ -14,13 +14,6 @@ Outputs:
     backend/ml_models/checkpoint/   — best model + tokenizer (safetensors format)
     backend/ml_models/metrics.json  — accuracy, precision, recall, F1, confusion matrix
 """
-# Bootstrap: ensure D:\pylibs (short-path ML install) takes priority before any other import.
-import sys as _sys
-_PYLIBS = r"D:\pylibs"
-if _PYLIBS in _sys.path:
-    _sys.path.remove(_PYLIBS)
-_sys.path.insert(0, _PYLIBS)
-
 import os
 import sys
 import json

@@ -126,13 +126,44 @@ class ApiService {
     }
   }
 
+  async updateCurrentUser(data: { username?: string }): Promise<User> {
+    try {
+      const response: AxiosResponse<User> = await this.api.patch('/auth/me', data);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
   // History endpoints
+  async getRecentAnalyses(limit = 5): Promise<AnalysisHistoryItem[]> {
+    try {
+      const response = await this.api.get('/analyses/recent', {
+        params: { limit },
+      });
+      return response.data.items || [];
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
   async getAnalysisHistory(page = 1, limit = 10): Promise<PaginatedResponse<AnalysisHistoryItem>> {
     try {
-      const response: AxiosResponse<PaginatedResponse<AnalysisHistoryItem>> = await this.api.get('/history', {
+      const response = await this.api.get('/history', {
         params: { page, limit },
       });
-      return response.data;
+      const resData = response.data;
+      const itemsList = resData.data || resData.items || [];
+      const paginationObj = resData.pagination || {
+        page: resData.page || page,
+        limit: resData.limit || limit,
+        total: resData.total || 0,
+        totalPages: resData.pages || resData.totalPages || 1,
+      };
+      return {
+        data: itemsList,
+        pagination: paginationObj,
+      };
     } catch (error: any) {
       throw this.handleError(error);
     }

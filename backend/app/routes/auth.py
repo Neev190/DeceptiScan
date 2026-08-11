@@ -138,7 +138,7 @@ def get_current_user():
         Authorization: Bearer token
     
     Response:
-        User profile information
+        User profile information with analyses count
     """
     user_id = get_jwt_identity()
     from app.routes.helpers import find_by_id
@@ -151,10 +151,97 @@ def get_current_user():
             details={}
         ).to_dict()), 404
     
+    analyses_count = len(user.analyses) if user.analyses else 0
+
     return jsonify({
         'id': str(user.id),
         'email': user.email,
-        'createdAt': user.created_at.isoformat() if user.created_at else None
+        'username': user.username,
+        'isAdmin': user.is_admin,
+        'createdAt': user.created_at.isoformat() if user.created_at else None,
+        'analysesCount': analyses_count
+    }), 200
+
+
+@api_bp.route('/auth/me', methods=['PATCH'])
+@jwt_required()
+def update_current_user():
+    """
+    Update current user profile (username).
+    
+    Headers:
+        Authorization: Bearer token
+    Request Body:
+        username (str, optional): Max 100 chars
+    
+    Response:
+        Updated user profile
+    """
+    user_id = get_jwt_identity()
+    from app.routes.helpers import find_by_id
+    user = find_by_id(User, user_id)
+    
+    if not user:
+        return jsonify(ValidationError(
+            code='NOT_FOUND',
+            message='User not found',
+            details={}
+        ).to_dict()), 404
+    
+    data = request.get_json() or {}
+    if 'username' in data:
+        username = data.get('username')
+        if username is not None:
+            # Reject non-string types — blind str() coercion would silently store
+            # True as "True", 123 as "123", etc., which is unintended.
+            if not isinstance(username, str):
+                return jsonify(ValidationError(
+                    code='INVALID_INPUT',
+                    message='Username must be a string',
+                    details={'field': 'username'}
+                ).to_dict()), 400
+            username = username.strip()
+            if len(username) > 100:
+                return jsonify(ValidationError(
+                    code='INVALID_INPUT',
+                    message='Username must not exceed 100 characters',
+                    details={'field': 'username'}
+                ).to_dict()), 400
+            
+            # Check for uniqueness against other users
+            if username:
+                existing_user = User.query.filter(
+                    User.username.ilike(username),
+                    User.id != user.id
+                ).first()
+                if existing_user:
+                    return jsonify(ValidationError(
+                        code='INVALID_INPUT',
+                        message='Codename is already registered to another investigator',
+                        details={'field': 'username'}
+                    ).to_dict()), 400
+
+            user.username = username if username else None
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify(ValidationError(
+            code='INTERNAL_ERROR',
+            message='Failed to update profile',
+            details={}
+        ).to_dict()), 500
+
+    analyses_count = len(user.analyses) if user.analyses else 0
+
+    return jsonify({
+        'id': str(user.id),
+        'email': user.email,
+        'username': user.username,
+        'isAdmin': user.is_admin,
+        'createdAt': user.created_at.isoformat() if user.created_at else None,
+        'analysesCount': analyses_count
     }), 200
 
 

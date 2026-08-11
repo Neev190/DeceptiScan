@@ -1,0 +1,258 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Investigator File - DeceptiScan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&amp;family=Inter:wght@100..900&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#cbc6bb",
+                        "inverse-surface": "#e5e2e1",
+                        "primary": "#ffffff",
+                        "error": "#ffb4ab",
+                        "paper-aged": "#E9E4D8",
+                        "secondary-container": "#822621",
+                        "outline-variant": "#49473f",
+                        "surface": "#131313",
+                        "inverse-primary": "#615e55",
+                        "background": "#131313",
+                        "on-primary-fixed-variant": "#49473e",
+                        "primary-fixed": "#e7e2d6",
+                        "verification-green": "#55785A",
+                        "secondary-fixed": "#ffdad6",
+                        "on-primary-fixed": "#1d1c14",
+                        "inverse-on-surface": "#313030",
+                        "typewriter-ribbon": "#34332F",
+                        "carbon-gray": "#171717",
+                        "on-primary": "#323028",
+                        "tertiary-fixed-dim": "#ccc4cb",
+                        "on-secondary-container": "#ff998f",
+                        "on-tertiary-fixed": "#1e1a1f",
+                        "on-primary-container": "#67645b",
+                        "secondary-fixed-dim": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "on-secondary": "#630f0e",
+                        "surface-bright": "#3a3939",
+                        "on-secondary-fixed-variant": "#822621",
+                        "on-secondary-fixed": "#410002",
+                        "on-tertiary-container": "#686369",
+                        "on-background": "#e5e2e1",
+                        "tertiary-fixed": "#e8e0e7",
+                        "tertiary": "#ffffff",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-error-container": "#ffdad6",
+                        "lead-charcoal": "#101010",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#cac6bc",
+                        "on-surface": "#e5e2e1",
+                        "tertiary-container": "#e8e0e7",
+                        "primary-container": "#e7e2d6",
+                        "outline": "#949087",
+                        "on-tertiary": "#332f34",
+                        "surface-variant": "#353534",
+                        "secondary": "#ffb4ab",
+                        "surface-container-highest": "#353534",
+                        "ink-red": "#8F302A",
+                        "surface-container": "#201f1f",
+                        "on-tertiary-fixed-variant": "#4a454b",
+                        "surface-dim": "#131313",
+                        "surface-tint": "#cbc6bb",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1200px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "48px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Special Elite"],
+                        "display-lg": ["Special Elite"],
+                        "headline-lg": ["Special Elite"],
+                        "stamp-lg": ["Special Elite"],
+                        "metadata-xs": ["DM Mono"],
+                        "label-caps": ["DM Mono"],
+                        "technical-sm": ["DM Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.1", "fontWeight": "400" }],
+                        "display-lg": ["84px", { "lineHeight": "1.0", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.1", "fontWeight": "400" }],
+                        "stamp-lg": ["24px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                        "metadata-xs": ["10px", { "lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.15em", "fontWeight": "700" }],
+                        "technical-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .noise-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent);
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+    </style>
+</head>
+<body class="bg-lead-charcoal text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden relative selection:bg-ink-red selection:text-white">
+<div class="fixed inset-0 noise-overlay z-50"></div>
+<div class="fixed inset-0 grid-bg z-0"></div>
+<!-- Navigation suppressed for Account/Profile focused screen per rules, prioritizing content canvas -->
+<main class="flex-grow flex flex-col items-center justify-start pt-12 pb-24 px-margin-mobile md:px-margin-desktop relative z-10 w-full max-w-container-max mx-auto">
+<header class="w-full max-w-3xl mb-8 flex justify-between items-end border-b border-outline-variant pb-4">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tighter uppercase">INVESTIGATOR FILE</h1>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant mt-2">SECURE PROFILE ACCESS // SYS_ONL</p>
+</div>
+<div class="text-right"><div class="flex items-center gap-3 justify-end">
+  <span class="font-technical-sm text-technical-sm uppercase tracking-widest" style="color: #ff8c42;">SYSTEM ONLINE</span>
+  <span class="material-symbols-outlined text-[24px]" style="color: #ff8c42;">fingerprint</span>
+</div></div>
+</header>
+<div class="w-full max-w-3xl bg-carbon-gray shadow-[0px_24px_60px_rgba(0,0,0,0.5)] border border-outline-variant relative">
+<div class="absolute inset-0 bg-paper-aged opacity-5 pointer-events-none"></div>
+<!-- Tab/Folder Header -->
+<div class="flex border-b border-outline-variant bg-surface-container-high">
+<div class="px-6 py-3 border-r border-outline-variant bg-carbon-gray font-label-caps text-label-caps text-primary border-t-2 border-t-ink-red">ACCOUNT_DETAILS</div>
+<div class="px-6 py-3 border-r border-outline-variant font-label-caps text-label-caps text-on-surface-variant hover:text-primary cursor-pointer transition-colors">SYSTEM_SETTINGS</div>
+</div>
+<div class="p-8 md:p-12 space-y-12">
+<!-- Identity Section -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+<div class="md:col-span-4 flex flex-col items-center justify-center space-y-4">
+<div class="w-32 h-32 border-2 border-outline-variant rounded-sm overflow-hidden relative group grayscale contrast-125">
+<img class="w-full h-full object-cover" data-alt="A stark, high-contrast, black and white portrait of an investigator looking directly at the camera, shot with harsh directional lighting in a clinical setting. The mood is serious, analytical, and slightly bureaucratic noir, fitting a highly secure system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1mELan6NX62hNBG5TzbvDWcDimyT4XalvP_88uSL_mMCA-uzqFxcM04T5n3Ur_vczD1Oo5vkLZPChw1BciQFHtQuXmpMXSf6xxAvTOq93dQ0KEcCuTZO9EJCYLRDEzDSCBbhbULI-_JIVD8y0gxrlOxcK4GBNPT_7gUe0fvqqGs7H8amPwzngonmaS7GBvcQPTEaw4Ine8ucj-BPlAeq6VALaAeC9zpokLTg3tus67Vl2QiKUENE_hQ">
+<div class="absolute inset-0 bg-ink-red opacity-0 group-hover:opacity-20 transition-opacity mix-blend-multiply"></div>
+</div>
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors border-b border-outline hover:border-primary pb-1">UPDATE_ID_PHOTO</button>
+</div>
+<div class="md:col-span-8 space-y-6">
+<div class="grid grid-cols-2 gap-x-4 gap-y-6">
+<div class="col-span-2 md:col-span-1 border-b border-outline-variant pb-2">
+<label class="block font-metadata-xs text-metadata-xs text-on-surface-variant mb-1 uppercase">Account ID</label>
+<div class="font-technical-sm text-technical-sm text-primary">OP-042-OMEGA</div>
+</div>
+<div class="col-span-2 md:col-span-1 border-b border-outline-variant pb-2">
+<label class="block font-metadata-xs text-metadata-xs text-on-surface-variant mb-1 uppercase">Clearance Level</label>
+<div class="font-technical-sm text-technical-sm text-ink-red">OMEGA</div>
+</div>
+<div class="col-span-2 border-b border-outline-variant pb-2">
+<label class="block font-metadata-xs text-metadata-xs text-on-surface-variant mb-1 uppercase">Email Address</label>
+<div class="font-technical-sm text-technical-sm text-primary">investigator.042@dept-fs.gov</div>
+</div>
+</div>
+</div>
+</section>
+<div class="h-px bg-outline-variant w-full"></div>
+<!-- Statistics Section -->
+<section>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">analytics</span>
+                        Operational Record
+                    </h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-surface-container p-4 border border-outline-variant rounded-sm flex flex-col justify-between">
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase">Date Joined</span>
+<span class="font-technical-sm text-technical-sm text-primary mt-2">1974.11.02</span>
+</div>
+<div class="bg-surface-container p-4 border border-outline-variant rounded-sm flex flex-col justify-between">
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase">Analyses Completed</span>
+<span class="font-technical-sm text-technical-sm text-primary mt-2">1,402</span>
+</div>
+<div class="bg-surface-container p-4 border border-outline-variant rounded-sm flex flex-col justify-between">
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase">Open Cases</span>
+<span class="font-technical-sm text-technical-sm text-ink-red mt-2">03</span>
+</div>
+<div class="bg-surface-container p-4 border border-outline-variant rounded-sm flex flex-col justify-between">
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase">System Uptime</span>
+<span class="font-technical-sm text-technical-sm text-primary mt-2">99.9%</span>
+</div>
+</div>
+</section>
+<div class="h-px bg-outline-variant w-full"></div>
+<!-- Settings Shortcuts -->
+<section>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">settings</span>
+                        Preferences
+                    </h2>
+<div class="space-y-2">
+<div class="flex justify-between items-center py-3 border-b border-outline-variant/50 hover:bg-surface-container-high transition-colors px-2 -mx-2 cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">contrast</span>
+<span class="font-technical-sm text-technical-sm text-primary">THEME_INTERFACE</span>
+</div>
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase group-hover:text-primary">Modify</span>
+</div>
+<div class="flex justify-between items-center py-3 border-b border-outline-variant/50 hover:bg-surface-container-high transition-colors px-2 -mx-2 cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">database</span>
+<span class="font-technical-sm text-technical-sm text-primary">DATA_RETENTION</span>
+</div>
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase group-hover:text-primary">Manage</span>
+</div>
+<div class="flex justify-between items-center py-3 border-b border-outline-variant/50 hover:bg-surface-container-high transition-colors px-2 -mx-2 cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">history</span>
+<span class="font-technical-sm text-technical-sm text-primary">SESSION_LOGS</span>
+</div>
+<span class="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase group-hover:text-primary">View</span>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="pt-8 flex justify-end gap-4 border-t border-outline-variant">
+<button class="px-6 py-2 border border-paper-aged bg-transparent font-label-caps text-label-caps text-primary hover:bg-surface-container transition-colors uppercase rounded-sm">
+                        LOCK_TERMINAL
+                    </button>
+<button class="px-6 py-2 bg-ink-red font-label-caps text-label-caps text-white hover:bg-secondary-container transition-colors uppercase rounded-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">logout</span>
+                        TERMINATE_SESSION
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Component from JSON -->
+<footer class="bg-lead-charcoal dark:bg-lead-charcoal border-t border-outline-variant flex justify-between items-center px-margin-desktop py-4 w-full mt-auto relative z-20">
+<div class="font-technical-sm text-technical-sm text-on-surface">©1974 DEPARTMENT OF FAMILY SYSTEMS - CLASSIFIED ARCHIVE</div>
+<nav class="flex gap-6">
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-ink-red uppercase" href="#">PROTOCOL_01</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-ink-red uppercase" href="#">LIABILITY_WVR</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-ink-red uppercase" href="#">CONTACT_HQ</a>
+</nav>
+</footer>
+
+
+</body></html>

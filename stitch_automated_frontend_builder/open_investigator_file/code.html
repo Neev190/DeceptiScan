@@ -1,0 +1,352 @@
+<!DOCTYPE html><html class="dark" lang="en" style="width: 1280px; height: 1024px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DECEPTISCAN // SYS_ONL - Register</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&amp;family=Inter:wght@400;500;600&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#cbc6bb",
+                        "inverse-surface": "#e5e2e1",
+                        "primary": "#ffffff",
+                        "error": "#ffb4ab",
+                        "paper-aged": "#E9E4D8",
+                        "secondary-container": "#822621",
+                        "outline-variant": "#49473f",
+                        "surface": "#131313",
+                        "inverse-primary": "#615e55",
+                        "background": "#131313",
+                        "on-primary-fixed-variant": "#49473e",
+                        "primary-fixed": "#e7e2d6",
+                        "verification-green": "#55785A",
+                        "secondary-fixed": "#ffdad6",
+                        "on-primary-fixed": "#1d1c14",
+                        "inverse-on-surface": "#313030",
+                        "typewriter-ribbon": "#34332F",
+                        "carbon-gray": "#171717",
+                        "on-primary": "#323028",
+                        "tertiary-fixed-dim": "#ccc4cb",
+                        "on-secondary-container": "#ff998f",
+                        "on-tertiary-fixed": "#1e1a1f",
+                        "on-primary-container": "#67645b",
+                        "secondary-fixed-dim": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "on-secondary": "#630f0e",
+                        "surface-bright": "#3a3939",
+                        "on-secondary-fixed-variant": "#822621",
+                        "on-secondary-fixed": "#410002",
+                        "on-tertiary-container": "#686369",
+                        "on-background": "#e5e2e1",
+                        "tertiary-fixed": "#e8e0e7",
+                        "tertiary": "#ffffff",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-error-container": "#ffdad6",
+                        "lead-charcoal": "#101010",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#cac6bc",
+                        "on-surface": "#e5e2e1",
+                        "tertiary-container": "#e8e0e7",
+                        "primary-container": "#e7e2d6",
+                        "outline": "#949087",
+                        "on-tertiary": "#332f34",
+                        "surface-variant": "#353534",
+                        "secondary": "#ffb4ab",
+                        "surface-container-highest": "#353534",
+                        "ink-red": "#8F302A",
+                        "surface-container": "#201f1f",
+                        "on-tertiary-fixed-variant": "#4a454b",
+                        "surface-dim": "#131313",
+                        "surface-tint": "#cbc6bb",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1200px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "48px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Special Elite"],
+                        "display-lg": ["Special Elite"],
+                        "headline-lg": ["Special Elite"],
+                        "stamp-lg": ["Special Elite"],
+                        "metadata-xs": ["DM Mono"],
+                        "label-caps": ["DM Mono"],
+                        "technical-sm": ["DM Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.1", "fontWeight": "400" }],
+                        "display-lg": ["84px", { "lineHeight": "1.0", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.1", "fontWeight": "400" }],
+                        "stamp-lg": ["24px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                        "metadata-xs": ["10px", { "lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.15em", "fontWeight": "700" }],
+                        "technical-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "400" }]
+                    },
+                    backgroundImage: {
+                        'paper-texture': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.08%22/%3E%3C/svg%3E')",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Styles for Forensic Aesthetic */
+        body {
+            background-color: #101010;
+            color: #e5e2e1;
+        }
+
+        .paper-card {
+            background-color: #E9E4D8;
+            color: #1d1c14;
+            box-shadow: 0px 24px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .paper-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E');
+            pointer-events: none;
+            mix-blend-mode: multiply;
+        }
+
+        .input-bureaucratic {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #49473f;
+            border-radius: 0;
+            color: #1d1c14;
+            font-family: 'DM Mono', monospace;
+            padding: 8px 0;
+            width: 100%;
+            transition: border-color 0.2s ease;
+        }
+        
+        .input-bureaucratic:focus {
+            outline: none;
+            border-bottom-color: #8F302A;
+            box-shadow: none;
+        }
+
+        .input-bureaucratic::placeholder {
+            color: #949087;
+        }
+
+        .bureaucratic-divider {
+            border-bottom: 2px solid #49473f;
+        }
+        
+        .bureaucratic-divider-thin {
+            border-bottom: 1px solid #49473f;
+        }
+
+        .stamp-red {
+            border: 3px solid #8F302A;
+            color: #8F302A;
+            transform: rotate(-3deg);
+            display: inline-block;
+            padding: 8px 16px;
+            text-transform: uppercase;
+            position: relative;
+        }
+        
+        .stamp-red::after {
+             content: "";
+             position: absolute;
+             top: 0; left: 0; right: 0; bottom: 0;
+             background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%221.5%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.15%22/%3E%3C/svg%3E');
+             mix-blend-mode: screen;
+             pointer-events: none;
+        }
+        
+        /* Scanline Overlay for whole screen to give terminal vibe */
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.05) 50%,
+                rgba(0,0,0,0.05)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-margin-mobile md:p-margin-desktop relative overflow-hidden">
+<div class="scanline-overlay"></div>
+<!-- Background grid -->
+<div class="absolute inset-0 z-0 pointer-events-none" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 48px 48px;"></div>
+<main class="w-full max-w-2xl relative z-10">
+<!-- The File / Case Folder -->
+<article class="paper-card w-full rounded-sm overflow-hidden border border-outline">
+<!-- Header Section (Tape/Tab area) -->
+<header class="bureaucratic-divider p-6 bg-[#dfd9cc] flex justify-between items-start relative">
+<!-- Faux tape corner -->
+<div class="absolute top-0 right-0 w-16 h-16 bg-black/5 transform rotate-45 translate-x-8 -translate-y-8"></div>
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-typewriter-ribbon tracking-tight">OPEN INVESTIGATOR FILE</h1>
+<p class="font-technical-sm text-on-primary-container mt-2">SYS_REQ: Create your DeceptiScan investigation account.</p>
+</div>
+<div class="text-right"><div class="flex items-center gap-4">
+  <span class="font-technical-sm tracking-widest" style="color: #ff8c42;">SYSTEM ONLINE</span>
+  <span class="material-symbols-outlined" style="color: #ff8c42; font-size: 24px;">fingerprint</span>
+</div></div>
+</header>
+<!-- Metadata Row -->
+<div class="flex flex-wrap bureaucratic-divider">
+<div class="flex-1 min-w-[200px] p-4 border-r border-[#49473f] last:border-r-0">
+<span class="block font-metadata-xs text-on-primary-container mb-1">DATE OPENED</span>
+<span class="block font-technical-sm text-typewriter-ribbon" id="current-date">10/08/2026</span>
+</div>
+<div class="flex-1 min-w-[200px] p-4 border-r border-[#49473f] last:border-r-0">
+<span class="block font-metadata-xs text-on-primary-container mb-1">CLEARANCE LEVEL</span>
+<span class="block font-technical-sm text-ink-red font-bold">PENDING APPROVAL</span>
+</div>
+</div>
+<!-- Registration Form Area -->
+<div class="p-6 md:p-8 space-y-8 relative">
+<!-- Background stamp -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none z-0">
+<div class="stamp-red font-stamp-lg" style="font-size: 64px; border-width: 6px;">UNVERIFIED</div>
+</div>
+<form class="space-y-6 relative z-10">
+<!-- Form Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+<!-- Name Field -->
+<div class="col-span-1 md:col-span-2">
+<label class="block font-metadata-xs text-on-primary-container mb-1 uppercase" for="name">INVESTIGATOR NAME (FULL)</label>
+<input class="input-bureaucratic" id="name" name="name" placeholder="LAST, FIRST M." required="" type="text">
+</div>
+<!-- Email Field -->
+<div class="col-span-1 md:col-span-2">
+<label class="block font-metadata-xs text-on-primary-container mb-1 uppercase" for="email">OFFICIAL COMM LINK (EMAIL)</label>
+<input class="input-bureaucratic" id="email" name="email" placeholder="operator@department.gov" required="" type="email">
+</div>
+<!-- Password Field -->
+<div class="col-span-1 space-y-1">
+<label class="block font-metadata-xs text-on-primary-container mb-1 uppercase" for="password">ACCESS CIPHER (PASSWORD)</label>
+<input class="input-bureaucratic" id="password" name="password" placeholder="••••••••" required="" type="password">
+<!-- Strength Meter (Technical) -->
+<div class="mt-2 flex items-center justify-between">
+<span class="font-metadata-xs text-on-primary-container">CIPHER STRENGTH:</span>
+<div class="flex-1 mx-2 h-1 bg-[#49473f]/20 relative">
+<div class="absolute top-0 left-0 h-full bg-ink-red w-1/3 transition-all duration-300" id="strength-bar"></div>
+</div>
+<span class="font-technical-sm text-ink-red" id="strength-label">WEAK</span>
+</div>
+</div>
+<!-- Confirm Password Field -->
+<div class="col-span-1">
+<label class="block font-metadata-xs text-on-primary-container mb-1 uppercase" for="confirm_password">VERIFY CIPHER</label>
+<input class="input-bureaucratic" id="confirm_password" name="confirm_password" placeholder="••••••••" required="" type="password">
+</div>
+</div>
+<!-- Authorization Checkbox -->
+<div class="mt-8 pt-6 bureaucratic-divider-thin flex items-start space-x-3">
+<div class="pt-1">
+<input class="appearance-none w-4 h-4 border border-outline-variant bg-transparent checked:bg-ink-red checked:border-ink-red cursor-pointer focus:ring-0 focus:ring-offset-0 rounded-none relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[4px] after:top-[1px] after:w-[5px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:transform after:rotate-45" id="liability" type="checkbox">
+</div>
+<label class="font-technical-sm text-typewriter-ribbon cursor-pointer select-none" for="liability">
+                            I acknowledge receipt of PROTOCOL_01 and agree to the LIABILITY_WVR. I understand that access to the D1F ARCHIVE is monitored and logged.
+                        </label>
+</div>
+<!-- Form Actions -->
+<div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+<a class="font-label-caps text-on-primary-container hover:text-ink-red transition-colors duration-150" href="#">RETURN TO LOGIN</a>
+<button class="bg-ink-red text-white font-label-caps px-8 py-3 rounded-none hover:bg-secondary-container transition-colors duration-150 flex items-center gap-2 group w-full sm:w-auto justify-center" type="submit">
+<span class="">CREATE FILE</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Footer Notes -->
+<footer class="bg-[#dfd9cc] p-4 border-t border-[#49473f] flex justify-between items-center text-on-primary-container opacity-70">
+<span class="font-technical-sm">SYS_V: 2.4.1a</span>
+<span class="font-metadata-xs">DO NOT FOLD OR MUTILATE</span>
+</footer>
+</article>
+</main>
+<!-- Bottom Footer Shell Structure as per Anchor logic (Semantic rendering: This is transactional, so we generally suppress heavy nav, but keeping a subtle branded footer fits the brief) -->
+<footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-margin-desktop py-4 bg-lead-charcoal border-t border-outline-variant z-0">
+<span class="font-technical-sm text-on-surface-variant">©1974 DEPARTMENT OF FAMILY SYSTEMS - CLASSIFIED ARCHIVE</span>
+<div class="hidden md:flex space-x-6">
+<span class="font-technical-sm text-on-surface">DECEPTISCAN // SYS_ONL</span>
+</div>
+</footer>
+<script>
+        // Set current date in DD/MM/YYYY format
+        const dateEl = document.getElementById('current-date');
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        dateEl.textContent = `${dd}/${mm}/${yyyy}`;
+
+        // Simple interactive password strength visualizer
+        const pwdInput = document.getElementById('password');
+        const strBar = document.getElementById('strength-bar');
+        const strLabel = document.getElementById('strength-label');
+
+        pwdInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            let strength = 0;
+            
+            if (val.length > 5) strength += 33;
+            if (val.length > 8 && /[A-Z]/.test(val) && /[0-9]/.test(val)) strength += 33;
+            if (val.length > 10 && /[^A-Za-z0-9]/.test(val)) strength += 34;
+
+            strBar.style.width = strength === 0 && val.length > 0 ? '10%' : strength + '%';
+            
+            if (strength < 40) {
+                strBar.className = "absolute top-0 left-0 h-full bg-ink-red transition-all duration-300";
+                strLabel.textContent = "WEAK";
+                strLabel.className = "font-technical-sm text-ink-red";
+            } else if (strength < 80) {
+                strBar.className = "absolute top-0 left-0 h-full bg-[#b87c4c] transition-all duration-300";
+                strLabel.textContent = "ACCEPTABLE";
+                strLabel.className = "font-technical-sm text-[#b87c4c]";
+            } else {
+                strBar.className = "absolute top-0 left-0 h-full bg-verification-green transition-all duration-300";
+                strLabel.textContent = "SECURE";
+                strLabel.className = "font-technical-sm text-verification-green";
+            }
+            
+            if(val.length === 0) {
+                strBar.style.width = '0%';
+                strLabel.textContent = "PENDING";
+                strLabel.className = "font-technical-sm text-on-primary-container";
+            }
+        });
+    </script>
+
+
+</body></html>
