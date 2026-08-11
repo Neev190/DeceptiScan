@@ -139,8 +139,8 @@ describe('AnalysisResult Component', () => {
       expect(screen.getByText(/The moon landing happened in 1969/i)).toBeInTheDocument();
       expect(screen.getByText(/Water boils at 100 degrees Celsius/i)).toBeInTheDocument();
       
-      // Verify labels are rendered
-      expect(screen.getByText(/\(TRUE\)/i)).toBeInTheDocument();
+      // Verify labels are rendered (two claims, both labeled TRUE)
+      expect(screen.getAllByText(/\(TRUE\)/i)).toHaveLength(2);
       
       // Verify similarity scores are rendered
       expect(screen.getByText(/Match Score: 85%/i)).toBeInTheDocument();
