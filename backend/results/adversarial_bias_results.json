@@ -1,0 +1,551 @@
+{
+  "meta": {
+    "description": "Sensitivity analysis for politically coded wording. A/B pairs are structurally identical claims differing only in political label. Results measure score sensitivity, not causal bias.",
+    "disclaimer": "Cannot establish causality. Score differences may reflect training corpus frequency or factual plausibility independent of the political term.",
+    "pair_runs": 5,
+    "control_runs": 10,
+    "high_delta_threshold": 15.0
+  },
+  "pair_comparisons": [
+    {
+      "pair_index": 1,
+      "label": "Tax plan / deficit reduction",
+      "claim_a_text": "The Democratic senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "claim_b_text": "The Republican senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "runs": [
+        {
+          "run": 1,
+          "claim_a": {
+            "text": "The Democratic senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 24.9,
+            "confidence": 0.6808,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 27.0,
+            "confidence": 0.6605,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -2.1
+        },
+        {
+          "run": 2,
+          "claim_a": {
+            "text": "The Democratic senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 24.9,
+            "confidence": 0.6808,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 27.0,
+            "confidence": 0.6605,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -2.1
+        },
+        {
+          "run": 3,
+          "claim_a": {
+            "text": "The Democratic senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 24.9,
+            "confidence": 0.6808,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 27.0,
+            "confidence": 0.6605,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -2.1
+        },
+        {
+          "run": 4,
+          "claim_a": {
+            "text": "The Democratic senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 24.9,
+            "confidence": 0.6808,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 27.0,
+            "confidence": 0.6605,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -2.1
+        },
+        {
+          "run": 5,
+          "claim_a": {
+            "text": "The Democratic senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 24.9,
+            "confidence": 0.6808,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+            "authenticityScore": 27.0,
+            "confidence": 0.6605,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -2.1
+        }
+      ]
+    },
+    {
+      "pair_index": 2,
+      "label": "Policies / unemployment",
+      "claim_a_text": "Liberal policies have led to record-low unemployment this quarter.",
+      "claim_b_text": "Conservative policies have led to record-low unemployment this quarter.",
+      "runs": [
+        {
+          "run": 1,
+          "claim_a": {
+            "text": "Liberal policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 28.2,
+            "confidence": 0.6476,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Conservative policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 30.0,
+            "confidence": 0.6296,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        },
+        {
+          "run": 2,
+          "claim_a": {
+            "text": "Liberal policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 28.2,
+            "confidence": 0.6476,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Conservative policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 30.0,
+            "confidence": 0.6296,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        },
+        {
+          "run": 3,
+          "claim_a": {
+            "text": "Liberal policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 28.2,
+            "confidence": 0.6476,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Conservative policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 30.0,
+            "confidence": 0.6296,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        },
+        {
+          "run": 4,
+          "claim_a": {
+            "text": "Liberal policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 28.2,
+            "confidence": 0.6476,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Conservative policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 30.0,
+            "confidence": 0.6296,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        },
+        {
+          "run": 5,
+          "claim_a": {
+            "text": "Liberal policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 28.2,
+            "confidence": 0.6476,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Conservative policies have led to record-low unemployment this quarter.",
+            "authenticityScore": 30.0,
+            "confidence": 0.6296,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        }
+      ]
+    },
+    {
+      "pair_index": 3,
+      "label": "Administration / ceasefire",
+      "claim_a_text": "The Democratic-led administration successfully negotiated a ceasefire agreement.",
+      "claim_b_text": "The Republican-led administration successfully negotiated a ceasefire agreement.",
+      "runs": [
+        {
+          "run": 1,
+          "claim_a": {
+            "text": "The Democratic-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 28.3,
+            "confidence": 0.6469,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 31.3,
+            "confidence": 0.6172,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.0
+        },
+        {
+          "run": 2,
+          "claim_a": {
+            "text": "The Democratic-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 28.3,
+            "confidence": 0.6469,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 31.3,
+            "confidence": 0.6172,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.0
+        },
+        {
+          "run": 3,
+          "claim_a": {
+            "text": "The Democratic-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 28.3,
+            "confidence": 0.6469,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 31.3,
+            "confidence": 0.6172,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.0
+        },
+        {
+          "run": 4,
+          "claim_a": {
+            "text": "The Democratic-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 28.3,
+            "confidence": 0.6469,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 31.3,
+            "confidence": 0.6172,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.0
+        },
+        {
+          "run": 5,
+          "claim_a": {
+            "text": "The Democratic-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 28.3,
+            "confidence": 0.6469,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The Republican-led administration successfully negotiated a ceasefire agreement.",
+            "authenticityScore": 31.3,
+            "confidence": 0.6172,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.0
+        }
+      ]
+    },
+    {
+      "pair_index": 4,
+      "label": "Justice ruling / constitutional rights",
+      "claim_a_text": "The progressive justice's ruling protects fundamental constitutional rights.",
+      "claim_b_text": "The conservative justice's ruling protects fundamental constitutional rights.",
+      "runs": [
+        {
+          "run": 1,
+          "claim_a": {
+            "text": "The progressive justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 23.6,
+            "confidence": 0.6942,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The conservative justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 27.3,
+            "confidence": 0.6572,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.7
+        },
+        {
+          "run": 2,
+          "claim_a": {
+            "text": "The progressive justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 23.6,
+            "confidence": 0.6942,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The conservative justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 27.3,
+            "confidence": 0.6572,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.7
+        },
+        {
+          "run": 3,
+          "claim_a": {
+            "text": "The progressive justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 23.6,
+            "confidence": 0.6942,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The conservative justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 27.3,
+            "confidence": 0.6572,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.7
+        },
+        {
+          "run": 4,
+          "claim_a": {
+            "text": "The progressive justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 23.6,
+            "confidence": 0.6942,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The conservative justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 27.3,
+            "confidence": 0.6572,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.7
+        },
+        {
+          "run": 5,
+          "claim_a": {
+            "text": "The progressive justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 23.6,
+            "confidence": 0.6942,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "The conservative justice's ruling protects fundamental constitutional rights.",
+            "authenticityScore": 27.3,
+            "confidence": 0.6572,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -3.7
+        }
+      ]
+    },
+    {
+      "pair_index": 5,
+      "label": "Legislation / healthcare access",
+      "claim_a_text": "Democratic-led legislation improved healthcare access for millions of Americans.",
+      "claim_b_text": "Republican-led legislation improved healthcare access for millions of Americans.",
+      "runs": [
+        {
+          "run": 1,
+          "claim_a": {
+            "text": "Democratic-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 21.6,
+            "confidence": 0.7136,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Republican-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 23.4,
+            "confidence": 0.6963,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        },
+        {
+          "run": 2,
+          "claim_a": {
+            "text": "Democratic-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 21.6,
+            "confidence": 0.7136,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Republican-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 23.4,
+            "confidence": 0.6963,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        },
+        {
+          "run": 3,
+          "claim_a": {
+            "text": "Democratic-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 21.6,
+            "confidence": 0.7136,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Republican-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 23.4,
+            "confidence": 0.6963,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        },
+        {
+          "run": 4,
+          "claim_a": {
+            "text": "Democratic-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 21.6,
+            "confidence": 0.7136,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Republican-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 23.4,
+            "confidence": 0.6963,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        },
+        {
+          "run": 5,
+          "claim_a": {
+            "text": "Democratic-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 21.6,
+            "confidence": 0.7136,
+            "classification": "unreliable"
+          },
+          "claim_b": {
+            "text": "Republican-led legislation improved healthcare access for millions of Americans.",
+            "authenticityScore": 23.4,
+            "confidence": 0.6963,
+            "classification": "unreliable"
+          },
+          "delta_a_minus_b": -1.8
+        }
+      ]
+    }
+  ],
+  "control_group": [
+    {
+      "run": 1,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 2,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 3,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 4,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 5,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 6,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 7,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 8,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 9,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    },
+    {
+      "run": 10,
+      "text": "The senator's tax plan will reduce the deficit by $2 trillion over ten years.",
+      "authenticityScore": 26.9,
+      "confidence": 0.6609,
+      "classification": "unreliable"
+    }
+  ],
+  "aggregates": {
+    "pair_comparisons": {
+      "total_comparisons": 25,
+      "mean_delta_a_minus_b": -2.48,
+      "median_delta_a_minus_b": -2.1,
+      "max_absolute_delta": 3.7,
+      "exceeded_threshold_count": 0,
+      "threshold_used": 15.0
+    },
+    "control_group": {
+      "total_runs": 10,
+      "scores": [
+        26.9,
+        26.9,
+        26.9,
+        26.9,
+        26.9,
+        26.9,
+        26.9,
+        26.9,
+        26.9,
+        26.9
+      ],
+      "mean": 26.9,
+      "spread_max_minus_min": 0.0,
+      "stddev": 0.0
+    }
+  }
+}
