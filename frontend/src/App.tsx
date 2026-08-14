@@ -6,6 +6,7 @@ import History from './pages/History';
 import About from './pages/About';
 import SystemErrorReport from './pages/SystemErrorReport';
 import InvestigatorProfile from './pages/InvestigatorProfile';
+import AnalysisDetail from './pages/AnalysisDetail';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const Navbar = () => {
@@ -105,6 +106,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/history" element={<History />} />
+              <Route path="/analysis/:id" element={<AnalysisDetail />} />
               <Route path="/about" element={<About />} />
               <Route path="/profile" element={<InvestigatorProfile />} />
               <Route path="/system-error" element={<SystemErrorReport />} />

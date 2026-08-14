@@ -313,7 +313,7 @@ function Home() {
 
                   return (
                     <Link
-                      to="/history"
+                      to={`/analysis/${item.id}`}
                       key={item.id}
                       className="bg-carbon-gray border border-outline-variant flex flex-col hover:border-surface-tint transition-colors group no-underline text-inherit"
                     >
