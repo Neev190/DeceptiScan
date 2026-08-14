@@ -14,16 +14,20 @@ from models.user import User
 def app():
     """Create application for testing."""
     app = create_app('testing')
-    app.config['JWT_SECRET_KEY'] = 'test-jwt-secret-key'
+    app.config['JWT_SECRET_KEY'] = 'test-jwt-secret-key-deceptiscan-32b!'
     
     with app.app_context():
+        db.session.rollback()  # Ensure clean session state
         db.create_all()
         yield app
         db.session.remove()
-        for table in reversed(db.metadata.sorted_tables):
-            if table.name != 'claim_embeddings':
-                db.session.execute(table.delete())
-        db.session.commit()
+        try:
+            for table in reversed(db.metadata.sorted_tables):
+                if table.name != 'claim_embeddings':
+                    db.session.execute(table.delete())
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
 
 @pytest.fixture
