@@ -3,9 +3,9 @@
 // Only JSX markup is rewrapped to match the Stitch design system.
 
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import apiService from '../services/api';
-import { AnalysisHistoryItem, AnalysisResult as AnalysisResultType } from '../types';
-import AnalysisResult from '../components/AnalysisResult';
+import { AnalysisHistoryItem } from '../types';
 
 const History: React.FC = () => {
   // ── UNCHANGED STATE & HANDLERS ──────────────────────────────────────────
@@ -15,7 +15,6 @@ const History: React.FC = () => {
   const [isUnauthenticated, setIsUnauthenticated] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [selectedResult, setSelectedResult] = useState<AnalysisResultType | null>(null);
 
   const fetchHistory = async (p: number) => {
     setLoading(true);
@@ -43,26 +42,15 @@ const History: React.FC = () => {
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault(); // Prevent navigation when deleting
     if (!window.confirm('Are you sure you want to delete this analysis record?')) {
       return;
     }
     try {
       await apiService.deleteAnalysis(id);
-      if (selectedResult?.id === id) {
-        setSelectedResult(null);
-      }
       fetchHistory(page);
     } catch (err: any) {
       alert(err.message || 'Failed to delete record.');
-    }
-  };
-
-  const handleSelect = async (id: string) => {
-    try {
-      const detail = await apiService.getHistoryItem(id);
-      setSelectedResult(detail);
-    } catch (err: any) {
-      alert(err.message || 'Failed to load details.');
     }
   };
 
@@ -91,22 +79,8 @@ const History: React.FC = () => {
 
   return (
     <div className="w-full max-w-container-max px-margin-mobile md:px-margin-desktop py-12 mx-auto flex flex-col">
-
-      {/* ── Detail view (AnalysisResult) ── */}
-      {selectedResult ? (
-        <div>
-          <button
-            onClick={() => setSelectedResult(null)}
-            className="bg-transparent border border-outline-variant text-on-surface-variant font-label-caps text-label-caps uppercase py-2 px-4 hover:bg-surface-variant/20 transition-colors mb-8 flex items-center gap-2 rounded-sm"
-          >
-            <span className="material-symbols-outlined text-[16px]">chevron_left</span> BACK TO ARCHIVE
-          </button>
-          <AnalysisResult result={selectedResult} />
-        </div>
-      ) : (
-        <>
-          {/* ── Header ── */}
-          <header className="flex flex-col md:flex-row md:justify-between md:items-end mb-10 pb-6 border-b-2 border-outline-variant gap-6">
+      {/* ── Header ── */}
+      <header className="flex flex-col md:flex-row md:justify-between md:items-end mb-10 pb-6 border-b-2 border-outline-variant gap-6">
             <div>
               <p className="font-technical-sm text-technical-sm text-on-surface-variant mb-2">FILE SYSTEM / ARCHIVE / INDEX</p>
               <h1 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight">CASE ARCHIVE</h1>
@@ -138,7 +112,6 @@ const History: React.FC = () => {
                   <span className="animate-pulse">Loading archive...</span>
                 </div>
               ) : isUnauthenticated ? (
-                /* Unauthenticated state */
                 <div className="py-16 text-center">
                   <div className="border border-outline-variant p-8 mx-auto max-w-md bg-lead-charcoal/50">
                     <span className="material-symbols-outlined text-[48px] text-ink-red opacity-80 block mb-4">lock</span>
@@ -160,7 +133,6 @@ const History: React.FC = () => {
                   {error}
                 </div>
               ) : items.length === 0 ? (
-                /* Empty state (empty_archive_state screen) */
                 <div className="py-16 text-center">
                   <div className="border border-outline-variant p-8 mx-auto max-w-md">
                     <span className="material-symbols-outlined text-[48px] text-on-surface-variant opacity-30 block mb-4">folder_off</span>
@@ -181,13 +153,15 @@ const History: React.FC = () => {
                 items.map((item) => {
                   const caseId = `CASE ${item.id.slice(0, 4).toUpperCase()}`;
                   const subject = item.title || item.sourceUrl || `Analysis #${item.id.slice(0, 8)}`;
-                  const dateStr = new Date(item.createdAt).toISOString().split('T')[0];
+                  const rawDate = item.created_at || item.createdAt;
+                  const parsedDate = rawDate ? new Date(rawDate) : null;
+                  const dateStr = parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate.toISOString().split('T')[0] : '—';
 
                   return (
-                    <div
+                    <Link
+                      to={`/analysis/${item.id}`}
                       key={item.id}
-                      className="grid grid-cols-12 gap-4 items-center py-4 px-2 hover:bg-surface-variant/30 transition-colors border-b border-surface-container-high group cursor-pointer relative"
-                      onClick={() => handleSelect(item.id)}
+                      className="grid grid-cols-12 gap-4 items-center py-4 px-2 hover:bg-surface-variant/30 transition-colors border-b border-surface-container-high group cursor-pointer relative no-underline text-inherit"
                     >
                       <div className="col-span-2 md:col-span-2 font-technical-sm text-technical-sm text-on-surface">{caseId}</div>
                       <div className="col-span-6 md:col-span-5 font-headline-lg-mobile text-lg md:text-xl text-primary group-hover:text-secondary transition-colors truncate">
@@ -210,7 +184,7 @@ const History: React.FC = () => {
                           DELETE
                         </button>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })
               )}
@@ -239,8 +213,6 @@ const History: React.FC = () => {
               </div>
             )}
           </div>
-        </>
-      )}
     </div>
   );
 };

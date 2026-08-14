@@ -3,6 +3,7 @@
 // Only JSX markup is rewrapped to match the Stitch design system.
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AnalysisResult as AnalysisResultType, SentenceAnalysis } from '../types';
 import { classificationToStatus, STAMP_CONFIGS } from '../theme';
 import '../styles/inkwell.css';
@@ -13,6 +14,7 @@ interface AnalysisResultProps {
 
 const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
   // ─── UNCHANGED STATE & HANDLERS ──────────────────────────────────────────────
+  const navigate = useNavigate();
   const [selectedSentence, setSelectedSentence] = useState<SentenceAnalysis | null>(null);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -306,7 +308,10 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
               </div>
 
               <div className="mt-4 pt-4 border-t border-outline-variant">
-                <button className="w-full bg-ink-red text-primary font-label-caps text-label-caps uppercase py-4 px-6 hover:bg-secondary-container transition-colors flex items-center justify-center gap-2 rounded-sm shadow-md">
+                <button
+                  className="w-full bg-ink-red text-primary font-label-caps text-label-caps uppercase py-4 px-6 hover:bg-secondary-container transition-colors flex items-center justify-center gap-2 rounded-sm shadow-md"
+                  onClick={() => navigate(`/analysis/${result.id}`)}
+                >
                   <span className="material-symbols-outlined text-[18px]">policy</span>
                   Inspect Evidence
                 </button>
