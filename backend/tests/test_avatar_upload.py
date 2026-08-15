@@ -158,12 +158,12 @@ class TestAvatarUploadCloudinaryIntegration:
         assert res.status_code == 200
         data = res.get_json()
         assert data['avatarUrl'] == 'https://res.cloudinary.com/test-cloud/image/upload/v1234/deceptiscan/avatars/test_avatar.jpg'
-        assert data['avatar_url'] == 'https://res.cloudinary.com/test-cloud/image/upload/v1234/deceptiscan/avatars/test_avatar.jpg'
+        assert 'avatar_url' not in data
         assert data['message'] == 'Avatar updated successfully'
 
         # Verify persistence in database
         with app.app_context():
-            updated = User.query.get(user.id)
+            updated = db.session.get(User, user.id)
             assert updated.avatar_url == 'https://res.cloudinary.com/test-cloud/image/upload/v1234/deceptiscan/avatars/test_avatar.jpg'
 
         # Verify GET /auth/me returns avatarUrl
@@ -171,6 +171,83 @@ class TestAvatarUploadCloudinaryIntegration:
         assert get_res.status_code == 200
         get_data = get_res.get_json()
         assert get_data['avatarUrl'] == 'https://res.cloudinary.com/test-cloud/image/upload/v1234/deceptiscan/avatars/test_avatar.jpg'
+        assert 'avatar_url' not in get_data
+
+    @patch('cloudinary.uploader.destroy')
+    @patch('cloudinary.uploader.upload')
+    @patch.dict('os.environ', {
+        'CLOUDINARY_CLOUD_NAME': 'test-cloud',
+        'CLOUDINARY_API_KEY': '123456789',
+        'CLOUDINARY_API_SECRET': 'test-secret'
+    })
+    def test_reupload_deletes_previous_cloudinary_avatar(self, mock_upload, mock_destroy, client, app, auth_user):
+        user, headers = auth_user
+        
+        # Set existing Cloudinary avatar
+        with app.app_context():
+            db_user = db.session.get(User, user.id)
+            db_user.avatar_url = 'https://res.cloudinary.com/test-cloud/image/upload/v12345/deceptiscan/avatars/old_avatar_999.jpg'
+            db.session.commit()
+
+        mock_upload.return_value = {
+            'secure_url': 'https://res.cloudinary.com/test-cloud/image/upload/v67890/deceptiscan/avatars/new_avatar_1000.jpg',
+            'public_id': 'avatar_new'
+        }
+
+        fake_png = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15c4'
+        res = client.post(
+            '/api/v1/auth/me/avatar',
+            data={'file': (io.BytesIO(fake_png), 'avatar.png')},
+            content_type='multipart/form-data',
+            headers=headers
+        )
+        assert res.status_code == 200
+        data = res.get_json()
+        assert data['avatarUrl'] == 'https://res.cloudinary.com/test-cloud/image/upload/v67890/deceptiscan/avatars/new_avatar_1000.jpg'
+        
+        # Confirm previous avatar was deleted from Cloudinary
+        mock_destroy.assert_called_once_with('deceptiscan/avatars/old_avatar_999', invalidate=True)
+
+        # Confirm new avatar is persisted
+        with app.app_context():
+            updated = db.session.get(User, user.id)
+            assert updated.avatar_url == 'https://res.cloudinary.com/test-cloud/image/upload/v67890/deceptiscan/avatars/new_avatar_1000.jpg'
+
+    @patch('cloudinary.uploader.destroy')
+    @patch('cloudinary.uploader.upload')
+    @patch.dict('os.environ', {
+        'CLOUDINARY_CLOUD_NAME': 'test-cloud',
+        'CLOUDINARY_API_KEY': '123456789',
+        'CLOUDINARY_API_SECRET': 'test-secret'
+    })
+    def test_reupload_handles_destroy_failure_gracefully(self, mock_upload, mock_destroy, client, app, auth_user):
+        user, headers = auth_user
+        
+        # Set existing Cloudinary avatar
+        with app.app_context():
+            db_user = db.session.get(User, user.id)
+            db_user.avatar_url = 'https://res.cloudinary.com/test-cloud/image/upload/v12345/deceptiscan/avatars/old_avatar_999.jpg'
+            db.session.commit()
+
+        # Simulate destroy failing (network error / not found)
+        mock_destroy.side_effect = Exception("Cloudinary connection reset")
+
+        mock_upload.return_value = {
+            'secure_url': 'https://res.cloudinary.com/test-cloud/image/upload/v67890/deceptiscan/avatars/new_avatar_1000.jpg',
+            'public_id': 'avatar_new'
+        }
+
+        fake_png = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15c4'
+        res = client.post(
+            '/api/v1/auth/me/avatar',
+            data={'file': (io.BytesIO(fake_png), 'avatar.png')},
+            content_type='multipart/form-data',
+            headers=headers
+        )
+        # Should still succeed with 200 (non-fatal cleanup)
+        assert res.status_code == 200
+        data = res.get_json()
+        assert data['avatarUrl'] == 'https://res.cloudinary.com/test-cloud/image/upload/v67890/deceptiscan/avatars/new_avatar_1000.jpg'
 
     @patch('cloudinary.uploader.upload')
     @patch.dict('os.environ', {

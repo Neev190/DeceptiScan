@@ -48,7 +48,6 @@ class User(db.Model):
         result = {
             'id': str(self.id),
             'username': self.username,
-            'avatar_url': self.avatar_url,
             'avatarUrl': self.avatar_url,
             'is_active': self.is_active,
             'is_admin': self.is_admin,

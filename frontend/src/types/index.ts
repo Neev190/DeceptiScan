@@ -102,7 +102,6 @@ export interface User {
   email: string;
   username?: string;
   avatarUrl?: string;
-  avatar_url?: string;
   isAdmin?: boolean;
   createdAt: string;
   analysesCount?: number;

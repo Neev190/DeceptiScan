@@ -145,7 +145,7 @@ const InvestigatorProfile: React.FC = () => {
     ? new Date(user.createdAt).toISOString().slice(0, 10).replace(/-/g, '.')
     : '2026.08.10';
   const analysesCount = user?.analysesCount ?? 0;
-  const currentAvatar = user?.avatarUrl || user?.avatar_url;
+  const currentAvatar = user?.avatarUrl;
 
   return (
     <main className="flex-grow flex flex-col items-center justify-start pt-12 pb-24 px-margin-mobile md:px-margin-desktop relative z-10 w-full max-w-container-max mx-auto bg-lead-charcoal min-h-[calc(100vh-160px)]">

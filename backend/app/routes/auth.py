@@ -158,7 +158,6 @@ def get_current_user():
         'email': user.email,
         'username': user.username,
         'avatarUrl': user.avatar_url,
-        'avatar_url': user.avatar_url,
         'isAdmin': user.is_admin,
         'createdAt': user.created_at.isoformat() if user.created_at else None,
         'analysesCount': analyses_count
@@ -242,7 +241,6 @@ def update_current_user():
         'email': user.email,
         'username': user.username,
         'avatarUrl': user.avatar_url,
-        'avatar_url': user.avatar_url,
         'isAdmin': user.is_admin,
         'createdAt': user.created_at.isoformat() if user.created_at else None,
         'analysesCount': analyses_count
@@ -370,6 +368,24 @@ def upload_avatar():
         if not secure_url:
             raise ValueError("Cloudinary upload did not return a valid URL")
 
+        # Delete previous avatar from Cloudinary if one exists (non-fatal)
+        old_avatar_url = user.avatar_url
+        if old_avatar_url and 'cloudinary.com' in old_avatar_url:
+            try:
+                parts = old_avatar_url.split('/upload/')
+                if len(parts) > 1:
+                    path_after_upload = parts[1]
+                    segments = path_after_upload.split('/', 1)
+                    if segments[0].startswith('v') and segments[0][1:].isdigit():
+                        raw_path = segments[1] if len(segments) > 1 else segments[0]
+                    else:
+                        raw_path = path_after_upload
+                    old_public_id = raw_path.rsplit('.', 1)[0]
+                    cloudinary.uploader.destroy(old_public_id, invalidate=True)
+                    logger.info(f"Deleted previous avatar from Cloudinary: {old_public_id}")
+            except Exception as destroy_err:
+                logger.warning(f"Failed to delete old avatar {old_avatar_url} from Cloudinary (non-fatal): {destroy_err}")
+
         # Save to database
         user.avatar_url = secure_url
         db.session.commit()
@@ -390,7 +406,6 @@ def upload_avatar():
         'email': user.email,
         'username': user.username,
         'avatarUrl': user.avatar_url,
-        'avatar_url': user.avatar_url,
         'isAdmin': user.is_admin,
         'createdAt': user.created_at.isoformat() if user.created_at else None,
         'analysesCount': analyses_count,
