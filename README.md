@@ -137,8 +137,9 @@ Evaluated across 51 top-3 retrieval queries from 20 held-out test statements aga
 | **P50 (Median)** | **0.5649** | Moderate contextual relevance |
 | **Threshold Cutoff** | **0.4500** | Empirically filters out nearest-neighbor noise |
 
-### 3. Adversarial & Sensitivity Analysis
-- **Mean Score Delta**: `-2.48 points` across matched adversarial statement pairs.
+### 3. Offline Adversarial & Sensitivity Testing
+*(Note: Distinct from the live-traffic delta-logging thread, these metrics were generated via offline adversarial pair testing)*
+- **Mean Score Delta**: `-2.48 points` across matched adversarial statement pairs (e.g. politically coded vs neutral wording).
 - **Maximum Absolute Delta**: `3.7 points` (well within the 15-point stability envelope).
 - **Model Determinism**: Control group standard deviation is `0.0` (fully deterministic inference).
 
