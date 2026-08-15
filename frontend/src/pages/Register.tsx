@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -14,8 +14,18 @@ const Register: React.FC = () => {
   const [cipherStrength, setCipherStrength] = useState(0);
   const [cipherLabel, setCipherLabel] = useState<'PENDING' | 'WEAK' | 'ACCEPTABLE' | 'SECURE'>('PENDING');
 
-  const { register } = useAuth();
+  const { register, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, isLoading, navigate]);
+
+  if (!isLoading && isAuthenticated) {
+    return null;
+  }
 
   // ── UNCHANGED LOGIC ──────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {

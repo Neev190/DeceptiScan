@@ -1,7 +1,12 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
 import AnalysisResult from './AnalysisResult';
 import { AnalysisResult as AnalysisResultType } from '../types';
+
+const renderWithRouter = (ui: React.ReactElement) => {
+  return render(<BrowserRouter>{ui}</BrowserRouter>);
+};
 
 const mockResultReliable: AnalysisResultType = {
   id: 'test-id-1',
@@ -39,20 +44,20 @@ const mockResultUnknown: AnalysisResultType = {
 
 describe('AnalysisResult Component', () => {
   it('renders analysis score and classification correctly', () => {
-    render(<AnalysisResult result={mockResultReliable} />);
+    renderWithRouter(<AnalysisResult result={mockResultReliable} />);
     expect(screen.getByText('85/100')).toBeInTheDocument();
     expect(screen.getByText('RELIABLE')).toBeInTheDocument();
     expect(screen.getByText('The earth orbits around the sun.')).toBeInTheDocument();
   });
 
   it('renders disclaimer warning when classification is unknown or warning exists', () => {
-    render(<AnalysisResult result={mockResultUnknown} />);
+    renderWithRouter(<AnalysisResult result={mockResultUnknown} />);
     expect(screen.getByText(/Low confidence in model prediction/i)).toBeInTheDocument();
     expect(screen.getByText(/Disclaimer/i)).toBeInTheDocument();
   });
 
   it('allows clicking a sentence to open the sentence detail modal', () => {
-    render(<AnalysisResult result={mockResultReliable} />);
+    renderWithRouter(<AnalysisResult result={mockResultReliable} />);
     const sentenceEl = screen.getByText('The earth orbits around the sun.');
     fireEvent.click(sentenceEl);
 
@@ -66,7 +71,7 @@ describe('AnalysisResult Component', () => {
         ...mockResultReliable,
         retrieved_claims: null,
       };
-      render(<AnalysisResult result={resultWithNullClaims} />);
+      renderWithRouter(<AnalysisResult result={resultWithNullClaims} />);
       expect(screen.getByText('85/100')).toBeInTheDocument();
     });
 
@@ -75,7 +80,7 @@ describe('AnalysisResult Component', () => {
         ...mockResultReliable,
         retrieved_claims: null,
       };
-      render(<AnalysisResult result={resultWithNullClaims} />);
+      renderWithRouter(<AnalysisResult result={resultWithNullClaims} />);
       expect(screen.getByText(/NO RELATED CASES ON FILE/i)).toBeInTheDocument();
     });
 
@@ -84,7 +89,7 @@ describe('AnalysisResult Component', () => {
         ...mockResultReliable,
         retrieved_claims: [],
       };
-      render(<AnalysisResult result={resultWithEmptyClaims} />);
+      renderWithRouter(<AnalysisResult result={resultWithEmptyClaims} />);
       expect(screen.getByText('85/100')).toBeInTheDocument();
     });
 
@@ -93,7 +98,7 @@ describe('AnalysisResult Component', () => {
         ...mockResultReliable,
         retrieved_claims: [],
       };
-      render(<AnalysisResult result={resultWithEmptyClaims} />);
+      renderWithRouter(<AnalysisResult result={resultWithEmptyClaims} />);
       expect(screen.getByText(/NO RELATED CASES ON FILE/i)).toBeInTheDocument();
     });
 
@@ -113,7 +118,7 @@ describe('AnalysisResult Component', () => {
           },
         ],
       };
-      render(<AnalysisResult result={resultWithClaims} />);
+      renderWithRouter(<AnalysisResult result={resultWithClaims} />);
       expect(screen.getByText('85/100')).toBeInTheDocument();
     });
 
@@ -133,7 +138,7 @@ describe('AnalysisResult Component', () => {
           },
         ],
       };
-      render(<AnalysisResult result={resultWithClaims} />);
+      renderWithRouter(<AnalysisResult result={resultWithClaims} />);
       
       // Verify claims are rendered
       expect(screen.getByText(/The moon landing happened in 1969/i)).toBeInTheDocument();

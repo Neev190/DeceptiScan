@@ -1,7 +1,3 @@
-// AnalysisResult component — Stitch analysis_findings design
-// Logic (useState, handleFeedback, renderHighlightedText) is UNCHANGED from Phase 3.
-// Only JSX markup is rewrapped to match the Stitch design system.
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnalysisResult as AnalysisResultType, SentenceAnalysis } from '../types';

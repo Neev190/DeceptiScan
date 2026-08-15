@@ -15,7 +15,7 @@ import apiService from '../services/api';
 import { User } from '../types';
 
 const InvestigatorProfile: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isLoading, logout } = useAuth();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState<'ACCOUNT_DETAILS' | 'SYSTEM_SETTINGS'>('ACCOUNT_DETAILS');
@@ -27,8 +27,11 @@ const InvestigatorProfile: React.FC = () => {
   const [updateSuccess, setUpdateSuccess] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login');
+      return;
+    }
     if (!isAuthenticated) {
-      setLoading(false);
       return;
     }
     const fetchProfile = async () => {
@@ -39,12 +42,15 @@ const InvestigatorProfile: React.FC = () => {
         setUsernameInput(userData.username || '');
       } catch (err: any) {
         console.error('Failed to fetch user profile:', err);
+        if (err.details?.status === 401 || err.message?.includes('401') || err.code === 'UNAUTHORIZED') {
+          navigate('/login');
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchProfile();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLoading, navigate]);
 
   const handleSaveUsername = async () => {
     try {
@@ -65,24 +71,18 @@ const InvestigatorProfile: React.FC = () => {
     navigate('/login');
   };
 
-  if (!isAuthenticated && !loading) {
+  if (isLoading || loading) {
     return (
       <main className="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop bg-lead-charcoal min-h-[calc(100vh-160px)] w-full">
-        <div className="max-w-md w-full bg-carbon-gray border border-outline-variant p-8 text-center shadow-[0px_24px_60px_rgba(0,0,0,0.5)]">
-          <span className="material-symbols-outlined text-4xl text-ink-red mb-4 block">lock</span>
-          <h2 className="font-headline-lg-mobile text-headline-lg-mobile text-primary uppercase mb-2">ACCESS RESTRICTED</h2>
-          <p className="font-technical-sm text-technical-sm text-on-surface-variant mb-6">
-            PLEASE LOG IN TO ACCESS YOUR INVESTIGATOR FILE.
-          </p>
-          <Link
-            to="/login"
-            className="inline-block bg-ink-red hover:bg-secondary-container text-primary font-label-caps text-label-caps py-3 px-6 uppercase no-underline transition-colors"
-          >
-            LOG IN TO SYSTEM
-          </Link>
+        <div className="text-center font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest animate-pulse">
+          ACCESSING INVESTIGATOR FILE...
         </div>
       </main>
     );
+  }
+
+  if (!isAuthenticated) {
+    return null;
   }
 
   const accountId = user ? `OP-${user.id.slice(0, 8).toUpperCase()}` : 'OP-042-OMEGA';

@@ -2,7 +2,7 @@
 // Logic (useState, handleSubmit, useAuth, useNavigate) is UNCHANGED.
 // Only JSX markup is rewrapped to match the Stitch design system.
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,8 +13,18 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, isLoading, navigate]);
+
+  if (!isLoading && isAuthenticated) {
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

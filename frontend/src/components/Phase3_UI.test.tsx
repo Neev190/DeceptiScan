@@ -1,9 +1,14 @@
-﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import AnalysisResult from './AnalysisResult';
 import ArticleInput from './ArticleInput';
 import { AnalysisResult as AnalysisResultType } from '../types';
+
+const renderWithRouter = (ui: React.ReactElement) => {
+  return render(<BrowserRouter>{ui}</BrowserRouter>);
+};
 
 // Mock apiService module
 vi.mock('../services/api', () => ({
@@ -64,7 +69,7 @@ describe('Phase 3 UI Components & Interactions', () => {
   };
 
   it('renders AnalysisResult correctly with retrieved_claims from Phase 2 backend', () => {
-    render(<AnalysisResult result={mockAnalysisResult} />);
+    renderWithRouter(<AnalysisResult result={mockAnalysisResult} />);
 
     // Verify ScoreMeter and header
     expect(screen.getByText('Analysis Complete')).toBeInTheDocument();
@@ -90,7 +95,7 @@ describe('Phase 3 UI Components & Interactions', () => {
     const { apiService } = await import('../services/api');
     vi.mocked(apiService.submitFeedback).mockResolvedValueOnce({ feedbackId: 'fb-123' });
 
-    render(<AnalysisResult result={mockAnalysisResult} />);
+    renderWithRouter(<AnalysisResult result={mockAnalysisResult} />);
 
     const helpfulBtn = screen.getByRole('button', { name: /👍 helpful/i });
     await user.click(helpfulBtn);
@@ -115,7 +120,7 @@ describe('Phase 3 UI Components & Interactions', () => {
       new Error('Network error submitting feedback')
     );
 
-    render(<AnalysisResult result={mockAnalysisResult} />);
+    renderWithRouter(<AnalysisResult result={mockAnalysisResult} />);
 
     const incorrectBtn = screen.getByRole('button', { name: /👎 incorrect/i });
     await user.click(incorrectBtn);
@@ -135,7 +140,7 @@ describe('Phase 3 UI Components & Interactions', () => {
 
   it('opens sentence analysis modal upon click/tap interaction', async () => {
     const user = userEvent.setup();
-    render(<AnalysisResult result={mockAnalysisResult} />);
+    renderWithRouter(<AnalysisResult result={mockAnalysisResult} />);
 
     // Click on the suspicious sentence
     const suspiciousSentence = screen.getByText(
