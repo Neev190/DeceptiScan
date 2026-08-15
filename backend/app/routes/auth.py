@@ -138,7 +138,7 @@ def get_current_user():
         Authorization: Bearer token
     
     Response:
-        User profile information with analyses count
+        User profile information with analyses count and avatarUrl
     """
     user_id = get_jwt_identity()
     from app.routes.helpers import find_by_id
@@ -157,6 +157,8 @@ def get_current_user():
         'id': str(user.id),
         'email': user.email,
         'username': user.username,
+        'avatarUrl': user.avatar_url,
+        'avatar_url': user.avatar_url,
         'isAdmin': user.is_admin,
         'createdAt': user.created_at.isoformat() if user.created_at else None,
         'analysesCount': analyses_count
@@ -239,9 +241,160 @@ def update_current_user():
         'id': str(user.id),
         'email': user.email,
         'username': user.username,
+        'avatarUrl': user.avatar_url,
+        'avatar_url': user.avatar_url,
         'isAdmin': user.is_admin,
         'createdAt': user.created_at.isoformat() if user.created_at else None,
         'analysesCount': analyses_count
+    }), 200
+
+
+@api_bp.route('/auth/me/avatar', methods=['POST'])
+@jwt_required()
+def upload_avatar():
+    """
+    Upload and update current user's profile avatar via Cloudinary.
+    
+    Headers:
+        Authorization: Bearer token
+    Form Data:
+        file (or avatar): Image file (PNG, JPEG, WEBP, GIF; max 5MB)
+        
+    Response:
+        Updated user profile with new avatarUrl
+    """
+    import os
+    import time
+    import logging
+    logger = logging.getLogger(__name__)
+
+    user_id = get_jwt_identity()
+    from app.routes.helpers import find_by_id
+    user = find_by_id(User, user_id)
+    
+    if not user:
+        return jsonify(ValidationError(
+            code='NOT_FOUND',
+            message='User not found',
+            details={}
+        ).to_dict()), 404
+
+    # Extract uploaded file
+    file = request.files.get('file') or request.files.get('avatar') or request.files.get('image')
+    if not file or not file.filename:
+        return jsonify(ValidationError(
+            code='INVALID_INPUT',
+            message='No image file provided. Please select an image file to upload.',
+            details={'field': 'file'}
+        ).to_dict()), 400
+
+    # Validate file extension
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
+    ALLOWED_MIMETYPES = {'image/png', 'image/jpeg', 'image/pjpeg', 'image/webp', 'image/gif'}
+    
+    ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+    if ext not in ALLOWED_EXTENSIONS:
+        return jsonify(ValidationError(
+            code='INVALID_INPUT',
+            message='Invalid file format. Allowed formats: PNG, JPEG, WEBP, GIF.',
+            details={'field': 'file', 'allowedExtensions': list(ALLOWED_EXTENSIONS)}
+        ).to_dict()), 400
+
+    if file.mimetype and file.mimetype.lower() not in ALLOWED_MIMETYPES:
+        return jsonify(ValidationError(
+            code='INVALID_INPUT',
+            message='Invalid MIME type. Please upload a valid image file.',
+            details={'field': 'file', 'allowedMimeTypes': list(ALLOWED_MIMETYPES)}
+        ).to_dict()), 400
+
+    # Validate file size (max 5MB)
+    MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+    try:
+        file.seek(0, os.SEEK_END)
+        file_size = file.tell()
+        file.seek(0)
+    except Exception:
+        file_size = 0
+
+    if file_size > MAX_FILE_SIZE:
+        return jsonify(ValidationError(
+            code='INVALID_INPUT',
+            message=f'File size ({round(file_size / (1024*1024), 2)}MB) exceeds the 5MB limit.',
+            details={'field': 'file', 'maxSize': '5MB', 'actualSize': file_size}
+        ).to_dict()), 400
+
+    if file_size == 0:
+        return jsonify(ValidationError(
+            code='INVALID_INPUT',
+            message='Uploaded file is empty.',
+            details={'field': 'file'}
+        ).to_dict()), 400
+
+    # Check Cloudinary configuration
+    cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME')
+    api_key = os.getenv('CLOUDINARY_API_KEY')
+    api_secret = os.getenv('CLOUDINARY_API_SECRET')
+
+    if not (cloud_name and api_key and api_secret) or cloud_name == 'your-cloud-name':
+        logger.error("Cloudinary credentials are not configured in environment")
+        return jsonify(ValidationError(
+            code='CONFIG_ERROR',
+            message='Profile picture storage is not configured on the server.',
+            details={}
+        ).to_dict()), 503
+
+    # Upload to Cloudinary
+    try:
+        import cloudinary
+        import cloudinary.uploader
+        
+        cloudinary.config(
+            cloud_name=cloud_name,
+            api_key=api_key,
+            api_secret=api_secret,
+            secure=True
+        )
+
+        upload_result = cloudinary.uploader.upload(
+            file,
+            folder="deceptiscan/avatars",
+            public_id=f"avatar_{str(user.id)}_{int(time.time())}",
+            overwrite=True,
+            resource_type="image",
+            transformation=[
+                {'width': 400, 'height': 400, 'crop': 'fill', 'gravity': 'face'}
+            ]
+        )
+        
+        secure_url = upload_result.get('secure_url') or upload_result.get('url')
+        if not secure_url:
+            raise ValueError("Cloudinary upload did not return a valid URL")
+
+        # Save to database
+        user.avatar_url = secure_url
+        db.session.commit()
+
+    except Exception as exc:
+        db.session.rollback()
+        logger.error(f"Cloudinary avatar upload failed: {exc}", exc_info=True)
+        return jsonify(ValidationError(
+            code='UPLOAD_FAILED',
+            message='Failed to upload avatar image to storage. Please try again.',
+            details={'reason': str(exc)}
+        ).to_dict()), 502
+
+    analyses_count = len(user.analyses) if user.analyses else 0
+
+    return jsonify({
+        'id': str(user.id),
+        'email': user.email,
+        'username': user.username,
+        'avatarUrl': user.avatar_url,
+        'avatar_url': user.avatar_url,
+        'isAdmin': user.is_admin,
+        'createdAt': user.created_at.isoformat() if user.created_at else None,
+        'analysesCount': analyses_count,
+        'message': 'Avatar updated successfully'
     }), 200
 
 

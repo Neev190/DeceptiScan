@@ -18,6 +18,7 @@ class User(db.Model):
     email = Column(String(255), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
     username = Column(String(100), nullable=True)
+    avatar_url = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -47,6 +48,8 @@ class User(db.Model):
         result = {
             'id': str(self.id),
             'username': self.username,
+            'avatar_url': self.avatar_url,
+            'avatarUrl': self.avatar_url,
             'is_active': self.is_active,
             'is_admin': self.is_admin,
             'created_at': self.created_at.isoformat() if self.created_at else None

@@ -41,3 +41,6 @@ gunicorn==21.2.0
 # Retrieval layer (Phase 2 — pgvector similarity search)
 sentence-transformers>=2.7.0
 pgvector>=0.3.0
+
+# File Storage / Media
+cloudinary>=1.36.0

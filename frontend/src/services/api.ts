@@ -135,6 +135,21 @@ class ApiService {
     }
   }
 
+  async uploadAvatar(file: File): Promise<User> {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response: AxiosResponse<User> = await this.api.post('/auth/me/avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
   // History endpoints
   async getRecentAnalyses(limit = 5): Promise<AnalysisHistoryItem[]> {
     try {

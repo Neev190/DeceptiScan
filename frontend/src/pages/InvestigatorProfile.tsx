@@ -8,7 +8,7 @@
 // - Codename/Username: Editable via PATCH /auth/me.
 // - Open Cases & Uptime: Labeled as illustrative operational status indicators.
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import apiService from '../services/api';
@@ -17,6 +17,7 @@ import { User } from '../types';
 const InvestigatorProfile: React.FC = () => {
   const { isAuthenticated, isLoading, logout } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [activeTab, setActiveTab] = useState<'ACCOUNT_DETAILS' | 'SYSTEM_SETTINGS'>('ACCOUNT_DETAILS');
   const [user, setUser] = useState<User | null>(null);
@@ -25,6 +26,9 @@ const InvestigatorProfile: React.FC = () => {
   const [usernameInput, setUsernameInput] = useState<string>('');
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateSuccess, setUpdateSuccess] = useState<boolean>(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState<boolean>(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [avatarSuccess, setAvatarSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -66,6 +70,57 @@ const InvestigatorProfile: React.FC = () => {
     }
   };
 
+  const handleAvatarSelect = () => {
+    if (uploadingAvatar) return;
+    setAvatarError(null);
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset file input value so selecting the same file again triggers onChange
+    e.target.value = '';
+
+    // Client-side file type validation
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'];
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    const allowedExtensions = ['png', 'jpg', 'jpeg', 'webp', 'gif'];
+    
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(ext)) {
+      setAvatarError('Invalid format. Allowed formats: PNG, JPEG, WEBP, GIF.');
+      return;
+    }
+
+    // Client-side file size validation (max 5MB)
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      setAvatarError(`File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds the 5MB limit.`);
+      return;
+    }
+
+    if (file.size === 0) {
+      setAvatarError('Selected file is empty.');
+      return;
+    }
+
+    try {
+      setUploadingAvatar(true);
+      setAvatarError(null);
+      setAvatarSuccess(false);
+      const updatedUser = await apiService.uploadAvatar(file);
+      setUser(updatedUser);
+      setAvatarSuccess(true);
+      setTimeout(() => setAvatarSuccess(false), 4000);
+    } catch (err: any) {
+      console.error('Avatar upload failed:', err);
+      setAvatarError(err.message || 'Failed to upload photo. Please try again.');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   const handleLogout = async () => {
     await logout();
     navigate('/login');
@@ -90,6 +145,7 @@ const InvestigatorProfile: React.FC = () => {
     ? new Date(user.createdAt).toISOString().slice(0, 10).replace(/-/g, '.')
     : '2026.08.10';
   const analysesCount = user?.analysesCount ?? 0;
+  const currentAvatar = user?.avatarUrl || user?.avatar_url;
 
   return (
     <main className="flex-grow flex flex-col items-center justify-start pt-12 pb-24 px-margin-mobile md:px-margin-desktop relative z-10 w-full max-w-container-max mx-auto bg-lead-charcoal min-h-[calc(100vh-160px)]">
@@ -146,14 +202,82 @@ const InvestigatorProfile: React.FC = () => {
             <>
               {/* Identity Section */}
               <section className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-                <div className="md:col-span-4 flex flex-col items-center justify-center space-y-4">
-                  <div className="w-32 h-32 border-2 border-outline-variant rounded-sm overflow-hidden relative group grayscale contrast-125 bg-surface-container-low flex items-center justify-center">
-                    <span className="material-symbols-outlined text-6xl text-outline-variant">person</span>
-                    <div className="absolute inset-0 bg-ink-red opacity-0 group-hover:opacity-20 transition-opacity mix-blend-multiply" />
+                <div className="md:col-span-4 flex flex-col items-center justify-center space-y-3">
+                  {/* Hidden File Input */}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleAvatarChange}
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    className="hidden"
+                    aria-label="Upload investigator photo"
+                  />
+
+                  {/* Avatar Frame / Interactive Upload Container */}
+                  <div
+                    onClick={handleAvatarSelect}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleAvatarSelect();
+                      }
+                    }}
+                    title="Click to upload/change investigator photo (PNG, JPEG, WEBP, max 5MB)"
+                    className={`w-32 h-32 border-2 border-outline-variant rounded-sm overflow-hidden relative group bg-surface-container-low flex items-center justify-center cursor-pointer transition-all hover:border-ink-red ${
+                      uploadingAvatar ? 'opacity-70 cursor-wait' : ''
+                    }`}
+                  >
+                    {currentAvatar ? (
+                      <img
+                        src={currentAvatar}
+                        alt="Investigator ID Photo"
+                        className="w-full h-full object-cover grayscale contrast-125 transition-transform group-hover:scale-105"
+                      />
+                    ) : (
+                      <span className="material-symbols-outlined text-6xl text-outline-variant group-hover:text-primary transition-colors">
+                        person
+                      </span>
+                    )}
+
+                    {/* Hover / Active Overlay */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center p-2 z-10">
+                      <span className="material-symbols-outlined text-2xl text-primary mb-1">
+                        {uploadingAvatar ? 'progress_activity' : 'photo_camera'}
+                      </span>
+                      <span className="font-metadata-xs text-[9px] text-primary uppercase font-bold tracking-wider">
+                        {uploadingAvatar ? 'UPLOADING...' : currentAvatar ? 'CHANGE PHOTO' : 'UPLOAD PHOTO'}
+                      </span>
+                    </div>
+
+                    {/* Scanline / Texture Overlay */}
+                    <div className="absolute inset-0 bg-ink-red opacity-0 group-hover:opacity-10 transition-opacity mix-blend-multiply pointer-events-none" />
                   </div>
-                  <span className="font-metadata-xs text-metadata-xs text-on-surface-variant uppercase border-b border-outline pb-1">
-                    ID PHOTO // VERIFIED
-                  </span>
+
+                  {/* Photo Status Tag */}
+                  <button
+                    onClick={handleAvatarSelect}
+                    disabled={uploadingAvatar}
+                    className="font-metadata-xs text-metadata-xs text-on-surface-variant hover:text-ink-red uppercase border-b border-outline hover:border-ink-red pb-0.5 transition-colors bg-transparent border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-[14px]">
+                      {uploadingAvatar ? 'sync' : 'file_upload'}
+                    </span>
+                    <span>{uploadingAvatar ? 'SYNCING TO ARCHIVE...' : 'ID PHOTO // UPLOAD'}</span>
+                  </button>
+
+                  {/* Upload Error / Success Notifications */}
+                  {avatarError && (
+                    <div className="w-full text-center font-metadata-xs text-[11px] text-ink-red bg-ink-red/10 border border-ink-red/30 p-2 rounded-sm mt-1">
+                      ⚠️ {avatarError}
+                    </div>
+                  )}
+                  {avatarSuccess && (
+                    <div className="w-full text-center font-metadata-xs text-[11px] text-verification-green bg-verification-green/10 border border-verification-green/30 p-2 rounded-sm mt-1">
+                      ✓ PHOTO ARCHIVED SUCCESSFULLY
+                    </div>
+                  )}
                 </div>
 
                 <div className="md:col-span-8 space-y-6">
