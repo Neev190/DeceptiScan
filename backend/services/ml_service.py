@@ -10,7 +10,10 @@ To generate the checkpoint, run once:
 
 Score derivation:
     sentence authenticity_score = P(reliable) * 100
-    sentence confidence          = max(P(reliable), P(unreliable))
+    sentence confidence          = (max(P(reliable), P(unreliable)) - 0.5) / 0.5
+                                   # Rescales binary-softmax floor [0.5, 1.0] → [0.0, 1.0]
+                                   # 0.0 = model has no idea (50/50 split)
+                                   # 1.0 = model is maximally certain
 
 Classification thresholds (per spec requirements.md §3.4-3.6):
     reliable   : authenticity_score >= 75  (i.e. P(reliable) >= 0.75)
@@ -94,8 +97,12 @@ class MLService:
     MAX_SEQUENCE_LENGTH = 128   # matches training; LIAR statements are short
     BATCH_SIZE = 16
 
-    # Confidence threshold for low-confidence classification
-    LOW_CONFIDENCE_THRESHOLD = 0.3
+    # Confidence threshold for low-confidence classification.
+    # Calibrated for the rescaled [0.0, 1.0] confidence space:
+    # 0.1 == raw max-probability of 0.55 (barely above coin-flip).
+    # The pre-rescale value of 0.3 was unreachable from real inference
+    # (binary softmax floor is 0.5, so old confidence was always >= 0.5).
+    LOW_CONFIDENCE_THRESHOLD = 0.1
 
     # Classification thresholds (per requirements.md §3.4-3.6)
     RELIABLE_THRESHOLD = 75
@@ -315,7 +322,7 @@ class MLService:
 
         Score derivation:
             authenticity_score = P(reliable) * 100
-            confidence         = max(P(reliable), P(unreliable))
+            confidence         = (max(P(reliable), P(unreliable)) - 0.5) / 0.5
 
         No hash(), no random.seed(), no keyword-driven scoring.
         Keyword flags are a secondary annotation signal only.
@@ -349,7 +356,8 @@ class MLService:
         p_unreliable = float(probs[unreliable_idx])
 
         score = round(p_reliable * 100, 1)
-        confidence = round(max(p_reliable, p_unreliable), 4)
+        raw_confidence = max(p_reliable, p_unreliable)  # 0.5–1.0 (binary softmax floor)
+        confidence = round((raw_confidence - 0.5) / 0.5, 4)  # rescaled to 0.0–1.0
         is_suspicious = score < 50.0
 
         probabilities = {

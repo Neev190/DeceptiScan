@@ -158,7 +158,7 @@ class TestMLServiceNonInference:
         assert self.ml_service._determine_classification(20.0, 0.8) == "unreliable"
 
     def test_classification_unknown_low_confidence(self):
-        assert self.ml_service._determine_classification(80.0, 0.2) == "unknown"
+        assert self.ml_service._determine_classification(80.0, 0.05) == "unknown"
 
     # ------------------------------------------------------------------
     # Explanation generation
