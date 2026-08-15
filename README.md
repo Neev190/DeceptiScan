@@ -262,15 +262,24 @@ npm run test:run
 
 ---
 
+## 🌐 Deployment Status & Hosting Architecture
+
+DeceptiScan is designed to be hosted with the React frontend on **Vercel** and the Flask/PyTorch backend on a persistent container host (**Render** / **Railway**).
+
+> **Deployment Note**: The production backend is not currently running on a public live instance to maintain a zero-cost profile. Real-time memory profiling shows that the loaded PyTorch runtime, DistilBERT classification weights, and Sentence-Transformers retrieval model require **~693.84 MB peak RSS**, exceeding standard 512MB free-tier limits (such as Render Free). Lighter production pathways (such as INT8/ONNX model quantization, separate serverless worker pools, or the Hugging Face Inference API) are scoped for future cost-free hosting.
+
+---
+
 ## ⚠️ Known Limitations & Engineering Tradeoffs
 
-Documenting what is intentionally out-of-scope or partially built signals engineering maturity:
+Documenting what is intentionally out-of-scope or planned for future iterations:
 
-1. **Stage 1 Retrieval Circularity**: The current ~8,200 claim retrieval corpus is populated from the LIAR *training* split. This validates the end-to-end pgvector embedding pipeline, but retrieved statements reflect the classifier's training distribution rather than independent external fact-checks. Stage 2 routing via the Google Fact Check Tools API is scaffolded in `recency_service.py` to close this loop.
-2. **Synchronous ML Inference in Web Process**: DistilBERT inference runs synchronously inside the Flask request-response cycle (~2–5s). In a high-traffic production system, this would be decoupled into a task queue (Celery/Redis Queue) with SSE or WebSocket progress streaming.
-3. **Rate Limiting Wiring**: Rate limiting logic exists in `services/cache.py` (`check_rate_limit`) with fail-open semantics, but is not currently attached as active middleware to `/api/v1/analyze`.
-4. **Test Database Isolation**: The pytest suite connects to the configured `DATABASE_URL` rather than an isolated ephemeral test database, relying on explicit `DELETE` loops during fixture teardown.
-5. **OAuth / Social Login**: Authentication currently supports email/password with bcrypt hashing and JWT tokens; OAuth2 (Google/GitHub) is planned for a future release.
+1. **In-Memory ML Footprint**: Loading DistilBERT and Sentence-Transformers concurrently inside the Flask web process requires ~694 MB of resident RAM. In a high-scale production setup, inference would be offloaded to asynchronous task workers (Celery/Redis Queue) or an external inference endpoint with WebSocket status streaming.
+2. **Stage 1 Retrieval Circularity**: The current ~8,200 claim retrieval corpus is populated from the LIAR *training* split. This validates the end-to-end pgvector embedding pipeline, but retrieved statements reflect the classifier's training distribution rather than independent external fact-checks. Stage 2 routing via the Google Fact Check Tools API is scaffolded in `recency_service.py` to close this loop.
+3. **Google OAuth & Social Login**: Authentication currently supports email/password with bcrypt hashing and JWT tokens; Google OAuth2 and third-party provider flows are explicitly scoped as planned future extensions.
+4. **Theme Customization & System Settings**: The Investigator Profile UI displays aesthetic placeholders for terminal theme toggles and system preference panels; full theme-switching state persistence is planned for a subsequent UI iteration.
+5. **Rate Limiting Middleware**: Rate limiting logic exists in `services/cache.py` (`check_rate_limit`) with fail-open semantics, but is not currently attached as active middleware to `/api/v1/analyze`.
+6. **Test Database Isolation**: The pytest suite connects to the configured `DATABASE_URL` rather than an isolated ephemeral test database, relying on explicit `DELETE` loops during fixture teardown.
 
 ---
 
