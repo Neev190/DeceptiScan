@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AnalysisResult as AnalysisResultType, SentenceAnalysis } from '../types';
 import { classificationToStatus, STAMP_CONFIGS } from '../theme';
 import '../styles/inkwell.css';
@@ -10,9 +9,21 @@ interface AnalysisResultProps {
 
 const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
   // ─── UNCHANGED STATE & HANDLERS ──────────────────────────────────────────────
-  const navigate = useNavigate();
   const [selectedSentence, setSelectedSentence] = useState<SentenceAnalysis | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+
+  const handleInspectEvidence = () => {
+    if (result.sentenceAnalysis && result.sentenceAnalysis.length > 0) {
+      const target =
+        result.sentenceAnalysis.find((s) => s.isSuspicious || (s.flags && s.flags.length > 0)) ||
+        result.sentenceAnalysis[0];
+      setSelectedSentence(target);
+    } else {
+      setShowDetails(true);
+    }
+    const canvas = document.getElementById('source-document-canvas');
+    canvas?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const getSentenceStyle = (sentence: SentenceAnalysis) => {
     const baseStyle: React.CSSProperties = {
@@ -166,7 +177,7 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
       {/* ── Investigation Grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:-mt-16 relative z-20">
         {/* Document Review Canvas (Left) */}
-        <div className="col-span-1 lg:col-span-8 paper-texture text-typewriter-ribbon p-6 md:p-12 shadow-[0_24px_60px_rgba(0,0,0,0.5)] rounded-sm relative overflow-hidden">
+        <div id="source-document-canvas" className="col-span-1 lg:col-span-8 paper-texture text-typewriter-ribbon p-6 md:p-12 shadow-[0_24px_60px_rgba(0,0,0,0.5)] rounded-sm relative overflow-hidden">
           <div className="scanline"></div>
           <div className="flex justify-between items-center border-b border-outline-variant/30 pb-4 mb-8">
             <span className="font-technical-sm text-technical-sm text-inverse-primary uppercase tracking-widest">Source Document — Sentence Analysis</span>
@@ -305,8 +316,9 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result }) => {
 
               <div className="mt-4 pt-4 border-t border-outline-variant">
                 <button
-                  className="w-full bg-ink-red text-primary font-label-caps text-label-caps uppercase py-4 px-6 hover:bg-secondary-container transition-colors flex items-center justify-center gap-2 rounded-sm shadow-md"
-                  onClick={() => navigate(`/analysis/${result.id}`)}
+                  id="inspect-evidence-btn"
+                  className="w-full bg-ink-red text-primary font-label-caps text-label-caps uppercase py-4 px-6 hover:bg-secondary-container transition-colors flex items-center justify-center gap-2 rounded-sm shadow-md cursor-pointer"
+                  onClick={handleInspectEvidence}
                 >
                   <span className="material-symbols-outlined text-[18px]">policy</span>
                   Inspect Evidence
