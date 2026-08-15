@@ -313,4 +313,4 @@ Documenting what is intentionally out-of-scope or planned for future iterations:
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is proprietary — see [LICENSE](LICENSE) for details.
